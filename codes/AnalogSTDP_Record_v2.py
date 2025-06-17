@@ -10,6 +10,8 @@
 
     - 2. https://forum.digilent.com/topic/27919-set-the-trigger-on-the-wavegen-channel-2-to-scope-via-the-sdk-in-python/
 
+    - 3. https://numpy.org/doc/stable/reference/routines.ctypeslib.html , https://weblab.tudelft.nl/docs/numpy/1.17/reference/routines.ctypeslib.html
+
    Requires:                       
        Python 2.7, 3
 """
@@ -17,6 +19,7 @@ from ctypes import *
 import sys
 import os
 from os import sep  
+import numpy as np
 
 if sys.platform.startswith("win"):
     dwf = cdll.dwf
@@ -57,18 +60,7 @@ logging.basicConfig(format=format, level=logging.INFO,
 #declare ctype variables
 hdwf = c_int()
 sts = c_byte()
-hzAcq = c_double(200)
-# This is the PC buffer (or recorded file in the computer).
-# It is TOTALLY DIFFERENT FROM the internal buffer (of the FPGA, which is around 32K samples) 
-# of the analog-in channels of the Analog Device 3.
-# The PC buffer limit only decided by the available disk space in PC, which this code is run.
-# nSamples = 500# 200000
-# rgdSamples = (c_double*nSamples)()
-cAvailable = c_int()
-cLost = c_int()
-cCorrupted = c_int()
-fLost = 0
-fCorrupted = 0
+
 
 #print(DWF version
 version = create_string_buffer(16)
@@ -89,19 +81,25 @@ if hdwf.value == dwfconstants.hdwfNone.value:
 dwf.FDwfDeviceAutoConfigureSet(hdwf, c_int(0)) # 0 = the device will only be configured when FDwf###Configure is called
 
 print("Generating sine wave...")
+
+delta_tpre_tpost = 300e-3 # [s]
+
 out_ch_1 = c_int(0)
-w1_freq = 1 # [Hz]
+w1_period = 100e-3 + 2 + 100e-3 # [s]
+w1_freq = 1/(w1_period) # [Hz]
 w1_amplitude = -200e-3 # [V]
 w1_offset = 0 # [V]
 w1_percentageSymmetry = 10 # [%]
+secWait_1 = 4 # [s]
         
 out_ch_2 = c_int(1)
-w2_freq = 1 # [Hz]
+w2_period = secWait_1 -  delta_tpre_tpost # [s]
+w2_freq = 1/ w2_period # [Hz]
 w2_amplitude = -200e-3 # [V]
 w2_offset = 0 # [V]
-w2_percentageSymmetry = 10
+w2_percentageSymmetry = (100e-3 / w2_period) * 100 # pulse width = 100 ms
+secWait_2 =  w1_period +  delta_tpre_tpost # [s]
 
-delta_tpre_tpost = 0.1 # [s]
 
 # Resistor for current measurement (res)
 R = 0.00205806419e+3 # Ohm
@@ -109,21 +107,35 @@ R = 0.00205806419e+3 # Ohm
 logging.info("generate signals")
 logging.info("configure w1")
 dwf.FDwfAnalogOutNodeEnableSet(hdwf, out_ch_1, dwfconstants.AnalogOutNodeCarrier, c_int(1))
-dwf.FDwfAnalogOutNodeFunctionSet(hdwf, out_ch_1, dwfconstants.AnalogOutNodeCarrier, dwfconstants.funcPulse)
+dwf.FDwfAnalogOutNodeFunctionSet(hdwf, out_ch_1, dwfconstants.AnalogOutNodeCarrier, dwfconstants.funcCustom)
+# set freq for the customed signal
 dwf.FDwfAnalogOutNodeFrequencySet(hdwf, out_ch_1, dwfconstants.AnalogOutNodeCarrier, c_double(w1_freq))
 # FDwfAnalogOutNodeSymmetrySet(HDWF hdwf, int idxChannel, AnalogOutNode node, double percentageSymmetry)
-dwf.FDwfAnalogOutNodeSymmetrySet(hdwf, out_ch_1, dwfconstants.AnalogOutNodeCarrier, c_double(w1_percentageSymmetry))
+# dwf.FDwfAnalogOutNodeSymmetrySet(hdwf, out_ch_1, dwfconstants.AnalogOutNodeCarrier, c_double(w1_percentageSymmetry))
 dwf.FDwfAnalogOutOffsetSet(hdwf, out_ch_1, c_double(w1_offset))
 dwf.FDwfAnalogOutNodeAmplitudeSet(hdwf, out_ch_1, dwfconstants.AnalogOutNodeCarrier, c_double(w1_amplitude))
+# Values normalized to +-1 
+# ChatGPT: using Python's ctypes module to create a C-style array of 5 double values.
+# Unit time step in constructing the customed signal = 100 ms
+wait_duration = np.zeros(20, dtype='d')
+read_pulse = np.ones(1, dtype='d')
+write_pulse = np.ones(1, dtype='d')
+wait_duration = np.zeros(20, dtype='d')
+full_signal = np.concatenate((read_pulse, wait_duration, write_pulse), axis = 0)
+rgSteps =  np.ctypeslib.as_ctypes(full_signal) 
+# The output value will be Offset + Sample*Amplitude
+# The Sample = values in rgSteps
+# FDwfAnalogOutDataSet(HDWF hdwf, int idxChannel, double *rgdData, int cdData)
+dwf.FDwfAnalogOutDataSet(hdwf, out_ch_1, rgSteps, len(rgSteps))
+
 # FDwfAnalogOutTriggerSourceSet(HDWF hdwf, int idxChannel, TRIGSRC trigsrc)
-trgsrc = dwfconstants.trigsrcNone
-dwf.FDwfAnalogOutTriggerSourceSet(hdwf, out_ch_1, trgsrc)
+# trgsrc = dwfconstants.trigsrcNone
+# dwf.FDwfAnalogOutTriggerSourceSet(hdwf, out_ch_1, trgsrc)
 # FDwfAnalogOutRunSet(HDWF hdwf, int idxChannel, double secRun)
-secRun = 1* (1/w1_freq) # [s], 1 period only
+secRun = len(rgSteps) * 0.1 # determine the 1 period of the customed signal
 dwf.FDwfAnalogOutRunSet(hdwf, out_ch_1, c_double(secRun))
 # FDwfAnalogOutWaitSet(HDWF hdwf, int idxChannel, double secWait)
-secWait = 4 # [s]
-dwf.FDwfAnalogOutWaitSet(hdwf, out_ch_1, c_double(secWait))
+dwf.FDwfAnalogOutWaitSet(hdwf, out_ch_1, c_double(secWait_1))
 # FDwfAnalogOutRepeatSet(HDWF hdwf, int idxChannel, int cRepeat);
 cRepeat= c_int(5)
 dwf.FDwfAnalogOutRepeatSet(hdwf, out_ch_1, cRepeat)
@@ -141,31 +153,45 @@ dwf.FDwfAnalogOutNodeSymmetrySet(hdwf, out_ch_2, dwfconstants.AnalogOutNodeCarri
 dwf.FDwfAnalogOutOffsetSet(hdwf, out_ch_2, c_double(w2_offset))
 dwf.FDwfAnalogOutNodeAmplitudeSet(hdwf, out_ch_2, dwfconstants.AnalogOutNodeCarrier, c_double(w2_amplitude))
 # FDwfAnalogOutRunSet(HDWF hdwf, int idxChannel, double secRun)
-secRun = 1*(1/w2_freq)
+secRun = w2_period
 dwf.FDwfAnalogOutRunSet(hdwf, out_ch_2, c_double(secRun))
 # FDwfAnalogOutRepeatSet(HDWF hdwf, int idxChannel, int cRepeat);
-cRepeat = 2
+# cRepeat = c_int(2)
 dwf.FDwfAnalogOutRepeatSet(hdwf, out_ch_2, cRepeat)
 idle = dwfconstants.DwfAnalogOutIdleOffset
 dwf.FDwfAnalogOutIdleSet(hdwf, out_ch_2, idle)
 # M1 (Not as expected)
-# # FDwfAnalogOutTriggerSourceSet(HDWF hdwf, int idxChannel, TRIGSRC trigsrc)
-# trgsrc = dwfconstants.trigsrcAnalogOut1
-# dwf.FDwfAnalogOutTriggerSourceSet(hdwf, out_ch_2, trgsrc)
-# # FDwfAnalogOutTriggerSlopeSet(HDWF hdwf, int idxChannel, DwfTriggerSlope slope)
-# slope = dwfconstants.DwfTriggerSlopeRise
-# dwf.FDwfAnalogOutTriggerSlopeSet(hdwf, out_ch_2, slope)
-# secWait =  (1* (1/w1_freq))/2 +  delta_tpre_tpost # [s]
-# dwf.FDwfAnalogOutWaitSet(hdwf, out_ch_2, c_double(secWait))
-# M2 (not as expected)
-trgsrc = dwfconstants.trigsrcNone
+# FDwfAnalogOutTriggerSourceSet(HDWF hdwf, int idxChannel, TRIGSRC trigsrc)
+trgsrc = dwfconstants.trigsrcAnalogOut1
 dwf.FDwfAnalogOutTriggerSourceSet(hdwf, out_ch_2, trgsrc)
-dwf.FDwfAnalogOutWaitSet(hdwf, out_ch_2, c_double(secWait))
+# FDwfAnalogOutTriggerSlopeSet(HDWF hdwf, int idxChannel, DwfTriggerSlope slope)
+slope = dwfconstants.DwfTriggerSlopeRise
+dwf.FDwfAnalogOutTriggerSlopeSet(hdwf, out_ch_2, slope)
+dwf.FDwfAnalogOutWaitSet(hdwf, out_ch_2, c_double(secWait_2))
+# M2 (as expected)
+# trgsrc = dwfconstants.trigsrcNone
+# dwf.FDwfAnalogOutTriggerSourceSet(hdwf, out_ch_2, trgsrc)
+# init_delay = delta_tpre_tpost
+# secWait_2 = (w1_period + secWait + w1_period + delta_tpre_tpost) - (init_delay + w2_period)
+# dwf.FDwfAnalogOutWaitSet(hdwf, out_ch_2, c_double(secWait_2))
 # apply the configuration
 dwf.FDwfAnalogOutConfigure(hdwf, out_ch_2, c_int(3))
 
 
 #set up acquisition (channel 1 + 2)
+hzAcq = c_double(10000)
+# This is the PC buffer (or recorded file in the computer).
+# It is TOTALLY DIFFERENT FROM the internal buffer (of the FPGA, which is around 32K samples) 
+# of the analog-in channels of the Analog Device 3.
+# The PC buffer limit only decided by the available disk space in PC, which this code is run.
+# nSamples = 500# 200000
+# rgdSamples = (c_double*nSamples)()
+cAvailable = c_int()
+cLost = c_int()
+cCorrupted = c_int()
+fLost = 0
+fCorrupted = 0
+
 dwf.FDwfAnalogInChannelEnableSet(hdwf, c_int(0), c_int(1))
 dwf.FDwfAnalogInChannelEnableSet(hdwf, c_int(1), c_int(1))
     
@@ -189,12 +215,13 @@ logging.info("start waves")
 # M0 (with this, the channel 2 configured is automatically same as channel 1)
 # dwf.FDwfAnalogOutConfigure(hdwf, -1, c_int(1))
 # M1 (expected)
-# dwf.FDwfAnalogOutConfigure(hdwf, out_ch_2, c_int(1))
-# dwf.FDwfAnalogOutConfigure(hdwf, out_ch_1, c_int(1))
-# M2 (not as expected)
-dwf.FDwfAnalogOutConfigure(hdwf, out_ch_1, c_int(1))
-time.sleep(delta_tpre_tpost)
 dwf.FDwfAnalogOutConfigure(hdwf, out_ch_2, c_int(1))
+time.sleep(1)
+dwf.FDwfAnalogOutConfigure(hdwf, out_ch_1, c_int(1))
+# M2 (not as expected)
+# dwf.FDwfAnalogOutConfigure(hdwf, out_ch_1, c_int(1))
+# # time.sleep(init_delay)
+# dwf.FDwfAnalogOutConfigure(hdwf, out_ch_2, c_int(1))
 
 
 import csv

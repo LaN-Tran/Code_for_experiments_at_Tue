@@ -115,7 +115,7 @@ def read_from_file_and_plot_ec_ram (_, file_path):
 # file_path = "C:/Users/20245580/LabCode/Automate_Lab_Instrument/20250605/output_exp3.csv"
 # file_path = "C:/Users/20245580/LabCode/Automate_Lab_Instrument/20250605/output_exp_ecram.csv"
 # file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250613/transfer_curve_2Metal.csv"
-file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250616/stdp.csv"
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250617/real_exp_stdp.csv"
 
 # define the figure
 # create a figure with two subplots
