@@ -1,5 +1,5 @@
 """
-   Analog STDP record 
+   Analog STDP record v3, pre (-V) before post (V)
    Author:  Tran Le Phuong Lan, 
    Refer:  Digilent, Inc.
    Revision:  2025-06-17
@@ -82,7 +82,7 @@ dwf.FDwfDeviceAutoConfigureSet(hdwf, c_int(0)) # 0 = the device will only be con
 
 print("Generating sine wave...")
 
-delta_tpre_tpost = 300e-3 # [s]
+delta_tpre_tpost = 200e-3 # [s]
 
 out_ch_1 = c_int(0)
 w1_period = 100e-3 + 2 + 100e-3 # [s]
@@ -138,7 +138,7 @@ dwf.FDwfAnalogOutRunSet(hdwf, out_ch_1, c_double(secRun))
 # FDwfAnalogOutWaitSet(HDWF hdwf, int idxChannel, double secWait)
 dwf.FDwfAnalogOutWaitSet(hdwf, out_ch_1, c_double(secWait_1))
 # FDwfAnalogOutRepeatSet(HDWF hdwf, int idxChannel, int cRepeat);
-cRepeat= 100
+cRepeat= 50
 dwf.FDwfAnalogOutRepeatSet(hdwf, out_ch_1, c_int(cRepeat))
 idle = dwfconstants.DwfAnalogOutIdleOffset
 dwf.FDwfAnalogOutIdleSet(hdwf, out_ch_1, idle)
@@ -213,7 +213,7 @@ dwf.FDwfAnalogOutConfigure(hdwf, out_ch_1, c_int(1))
 
 
 import csv
-file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250617/real_exp_stdp.csv"
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250617/stdp_4.csv"
         # Prepare record file
 field_names = ['time', 'i', 'v']
 with open(file_path, 'w') as file:
