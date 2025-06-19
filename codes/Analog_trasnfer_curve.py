@@ -1,13 +1,14 @@
 """
-   DWF Python Example
-   Author:  Digilent, Inc.
-   Modifier: Tran Le Phuong Lan
-   Revision:  2025-06-17
+   Analog transfer curve, transistor test
+   Author:  Tran Le Phuong Lan
+   Modifier: 
+   Revision:  2025-06-19
 
    Requires:                       
        Python 2.7, 3
-   NPN transistor test
-   Physical setup: https://digilent.com/reference/test-and-measurement/guides/waveforms-curve-tracer?srsltid=AfmBOoqN0yxSmK0MYBprgry4HaLvbSzvA-zQUWobe24-F8WjA6Xg2Gkq
+   
+   Reference:
+        [1] Physical setup: https://digilent.com/reference/test-and-measurement/guides/waveforms-curve-tracer?srsltid=AfmBOoqN0yxSmK0MYBprgry4HaLvbSzvA-zQUWobe24-F8WjA6Xg2Gkq
 """
 
 from ctypes import *
@@ -65,15 +66,13 @@ if hdwf.value == hdwfNone.value:
 dwf.FDwfDeviceAutoConfigureSet(hdwf, 0) # 0 = the device will only be configured when FDwf###Configure is called
 
 print("Configuring device...")
-# Resistor for current measurement (res)
-R = 0.00205806419e+3 # Ohm
 
 # wave gen
 w1_gate = 0
 w2_drain = 1
 
 # Drain: DC
-drain_voltage = -0.2 # [V]
+drain_voltage = -0.2 # -5e-3 [V]: limit of the wave generator
 dwf.FDwfAnalogOutEnableSet(hdwf, c_int(w2_drain), 1) 
 dwf.FDwfAnalogOutFunctionSet(hdwf, c_int(w2_drain), funcDC)
 dwf.FDwfAnalogOutOffsetSet(hdwf, c_int(w2_drain), c_double(drain_voltage))
@@ -120,9 +119,12 @@ with open(file_path, 'w') as file:
     file_writer = csv.DictWriter(file, fieldnames=field_names)
     file_writer.writeheader()
 
-settle_time = 1 # [s]
-rest_duration = 1 # [s]
-number_of_measurements = 2
+
+# Resistor for current measurement (res)
+R = 1 #0.00205806419e+3 # Ohm
+settle_time = 0.5 # [s]
+rest_duration = 0.5 # [s]
+number_of_measurements = 1
 gate_voltage_smallest = -0.5
 gate_voltage_largest = 0.5
 gate_voltage_step = 0.1
