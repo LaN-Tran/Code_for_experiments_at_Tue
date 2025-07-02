@@ -47,7 +47,7 @@ logging.basicConfig(format=format, level=logging.INFO,
 
         # init the instrument handle
     # k = Keithley2600('USB0::0x05E6::0x2636::4480001::INSTR', visa_library = 'C:/windows/System32/visa64.dll')
-keithley_instrument = Keithley2600('USB0::0x05E6::0x2602::4522205::INSTR', visa_library = 'C:/windows/System32/visa64.dll')
+keithley_instrument = Keithley2600('USB0::0x05E6::0x2636::4480001::INSTR', visa_library = 'C:/windows/System32/visa64.dll')
         # Turn everything OFF
 keithley_instrument.smua.source.output = keithley_instrument.smua.OUTPUT_OFF   # turn off SMUA
 keithley_instrument.smub.source.output = keithley_instrument.smub.OUTPUT_OFF   # turn off SMUB
@@ -73,7 +73,7 @@ arduino_board.digital[arduino_bin_mux_enable].write(1)
 time.sleep(1)
 
         # path to the measurement record
-file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250613/transfer_curve_2Metal.csv"
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250702/ecram.csv"
 
 logging.info("Main    : Prepare measurement")
 
@@ -82,20 +82,20 @@ gate_bias_voltage = 0 # [s]
 drain_bias_voltage = -0.2 # [s]
 keithley_settle_time = 0.1 # [s]
 wait_before_exp = 4 # [s]
-nexp = 5
+nexp = 10
 n_pulse_type_1 = 4
-amp_pulse_type_1 = 0.2
+amp_pulse_type_1 = 0.1 # (Vgd > 0, decrease gm)
 pulse_width_type_1 = 0.5
 pulse_period_type_1 = 1 
 no_pulse_time_type_1 = pulse_period_type_1 - pulse_width_type_1
-wait_between_pulse_type_1 = 2
-wait_between_pulse_type_1_and_pulse_type_2 = 5
-n_pulse_type_2 = 3
-amp_pulse_type_2 = -0.2
+wait_between_pulse_type_1 = 5
+wait_between_pulse_type_1_and_pulse_type_2 = 10
+n_pulse_type_2 = 4
+amp_pulse_type_2 = -0.5 # (Vgd < 0, increase gm)
 pulse_width_type_2 = 0.5
 pulse_period_type_2 = 1 
 no_pulse_time_type_2 = pulse_period_type_2 - pulse_width_type_2
-wait_between_pulse_type_2 = 1
+wait_between_pulse_type_2 = 5
 wait_between_exp = 10
 
 try:
@@ -175,6 +175,7 @@ try:
     time_ref = time.time()
     
     # before exp
+    logging.info("before exp")
     start_time = time.time()
     current_time = time.time()
     while (current_time - start_time) < wait_before_exp:
@@ -191,214 +192,238 @@ try:
                         'v_gate': measured_v_gate,
                                                     }
                 file_writer.writerow(info)
-        except:
-            logging.info("ERROR: keithley measure function error")
         
+        except Exception as CatchError:
+            logging.info("ERROR: keithley measure function error")
+            logging.info(f"{CatchError=}")
+
         current_time = time.time()
 
     # nexp 
+    logging.info("start exp")
     for idx_exp in range(0, nexp):
-        # n pulse_type_1
-        for idx_pulse_type_1 in range (0, n_pulse_type_1):
-            # pulse width (close switch)
-                # close switch
-            arduino_board.digital[arduino_bin_mux_enable].write(0)
-                # apply pulse (gate)
-            keithley_instrument.smub.source.levelv = amp_pulse_type_1
-                # start pulse
-            start_time = time.time()
-            current_time = time.time()
-            while (current_time - start_time) < pulse_width_type_1:
-                try:
-                    measured_i_channel = keithley_instrument.smua.measure.i()
-                    measured_v_gate = keithley_instrument.smub.measure.v()
-                    # record to file
-                    with open(file_path, 'a') as file: 
-                                # NOTICE: THE WHILE LOOP/ FOR LOOP INSIDE -> NO CONSTANT UPDATE TO FILE AT ALL -> NO ANIMATION
-                        file_writer = csv.DictWriter(file, fieldnames=field_names)
-                        info = {
-                                'time': time.time() - time_ref,
-                                'i_channel': measured_i_channel,
-                                'v_gate': measured_v_gate,
-                                                            }
-                        file_writer.writerow(info)
-                except:
-                    logging.info("ERROR: keithley measure function error")
-                
+            # n pulse_type_1
+            for idx_pulse_type_1 in range (0, n_pulse_type_1):
+                # pulse width (close switch)
+                    # close switch
+                arduino_board.digital[arduino_bin_mux_enable].write(0)
+                    # apply pulse (gate)
+                keithley_instrument.smub.source.levelv = amp_pulse_type_1
+                    # start pulse
+                start_time = time.time()
                 current_time = time.time()
+                while (current_time - start_time) < pulse_width_type_1:
+                    try:
+                        measured_i_channel = keithley_instrument.smua.measure.i()
+                        measured_v_gate = keithley_instrument.smub.measure.v()
+                        # record to file
+                        with open(file_path, 'a') as file: 
+                                    # NOTICE: THE WHILE LOOP/ FOR LOOP INSIDE -> NO CONSTANT UPDATE TO FILE AT ALL -> NO ANIMATION
+                            file_writer = csv.DictWriter(file, fieldnames=field_names)
+                            info = {
+                                    'time': time.time() - time_ref,
+                                    'i_channel': measured_i_channel,
+                                    'v_gate': measured_v_gate,
+                                                                }
+                            file_writer.writerow(info)
+                    
+                    except Exception as CatchError:
+                        logging.info("ERROR: keithley measure function error")
+                        logging.info(f"{CatchError=}")
+                    
+                    current_time = time.time()
 
-            # no pulse (open switch)
-                # open switch
-            arduino_board.digital[arduino_bin_mux_enable].write(1)
-                # apply bias voltage (gate)
-            keithley_instrument.smub.source.levelv = gate_bias_voltage
+                # no pulse (open switch)
+                    # open switch
+                arduino_board.digital[arduino_bin_mux_enable].write(1)
+                    # apply bias voltage (gate)
+                keithley_instrument.smub.source.levelv = gate_bias_voltage
+                    # start record
+                start_time = time.time()
+                current_time = time.time()
+                while (current_time - start_time) < no_pulse_time_type_1:
+                    try:
+                        measured_i_channel = keithley_instrument.smua.measure.i()
+                        measured_v_gate = keithley_instrument.smub.measure.v()
+                        # record to file
+                        with open(file_path, 'a') as file: 
+                                    # NOTICE: THE WHILE LOOP/ FOR LOOP INSIDE -> NO CONSTANT UPDATE TO FILE AT ALL -> NO ANIMATION
+                            file_writer = csv.DictWriter(file, fieldnames=field_names)
+                            info = {
+                                    'time': time.time() - time_ref,
+                                    'i_channel': measured_i_channel,
+                                    'v_gate': measured_v_gate,
+                                                                }
+                            file_writer.writerow(info)
+                    except Exception as CatchError:
+                        logging.info("ERROR: keithley measure function error")
+                        logging.info(f"{CatchError=}")
+                    
+                    current_time = time.time()
+                
+                # wait between pulse_type_1 (open switch) 
+                    # start record
+                start_time = time.time()
+                current_time = time.time()
+                while (current_time - start_time) < wait_between_pulse_type_1:
+                    try:
+                        measured_i_channel = keithley_instrument.smua.measure.i()
+                        measured_v_gate = keithley_instrument.smub.measure.v()
+                        # record to file
+                        with open(file_path, 'a') as file: 
+                                    # NOTICE: THE WHILE LOOP/ FOR LOOP INSIDE -> NO CONSTANT UPDATE TO FILE AT ALL -> NO ANIMATION
+                            file_writer = csv.DictWriter(file, fieldnames=field_names)
+                            info = {
+                                    'time': time.time() - time_ref,
+                                    'i_channel': measured_i_channel,
+                                    'v_gate': measured_v_gate,
+                                                                }
+                            file_writer.writerow(info)
+                    except Exception as CatchError:
+                        logging.info("ERROR: keithley measure function error")
+                        logging.info(f"{CatchError=}")
+                    
+                    current_time = time.time()
+
+            # wait between pulse_type_1 and pulse_type_2 (open switch)
                 # start record
             start_time = time.time()
             current_time = time.time()
-            while (current_time - start_time) < no_pulse_time_type_1:
+            while (current_time - start_time) < wait_between_pulse_type_1_and_pulse_type_2:
                 try:
                     measured_i_channel = keithley_instrument.smua.measure.i()
                     measured_v_gate = keithley_instrument.smub.measure.v()
-                    # record to file
+                        # record to file
                     with open(file_path, 'a') as file: 
-                                # NOTICE: THE WHILE LOOP/ FOR LOOP INSIDE -> NO CONSTANT UPDATE TO FILE AT ALL -> NO ANIMATION
                         file_writer = csv.DictWriter(file, fieldnames=field_names)
                         info = {
-                                'time': time.time() - time_ref,
-                                'i_channel': measured_i_channel,
-                                'v_gate': measured_v_gate,
-                                                            }
+                                    'time': time.time() - time_ref,
+                                    'i_channel': measured_i_channel,
+                                    'v_gate': measured_v_gate,
+                                                                }
                         file_writer.writerow(info)
-                except:
-                    logging.info("ERROR: keithley measure function error")
-                
+                except Exception as CatchError:
+                        logging.info("ERROR: keithley measure function error")
+                        logging.info(f"{CatchError=}")
+                    
                 current_time = time.time()
-            
-            # wait between pulse_type_1 (open switch) 
+
+            # n pulse_type_2 
+            for idx_pulse_type_2 in range (0, n_pulse_type_2):
+                # pulse width (close switch)
+                    # close switch
+                arduino_board.digital[arduino_bin_mux_enable].write(0)
+                    # apply pulse (gate)
+                keithley_instrument.smub.source.levelv = amp_pulse_type_2
+                    # start pulse
+                start_time = time.time()
+                current_time = time.time()
+                while (current_time - start_time) < pulse_width_type_2:
+                    try:
+                        measured_i_channel = keithley_instrument.smua.measure.i()
+                        measured_v_gate = keithley_instrument.smub.measure.v()
+                        # record to file
+                        with open(file_path, 'a') as file: 
+                                    # NOTICE: THE WHILE LOOP/ FOR LOOP INSIDE -> NO CONSTANT UPDATE TO FILE AT ALL -> NO ANIMATION
+                            file_writer = csv.DictWriter(file, fieldnames=field_names)
+                            info = {
+                                    'time': time.time() - time_ref,
+                                    'i_channel': measured_i_channel,
+                                    'v_gate': measured_v_gate,
+                                                                }
+                            file_writer.writerow(info)
+                    except Exception as CatchError:
+                        logging.info("ERROR: keithley measure function error")
+                        logging.info(f"{CatchError=}")
+                    
+                    current_time = time.time()
+
+                # no pulse (open switch)
+                    # open switch
+                arduino_board.digital[arduino_bin_mux_enable].write(1)
+                    # apply bias voltage (gate)
+                keithley_instrument.smub.source.levelv = gate_bias_voltage
+                    # start record
+                start_time = time.time()
+                current_time = time.time()
+                while (current_time - start_time) < no_pulse_time_type_2:
+                    try:
+                        measured_i_channel = keithley_instrument.smua.measure.i()
+                        measured_v_gate = keithley_instrument.smub.measure.v()
+                        # record to file
+                        with open(file_path, 'a') as file: 
+                                    # NOTICE: THE WHILE LOOP/ FOR LOOP INSIDE -> NO CONSTANT UPDATE TO FILE AT ALL -> NO ANIMATION
+                            file_writer = csv.DictWriter(file, fieldnames=field_names)
+                            info = {
+                                    'time': time.time() - time_ref,
+                                    'i_channel': measured_i_channel,
+                                    'v_gate': measured_v_gate,
+                                                                }
+                            file_writer.writerow(info)
+                    except Exception as CatchError:
+                        logging.info("ERROR: keithley measure function error")
+                        logging.info(f"{CatchError=}")
+                    
+                    current_time = time.time()
+                
+                # wait between pulse_type_2 (open switch) 
+                    # start record
+                start_time = time.time()
+                current_time = time.time()
+                while (current_time - start_time) < wait_between_pulse_type_2:
+                    try:
+                        measured_i_channel = keithley_instrument.smua.measure.i()
+                        measured_v_gate = keithley_instrument.smub.measure.v()
+                        # record to file
+                        with open(file_path, 'a') as file: 
+                                    # NOTICE: THE WHILE LOOP/ FOR LOOP INSIDE -> NO CONSTANT UPDATE TO FILE AT ALL -> NO ANIMATION
+                            file_writer = csv.DictWriter(file, fieldnames=field_names)
+                            info = {
+                                    'time': time.time() - time_ref,
+                                    'i_channel': measured_i_channel,
+                                    'v_gate': measured_v_gate,
+                                                                }
+                            file_writer.writerow(info)
+                    except Exception as CatchError:
+                        logging.info("ERROR: keithley measure function error")
+                        logging.info(f"{CatchError=}")
+                    
+                    current_time = time.time()
+
+            # wait between exp (open switch)
                 # start record
             start_time = time.time()
             current_time = time.time()
-            while (current_time - start_time) < wait_between_pulse_type_1:
+            while (current_time - start_time) < wait_between_exp:
                 try:
                     measured_i_channel = keithley_instrument.smua.measure.i()
                     measured_v_gate = keithley_instrument.smub.measure.v()
-                    # record to file
+                        # record to file
                     with open(file_path, 'a') as file: 
-                                # NOTICE: THE WHILE LOOP/ FOR LOOP INSIDE -> NO CONSTANT UPDATE TO FILE AT ALL -> NO ANIMATION
                         file_writer = csv.DictWriter(file, fieldnames=field_names)
                         info = {
-                                'time': time.time() - time_ref,
-                                'i_channel': measured_i_channel,
-                                'v_gate': measured_v_gate,
-                                                            }
+                                    'time': time.time() - time_ref,
+                                    'i_channel': measured_i_channel,
+                                    'v_gate': measured_v_gate,
+                                                                }
                         file_writer.writerow(info)
-                except:
-                    logging.info("ERROR: keithley measure function error")
-                
+                except Exception as CatchError:
+                        logging.info("ERROR: keithley measure function error")
+                        logging.info(f"{CatchError=}")
+                    
                 current_time = time.time()
 
-        # wait between pulse_type_1 and pulse_type_2 (open switch)
-            # start record
-        start_time = time.time()
-        current_time = time.time()
-        while (current_time - start_time) < wait_between_pulse_type_1_and_pulse_type_2:
-            try:
-                measured_i_channel = keithley_instrument.smua.measure.i()
-                measured_v_gate = keithley_instrument.smub.measure.v()
-                     # record to file
-                with open(file_path, 'a') as file: 
-                    file_writer = csv.DictWriter(file, fieldnames=field_names)
-                    info = {
-                                'time': time.time() - time_ref,
-                                'i_channel': measured_i_channel,
-                                'v_gate': measured_v_gate,
-                                                            }
-                    file_writer.writerow(info)
-            except:
-                    logging.info("ERROR: keithley measure function error")
-                
-            current_time = time.time()
 
-        # n pulse_type_2 
-        for idx_pulse_type_1 in range (0, n_pulse_type_2):
-            # pulse width (close switch)
-                # close switch
-            arduino_board.digital[arduino_bin_mux_enable].write(0)
-                # apply pulse (gate)
-            keithley_instrument.smub.source.levelv = amp_pulse_type_2
-                # start pulse
-            start_time = time.time()
-            current_time = time.time()
-            while (current_time - start_time) < pulse_width_type_2:
-                try:
-                    measured_i_channel = keithley_instrument.smua.measure.i()
-                    measured_v_gate = keithley_instrument.smub.measure.v()
-                    # record to file
-                    with open(file_path, 'a') as file: 
-                                # NOTICE: THE WHILE LOOP/ FOR LOOP INSIDE -> NO CONSTANT UPDATE TO FILE AT ALL -> NO ANIMATION
-                        file_writer = csv.DictWriter(file, fieldnames=field_names)
-                        info = {
-                                'time': time.time() - time_ref,
-                                'i_channel': measured_i_channel,
-                                'v_gate': measured_v_gate,
-                                                            }
-                        file_writer.writerow(info)
-                except:
-                    logging.info("ERROR: keithley measure function error")
-                
-                current_time = time.time()
-
-            # no pulse (open switch)
-                # open switch
-            arduino_board.digital[arduino_bin_mux_enable].write(1)
-                # apply bias voltage (gate)
-            keithley_instrument.smub.source.levelv = gate_bias_voltage
-                # start record
-            start_time = time.time()
-            current_time = time.time()
-            while (current_time - start_time) < no_pulse_time_type_2:
-                try:
-                    measured_i_channel = keithley_instrument.smua.measure.i()
-                    measured_v_gate = keithley_instrument.smub.measure.v()
-                    # record to file
-                    with open(file_path, 'a') as file: 
-                                # NOTICE: THE WHILE LOOP/ FOR LOOP INSIDE -> NO CONSTANT UPDATE TO FILE AT ALL -> NO ANIMATION
-                        file_writer = csv.DictWriter(file, fieldnames=field_names)
-                        info = {
-                                'time': time.time() - time_ref,
-                                'i_channel': measured_i_channel,
-                                'v_gate': measured_v_gate,
-                                                            }
-                        file_writer.writerow(info)
-                except:
-                    logging.info("ERROR: keithley measure function error")
-                
-                current_time = time.time()
-            
-            # wait between pulse_type_2 (open switch) 
-                # start record
-            start_time = time.time()
-            current_time = time.time()
-            while (current_time - start_time) < wait_between_pulse_type_2:
-                try:
-                    measured_i_channel = keithley_instrument.smua.measure.i()
-                    measured_v_gate = keithley_instrument.smub.measure.v()
-                    # record to file
-                    with open(file_path, 'a') as file: 
-                                # NOTICE: THE WHILE LOOP/ FOR LOOP INSIDE -> NO CONSTANT UPDATE TO FILE AT ALL -> NO ANIMATION
-                        file_writer = csv.DictWriter(file, fieldnames=field_names)
-                        info = {
-                                'time': time.time() - time_ref,
-                                'i_channel': measured_i_channel,
-                                'v_gate': measured_v_gate,
-                                                            }
-                        file_writer.writerow(info)
-                except:
-                    logging.info("ERROR: keithley measure function error")
-                
-                current_time = time.time()
-
-        # wait between exp (open switch)
-            # start record
-        start_time = time.time()
-        current_time = time.time()
-        while (current_time - start_time) < wait_between_exp:
-            try:
-                measured_i_channel = keithley_instrument.smua.measure.i()
-                measured_v_gate = keithley_instrument.smub.measure.v()
-                     # record to file
-                with open(file_path, 'a') as file: 
-                    file_writer = csv.DictWriter(file, fieldnames=field_names)
-                    info = {
-                                'time': time.time() - time_ref,
-                                'i_channel': measured_i_channel,
-                                'v_gate': measured_v_gate,
-                                                            }
-                    file_writer.writerow(info)
-            except:
-                    logging.info("ERROR: keithley measure function error")
-                
-            current_time = time.time()
+    # end exp
+    # # ======
+    # # Open all switches
+    # # ======
+    logging.info("Keithley measurement    : EXIT")
+            # disconnect
+    arduino_board.digital[arduino_bin_mux_enable].write(1)
+            # turn off the keithley
+    keithley_instrument.smua.source.output = keithley_instrument.smua.OUTPUT_OFF   # turn off SMUA
+    keithley_instrument.smub.source.output = keithley_instrument.smub.OUTPUT_OFF   # turn off SMUB
 
 except KeyboardInterrupt:
         # # ======

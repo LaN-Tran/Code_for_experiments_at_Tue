@@ -47,7 +47,7 @@ logging.basicConfig(format=format, level=logging.INFO,
 
         # init the instrument handle
     # k = Keithley2600('USB0::0x05E6::0x2636::4480001::INSTR', visa_library = 'C:/windows/System32/visa64.dll')
-keithley_instrument = Keithley2600('USB0::0x05E6::0x2602::4522205::INSTR', visa_library = 'C:/windows/System32/visa64.dll')
+keithley_instrument = Keithley2600('USB0::0x05E6::0x2636::4480001::INSTR', visa_library = 'C:/windows/System32/visa64.dll')
         # Turn everything OFF
 keithley_instrument.smua.source.output = keithley_instrument.smua.OUTPUT_OFF   # turn off SMUA
 keithley_instrument.smub.source.output = keithley_instrument.smub.OUTPUT_OFF   # turn off SMUB
@@ -73,7 +73,7 @@ arduino_board.digital[arduino_bin_mux_enable].write(1)
 time.sleep(1)
 
         # path to the measurement record
-file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250613/transfer_curve_2Metal.csv"
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250702/transfer_curve_oect6.csv"
 
 logging.info("Main    : Prepare measurement")
 
@@ -87,151 +87,82 @@ rest_duration = 1 # s
 gate_voltage_smallest = -0.5 # V (for liquid electrolite)
 gate_voltage_largest = 0.5 # V (for liquid electrolite)
 gate_voltage_step = 0.1 # V
-drain_voltage = -0.1 # V
-    
-            # ======
-            # Prepare record file
-            # ======
-field_names = ['time', 'i_channel', 'v_gate', 'i_gate']
-with open(file_path, 'w') as file:
-    file_writer = csv.DictWriter(file, fieldnames=field_names)
-    file_writer.writeheader()
+drain_voltage = -0.2 # V
+try:
+                # ======
+                # Prepare record file
+                # ======
+    field_names = ['time', 'i_channel', 'v_gate', 'i_gate']
+    with open(file_path, 'w') as file:
+        file_writer = csv.DictWriter(file, fieldnames=field_names)
+        file_writer.writeheader()
 
-            # ======
-            # Configure smub as voltage source (Gate)
-            # ======
-                # reset the channel
-keithley_instrument.smub.reset()
-            
-            # Clear buffer 1.
-keithley_instrument.smub.nvbuffer1.clear()
-
-                # Select measure I autorange.
-keithley_instrument.smub.measure.autorangei = keithley_instrument.smub.AUTORANGE_ON
-
-                # Select the voltage source function.
-keithley_instrument.smub.source.func = keithley_instrument.smub.OUTPUT_DCVOLTS
+                # ======
+                # Configure smub as voltage source (Gate)
+                # ======
+                    # reset the channel
+    keithley_instrument.smub.reset()
                 
-                # Set the bias voltage.
-keithley_instrument.smub.source.levelv = gate_voltage_smallest
-
-                # Select measure I autorange.
-keithley_instrument.smub.measure.autozero = keithley_instrument.smua.AUTOZERO_OFF
-keithley_instrument.smub.measure.autorangei = keithley_instrument.smua.AUTORANGE_ON
-                
-
-            # # ======
-            # # Configure smua as source v, measure i (Drain)
-            # # ======
-
-                # Restore 2600B defaults.
-keithley_instrument.smua.reset()
-
-                # Select channel A display.
-keithley_instrument.display.screen = keithley_instrument.display.SMUA
-
-                # Display current.
-keithley_instrument.display.smua.measure.func = keithley_instrument.display.MEASURE_DCAMPS
-
-                # Select measure I autorange.
-keithley_instrument.smua.measure.autozero = keithley_instrument.smua.AUTOZERO_OFF
-keithley_instrument.smua.measure.autorangei = keithley_instrument.smua.AUTORANGE_ON
-
-                # Select ASCII data format.
-            # smu.write('format.data = format.ASCII')
-
                 # Clear buffer 1.
-keithley_instrument.smua.nvbuffer1.clear()
+    keithley_instrument.smub.nvbuffer1.clear()
 
-                # Select the source voltage function.
-keithley_instrument.smua.source.func = keithley_instrument.smua.OUTPUT_DCVOLTS
+                    # Select measure I autorange.
+    keithley_instrument.smub.measure.autorangei = keithley_instrument.smub.AUTORANGE_ON
 
-                # Set the bias voltage.
-keithley_instrument.smua.source.levelv = drain_voltage
+                    # Select the voltage source function.
+    keithley_instrument.smub.source.func = keithley_instrument.smub.OUTPUT_DCVOLTS
+                    
+                    # Set the bias voltage.
+    keithley_instrument.smub.source.levelv = gate_voltage_smallest
 
-            # # ======
-            # # Arduino configure to change to write phase connection for sweep
-            # # ======
-            
-            # disconnect
-arduino_board.digital[arduino_bin_mux_enable].write(1)
-            # turn on the switch (high = off/ low = on)
-arduino_board.digital[arduino_bin_mux_z].write(0)
-            # configure Z - Y1 (write)
-arduino_board.digital[arduino_bin_mux_s0].write(1)
-arduino_board.digital[arduino_bin_mux_s1].write(0)
-arduino_board.digital[arduino_bin_mux_s2].write(0)
-time.sleep(sw_settle_time)
-            # connect = close the switches 
-arduino_board.digital[arduino_bin_mux_enable].write(0)
+                    # Select measure I autorange.
+    keithley_instrument.smub.measure.autozero = keithley_instrument.smua.AUTOZERO_OFF
+    keithley_instrument.smub.measure.autorangei = keithley_instrument.smua.AUTORANGE_ON
+                    
 
-    # wait for the open transition to tbe stable
-time.sleep(0.5)
+                # # ======
+                # # Configure smua as source v, measure i (Drain)
+                # # ======
 
-            # # ======
-            # # Measuring
-            # # ======
+                    # Restore 2600B defaults.
+    keithley_instrument.smua.reset()
 
-                # Turn on the gate source.
-keithley_instrument.smub.source.output = keithley_instrument.smub.OUTPUT_ON
+                    # Select channel A display.
+    keithley_instrument.display.screen = keithley_instrument.display.SMUA
 
-                # Turn on the drain source.
-keithley_instrument.smua.source.output = keithley_instrument.smua.OUTPUT_ON
+                    # Display current.
+    keithley_instrument.display.smua.measure.func = keithley_instrument.display.MEASURE_DCAMPS
 
-                # Settling time
-time.sleep(settle_time)
+                    # Select measure I autorange.
+    keithley_instrument.smua.measure.autozero = keithley_instrument.smua.AUTOZERO_OFF
+    keithley_instrument.smua.measure.autorangei = keithley_instrument.smua.AUTORANGE_ON
 
-                # prepare the sweep voltage
-voltage_list_forward = np.arange(gate_voltage_smallest, gate_voltage_largest, gate_voltage_step).tolist()
-voltage_list_backward = np.arange(gate_voltage_largest, gate_voltage_smallest, -gate_voltage_step).tolist()
-logging.info(f"starting the measurement process")
-                # start the measurement reference time
-start_time = time.time()
-                # start measurement
-for i in range(0, number_of_measurements):
-    # forward 
-    for idx, v in enumerate(voltage_list_forward):     
-        with open(file_path, 'a') as file: 
-                    # NOTICE: THE WHILE LOOP/ FOR LOOP INSIDE -> NO CONSTANT UPDATE TO FILE AT ALL -> NO ANIMATION
-            file_writer = csv.DictWriter(file, fieldnames=field_names)
-                        
-                            # set the voltage (gate)
-            logging.info(f"set gate voltage {v=}")
-            keithley_instrument.smub.source.levelv = v
-            time.sleep(settle_time)
-            try:
-                measured_i_channel = keithley_instrument.smua.measure.i()
-                measured_v_gate = keithley_instrument.smub.measure.v()
-                            # measured_i_gate = keithley_instrument.smub.measure.i()
+                    # Select ASCII data format.
+                # smu.write('format.data = format.ASCII')
 
-                                # record to file
-                info = {
-                    'time': time.time() - start_time,
-                    'i_channel': measured_i_channel,
-                    'v_gate': measured_v_gate,
-                                # 'i_gate': measured_i_gate,
-                                                }
-                logging.info(f"save {info=} to .csv")
-                file_writer.writerow(info)
+                    # Clear buffer 1.
+    keithley_instrument.smua.nvbuffer1.clear()
 
-            except:
-                            # # ======
-                            # # Open all switches
-                            # # ======
-                            # For the relay board: HIGH = OFF = OPEN // LOW = ON = CLOSE
-                print(f"read from Keithley ERRO")
-                arduino_board.digital[arduino_bin_mux_enable].write(1)
+                    # Select the source voltage function.
+    keithley_instrument.smua.source.func = keithley_instrument.smua.OUTPUT_DCVOLTS
 
-                            # turn off keithley
-                keithley_instrument.smua.source.output = keithley_instrument.smua.OUTPUT_OFF   # turn off SMUA
-                keithley_instrument.smub.source.output = keithley_instrument.smub.OUTPUT_OFF   # turn off SMUB
-                break
+                    # Set the bias voltage.
+    keithley_instrument.smua.source.levelv = drain_voltage
 
-                                
-                            # Rest between measurement
-    time.sleep(rest_duration)
-        
-            # connect = close the switches 
+                # # ======
+                # # Arduino configure to change to write phase connection for sweep
+                # # ======
+                
+                # disconnect
+    arduino_board.digital[arduino_bin_mux_enable].write(1)
+                # turn on the switch (high = off/ low = on)
+    arduino_board.digital[arduino_bin_mux_z].write(0)
+                # configure Z - Y1 (write)
+    arduino_board.digital[arduino_bin_mux_s0].write(1)
+    arduino_board.digital[arduino_bin_mux_s1].write(0)
+    arduino_board.digital[arduino_bin_mux_s2].write(0)
+    time.sleep(sw_settle_time)
+                # connect = close the switches 
     arduino_board.digital[arduino_bin_mux_enable].write(0)
 
         # wait for the open transition to tbe stable
@@ -250,55 +181,123 @@ for i in range(0, number_of_measurements):
                     # Settling time
     time.sleep(settle_time)
 
-        # backward
-    for idx, v in enumerate(voltage_list_backward):     
-        with open(file_path, 'a') as file: 
-                    # NOTICE: THE WHILE LOOP/ FOR LOOP INSIDE -> NO CONSTANT UPDATE TO FILE AT ALL -> NO ANIMATION
-            file_writer = csv.DictWriter(file, fieldnames=field_names)
-                        
-                            # set the voltage (gate)
-            logging.info(f"set gate voltage {v=}")
-            keithley_instrument.smub.source.levelv = v
-            time.sleep(settle_time)
-            try:
-                measured_i_channel = keithley_instrument.smua.measure.i()
-                measured_v_gate = keithley_instrument.smub.measure.v()
-                            # measured_i_gate = keithley_instrument.smub.measure.i()
-                                # record to file
-                info = {
-                                    'time': time.time() - start_time,
-                                    'i_channel': measured_i_channel,
-                                    'v_gate': measured_v_gate,
+                    # prepare the sweep voltage
+    voltage_list_forward = np.arange(gate_voltage_smallest, gate_voltage_largest, gate_voltage_step).tolist()
+    voltage_list_backward = np.arange(gate_voltage_largest, gate_voltage_smallest, -gate_voltage_step).tolist()
+    logging.info(f"starting the measurement process")
+                    # start the measurement reference time
+    start_time = time.time()
+                    # start measurement
+    for i in range(0, number_of_measurements):
+        # forward 
+        for idx, v in enumerate(voltage_list_forward):     
+            with open(file_path, 'a') as file: 
+                        # NOTICE: THE WHILE LOOP/ FOR LOOP INSIDE -> NO CONSTANT UPDATE TO FILE AT ALL -> NO ANIMATION
+                file_writer = csv.DictWriter(file, fieldnames=field_names)
+                            
+                                # set the voltage (gate)
+                logging.info(f"set gate voltage {v=}")
+                keithley_instrument.smub.source.levelv = v
+                time.sleep(settle_time)
+                try:
+                    measured_i_channel = keithley_instrument.smua.measure.i()
+                    measured_v_gate = keithley_instrument.smub.measure.v()
+                                # measured_i_gate = keithley_instrument.smub.measure.i()
+
+                                    # record to file
+                    info = {
+                        'time': time.time() - start_time,
+                        'i_channel': measured_i_channel,
+                        'v_gate': measured_v_gate,
                                     # 'i_gate': measured_i_gate,
-                                                }
-                logging.info(f"save {info=} to .csv")
-                file_writer.writerow(info)
+                                                    }
+                    logging.info(f"save {info=} to .csv")
+                    file_writer.writerow(info)
 
-            except:
-                            # # ======
-                            # # Open all switches
-                            # # ======
-                            # For the relay board: HIGH = OFF = OPEN // LOW = ON = CLOSE
-                print(f"read from Keithley ERRO")
-                arduino_board.digital[arduino_bin_mux_enable].write(1)
+                except:
+                                # # ======
+                                # # Open all switches
+                                # # ======
+                                # For the relay board: HIGH = OFF = OPEN // LOW = ON = CLOSE
+                    logging.info(f"ERROR: keithley measurement")
+                    
 
-                            # turn off keithley
-                keithley_instrument.smua.source.output = keithley_instrument.smua.OUTPUT_OFF   # turn off SMUA
-                keithley_instrument.smub.source.output = keithley_instrument.smub.OUTPUT_OFF   # turn off SMUB
-                break
+                                    
+                                # Rest between measurement
+        time.sleep(rest_duration)
+            
+                # connect = close the switches 
+        arduino_board.digital[arduino_bin_mux_enable].write(0)
 
-                            # Rest between measurement
-    time.sleep(rest_duration)
-    
-    # # ======
-    # # Open all switches
-    # # ======
-logging.info("Keithley measurement    : EXIT")
-        # disconnect
-arduino_board.digital[arduino_bin_mux_enable].write(1)
-        # turn off the keithley
-keithley_instrument.smua.source.output = keithley_instrument.smua.OUTPUT_OFF   # turn off SMUA
-keithley_instrument.smub.source.output = keithley_instrument.smub.OUTPUT_OFF   # turn off SMUB
+            # wait for the open transition to tbe stable
+        time.sleep(0.5)
+
+                    # # ======
+                    # # Measuring
+                    # # ======
+
+                        # Turn on the gate source.
+        keithley_instrument.smub.source.output = keithley_instrument.smub.OUTPUT_ON
+
+                        # Turn on the drain source.
+        keithley_instrument.smua.source.output = keithley_instrument.smua.OUTPUT_ON
+
+                        # Settling time
+        time.sleep(settle_time)
+
+            # backward
+        for idx, v in enumerate(voltage_list_backward):     
+            with open(file_path, 'a') as file: 
+                        # NOTICE: THE WHILE LOOP/ FOR LOOP INSIDE -> NO CONSTANT UPDATE TO FILE AT ALL -> NO ANIMATION
+                file_writer = csv.DictWriter(file, fieldnames=field_names)
+                            
+                                # set the voltage (gate)
+                logging.info(f"set gate voltage {v=}")
+                keithley_instrument.smub.source.levelv = v
+                time.sleep(settle_time)
+                try:
+                    measured_i_channel = keithley_instrument.smua.measure.i()
+                    measured_v_gate = keithley_instrument.smub.measure.v()
+                                # measured_i_gate = keithley_instrument.smub.measure.i()
+                                    # record to file
+                    info = {
+                                        'time': time.time() - start_time,
+                                        'i_channel': measured_i_channel,
+                                        'v_gate': measured_v_gate,
+                                        # 'i_gate': measured_i_gate,
+                                                    }
+                    logging.info(f"save {info=} to .csv")
+                    file_writer.writerow(info)
+
+                except:
+                                # # ======
+                                # # Open all switches
+                                # # ======
+                                # For the relay board: HIGH = OFF = OPEN // LOW = ON = CLOSE
+                    logging.info(f"ERROR: keithley measurement")
+
+                                # Rest between measurement
+        time.sleep(rest_duration)
+        
+        # # ======
+        # # Open all switches
+        # # ======
+    logging.info("Keithley measurement    : EXIT")
+            # disconnect
+    arduino_board.digital[arduino_bin_mux_enable].write(1)
+            # turn off the keithley
+    keithley_instrument.smua.source.output = keithley_instrument.smua.OUTPUT_OFF   # turn off SMUA
+    keithley_instrument.smub.source.output = keithley_instrument.smub.OUTPUT_OFF   # turn off SMUB
+except KeyboardInterrupt:
+     # # ======
+        # # Open all switches
+        # # ======
+    logging.info("Keithley measurement    : EXIT")
+            # disconnect
+    arduino_board.digital[arduino_bin_mux_enable].write(1)
+            # turn off the keithley
+    keithley_instrument.smua.source.output = keithley_instrument.smua.OUTPUT_OFF   # turn off SMUA
+    keithley_instrument.smub.source.output = keithley_instrument.smub.OUTPUT_OFF   # turn off SMUB
 
 
 

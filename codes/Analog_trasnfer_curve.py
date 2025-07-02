@@ -72,7 +72,8 @@ w1_gate = 0
 w2_drain = 1
 
 # Drain: DC
-drain_voltage = -0.2 # -5e-3 [V]: limit of the wave generator
+drain_voltage = -0.2 # -5e-3 [V]: limit of the wave generator or of the oscilloscope?
+# AD3 technical details: https://files.digilent.com/datasheets/Analog-Discovery-3-Datasheet.pdf
 dwf.FDwfAnalogOutEnableSet(hdwf, c_int(w2_drain), 1) 
 dwf.FDwfAnalogOutFunctionSet(hdwf, c_int(w2_drain), funcDC)
 dwf.FDwfAnalogOutOffsetSet(hdwf, c_int(w2_drain), c_double(drain_voltage))
