@@ -73,7 +73,7 @@ arduino_board.digital[arduino_bin_mux_enable].write(1)
 time.sleep(1)
 
         # path to the measurement record
-file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250702/ecram.csv"
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250702/ecram_oect6_5MOhmGate_2.csv"
 
 logging.info("Main    : Prepare measurement")
 
@@ -83,15 +83,15 @@ drain_bias_voltage = -0.2 # [s]
 keithley_settle_time = 0.1 # [s]
 wait_before_exp = 4 # [s]
 nexp = 10
-n_pulse_type_1 = 4
-amp_pulse_type_1 = 0.1 # (Vgd > 0, decrease gm)
+n_pulse_type_1 = 50
+amp_pulse_type_1 = -0.1 # (Vgs > 0, decrease gm. bcz source is always 0, and drain - source are symmertrical)
 pulse_width_type_1 = 0.5
 pulse_period_type_1 = 1 
 no_pulse_time_type_1 = pulse_period_type_1 - pulse_width_type_1
 wait_between_pulse_type_1 = 5
 wait_between_pulse_type_1_and_pulse_type_2 = 10
-n_pulse_type_2 = 4
-amp_pulse_type_2 = -0.5 # (Vgd < 0, increase gm)
+n_pulse_type_2 = 50
+amp_pulse_type_2 = 0.1 # (Vgs < 0, increase gm.  bcz source is always 0, and drain - source are symmertrical)
 pulse_width_type_2 = 0.5
 pulse_period_type_2 = 1 
 no_pulse_time_type_2 = pulse_period_type_2 - pulse_width_type_2
