@@ -53,33 +53,44 @@ from scipy import signal
 # ax2.plot(stdp_post_pre_t, filtered_v)
 # ax3.plot(stdp_post_pre_t, filtered_i)
 
-
 # plt.show()
 
 # ======
-# Simple plot
+# 2 plots
 # ======
+# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250702/ecram.csv")
+
+# stdp_post_pre_t = data['time']
+# stdp_post_pre_i = data['i_channel']
+# stdp_post_pre_v = data['v_gate']
 
 
-data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250702/ecram.csv")
+# fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
+
+# ax1.set_xlabel('time [s]')
+# ax1.set_ylabel('v gate [V]')
+# ax1.grid()
+
+# ax2.set_xlabel('time [s]')
+# ax2.set_ylabel('i channel [V], filtered')
+# ax2.grid()
+
+# ax1.plot(stdp_post_pre_t, stdp_post_pre_v)
+# ax2.plot(stdp_post_pre_t, stdp_post_pre_i)
+
+
+# plt.show()
+
+
+# ======
+# 1 plots
+# ======
+data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250703/stdp_oect6.csv")
 
 stdp_post_pre_t = data['time']
 stdp_post_pre_i = data['i_channel']
-stdp_post_pre_v = data['v_gate']
 
 
-fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
-
-ax1.set_xlabel('time [s]')
-ax1.set_ylabel('v gate [V]')
-ax1.grid()
-
-ax2.set_xlabel('time [s]')
-ax2.set_ylabel('i channel [V], filtered')
-ax2.grid()
-
-ax1.plot(stdp_post_pre_t, stdp_post_pre_v)
-ax2.plot(stdp_post_pre_t, stdp_post_pre_i)
-
+plt.plot(stdp_post_pre_t, stdp_post_pre_i)
 
 plt.show()

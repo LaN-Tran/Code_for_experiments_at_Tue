@@ -96,7 +96,7 @@ dwf.FDwfDeviceAutoConfigureSet(hdwf, c_int(0)) # 0 = the device will only be con
     # # ======
         # init the instrument handle
     # k = Keithley2600('USB0::0x05E6::0x2636::4480001::INSTR', visa_library = 'C:/windows/System32/visa64.dll')
-keithley_instrument = Keithley2600('USB0::0x05E6::0x2602::4522205::INSTR', visa_library = 'C:/windows/System32/visa64.dll')
+keithley_instrument = Keithley2600('USB0::0x05E6::0x2636::4480001::INSTR', visa_library = 'C:/windows/System32/visa64.dll')
         # Turn everything OFF
 keithley_instrument.smua.source.output = keithley_instrument.smua.OUTPUT_OFF   # turn off SMUA
 time.sleep(1)
@@ -139,7 +139,7 @@ try:
 
     sw_settle_time = 0.1 # [s]
     keithley_settle_time = 0.5 # [s]
-    read_duration = 1 # [s]
+    read_duration = 5 # [s]
     wait_between_read_and_write = 2 # [s]
     nexp = 100
     wait_between_exp = 4
@@ -156,7 +156,7 @@ try:
     # w1_period = write period -> wait time = 0 [s]
     # w2_period = w1_period - delta_tpre_tpost ; w2 must have wait time = delta_tpre_tpost 
     delta_tpre_tpost = 10e-3 # [s]
-    n_write_cycle = 5
+    n_write_cycle = 10
 
     w1_ch_drain = 0 # 
     w1_period = 0.1 # [s]
@@ -171,7 +171,7 @@ try:
     w2_period = w1_period -  delta_tpre_tpost # [s]
     pulse_width_ch_2 = w1_pulse_width # [s]
     w2_freq = 1/ w2_period # [Hz]
-    w2_amplitude = 200e-3 # [V]
+    w2_amplitude = 100e-3 # [V]
     w2_offset = 0 # [V]
     w2_percentageSymmetry = (pulse_width_ch_2 / w2_period) * 100 # pulse width = 100 ms
     secWait_2 =  delta_tpre_tpost # [s]
@@ -248,6 +248,7 @@ try:
         arduino_board.digital[arduino_bin_mux_s2].write(0)
                 # close switch
         arduino_board.digital[arduino_bin_mux_enable].write(0)
+        time.sleep(sw_settle_time)
 
         # while loop for reading period with SMUA -> save to file
         start_time = time.time()
@@ -338,6 +339,7 @@ try:
         arduino_board.digital[arduino_bin_mux_s2].write(0)
         # close switch
         arduino_board.digital[arduino_bin_mux_enable].write(0)
+        time.sleep(sw_settle_time)
 
         # start AD3 wavegen (W1, W2)
         dwf.FDwfAnalogOutConfigure(hdwf, w2_ch_gate, c_int(1))
@@ -370,4 +372,5 @@ except KeyboardInterrupt:
     keithley_instrument.smua.source.output = keithley_instrument.smua.OUTPUT_OFF   # turn off SMUA
             # AD3 close and reset
     dwf.FDwfAnalogOutReset(hdwf, c_int(0))
+    dwf.FDwfAnalogOutReset(hdwf, c_int(1))
     dwf.FDwfDeviceCloseAll()

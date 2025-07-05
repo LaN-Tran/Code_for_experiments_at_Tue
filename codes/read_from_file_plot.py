@@ -132,17 +132,17 @@ def plot_oect_stdp (_, file_path):
 # ======
 # Ram
 # ======
-file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250703/stdp_wavegen_test.csv"
+# file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250703/stdp_wavegen_test.csv"
 
-# define the figure
-# create a figure with two subplots
-fig, (ax1, ax2) = plt.subplots(2, 1)
+# # define the figure
+# # create a figure with two subplots
+# fig, (ax1, ax2) = plt.subplots(2, 1)
 
 
-# the same axes initalizations as before (just now we do it for both of them)
+# # the same axes initalizations as before (just now we do it for both of them)
 
-ani = animation.FuncAnimation(fig, plot_wavegen_test, interval= 500, fargs= (file_path, ))
-plt.show()
+# ani = animation.FuncAnimation(fig, plot_wavegen_test, interval= 500, fargs= (file_path, ))
+# plt.show()
 
 # ======
 # Transfer curve
@@ -158,9 +158,9 @@ plt.show()
 # Oect stdp
 # ======
 
-# file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250703/stdp_oect6.csv"
-# # the same axes initalizations as before (just now we do it for both of them)
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250703/stdp_oect6.csv"
+# the same axes initalizations as before (just now we do it for both of them)
 
-# ani = animation.FuncAnimation(plt.gcf(), plot_transfer_curve, interval= 500, fargs= (file_path, ))
-# plt.show()
+ani = animation.FuncAnimation(plt.gcf(), plot_oect_stdp, interval= 500, fargs= (file_path, ))
+plt.show()
 
