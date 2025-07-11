@@ -1,6 +1,6 @@
 """
     Automation Keithley 2602B measurement
-    Transfer curve experiment
+    Output curve experiment
     Author:  Tran Le Phuong Lan.
     Created:  2025-06-05
 
@@ -73,7 +73,7 @@ arduino_board.digital[arduino_bin_mux_enable].write(1)
 time.sleep(1)
 
         # path to the measurement record
-file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250711/transfer_curve.csv"
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250711/output_curve.csv"
 
 logging.info("Main    : Prepare measurement")
 
@@ -84,15 +84,15 @@ settle_time = 1 # s # after the smu configuration
 sw_settle_time = 10e-3 # s
 rest_duration = 1 # s
 
-gate_voltage_smallest = -0.5 # V (for liquid electrolite)
-gate_voltage_largest = 0.5 # V (for liquid electrolite)
-gate_voltage_step = 0.1 # V
-drain_voltage = 0.5 # V
+drain_voltage_smallest = -0.5 # V (for liquid electrolite)
+drain_voltage_largest = 0.5 # V (for liquid electrolite)
+drain_voltage_step = 0.1 # V
+gate_voltage = -0.5 # V
 try:
                 # ======
                 # Prepare record file
                 # ======
-    field_names = ['time', 'i_channel', 'v_gate', 'v_drain']
+    field_names = ['time', 'i_channel', 'v_drain', 'v_gate']
     with open(file_path, 'w') as file:
         file_writer = csv.DictWriter(file, fieldnames=field_names)
         file_writer.writeheader()
@@ -113,7 +113,7 @@ try:
     keithley_instrument.smub.source.func = keithley_instrument.smub.OUTPUT_DCVOLTS
                     
                     # Set the bias voltage.
-    keithley_instrument.smub.source.levelv = gate_voltage_smallest
+    keithley_instrument.smub.source.levelv = gate_voltage
 
                     # Select measure I autorange.
     keithley_instrument.smub.measure.autozero = keithley_instrument.smua.AUTOZERO_OFF
@@ -147,7 +147,7 @@ try:
     keithley_instrument.smua.source.func = keithley_instrument.smua.OUTPUT_DCVOLTS
 
                     # Set the bias voltage.
-    keithley_instrument.smua.source.levelv = drain_voltage
+    keithley_instrument.smua.source.levelv = drain_voltage_smallest
 
                 # # ======
                 # # Arduino configure to change to write phase connection for sweep
@@ -182,8 +182,8 @@ try:
     time.sleep(settle_time)
 
                     # prepare the sweep voltage
-    voltage_list_forward = np.arange(gate_voltage_smallest, gate_voltage_largest, gate_voltage_step).tolist()
-    voltage_list_backward = np.arange(gate_voltage_largest, gate_voltage_smallest, -gate_voltage_step).tolist()
+    voltage_list_forward = np.arange(drain_voltage_smallest, drain_voltage_largest, drain_voltage_step).tolist()
+    voltage_list_backward = np.arange(drain_voltage_largest, drain_voltage_smallest, -drain_voltage_step).tolist()
     logging.info(f"starting the measurement process")
                     # start the measurement reference time
     start_time = time.time()
@@ -196,8 +196,8 @@ try:
                 file_writer = csv.DictWriter(file, fieldnames=field_names)
                             
                                 # set the voltage (gate)
-                logging.info(f"set gate voltage {v=}")
-                keithley_instrument.smub.source.levelv = v
+                logging.info(f"set drain voltage {v=}")
+                keithley_instrument.smua.source.levelv = v
                 time.sleep(settle_time)
                 try:
                     measured_i_channel = keithley_instrument.smua.measure.i()
@@ -209,8 +209,8 @@ try:
                     info = {
                         'time': time.time() - start_time,
                         'i_channel': measured_i_channel,
-                        'v_gate': measured_v_gate,
                         'v_drain': measured_v_drain,
+                        'v_gate': measured_v_gate
                                     # 'i_gate': measured_i_gate,
                                                     }
                     logging.info(f"save {info=} to .csv")
@@ -221,7 +221,7 @@ try:
                                 # # Open all switches
                                 # # ======
                                 # For the relay board: HIGH = OFF = OPEN // LOW = ON = CLOSE
-                    logging.info(f"ERROR: keithley measurement: {e=}")
+                    logging.info(f"ERROR: keithley measurement {e=}")
                     
 
                                     
@@ -254,8 +254,8 @@ try:
                 file_writer = csv.DictWriter(file, fieldnames=field_names)
                             
                                 # set the voltage (gate)
-                logging.info(f"set gate voltage {v=}")
-                keithley_instrument.smub.source.levelv = v
+                logging.info(f"set drain voltage {v=}")
+                keithley_instrument.smua.source.levelv = v
                 time.sleep(settle_time)
                 try:
                     measured_i_channel = keithley_instrument.smua.measure.i()
@@ -266,8 +266,8 @@ try:
                     info = {
                                         'time': time.time() - start_time,
                                         'i_channel': measured_i_channel,
-                                        'v_gate': measured_v_gate,
                                         'v_drain': measured_v_drain,
+                                        'v_gate': measured_v_gate
                                         # 'i_gate': measured_i_gate,
                                                     }
                     logging.info(f"save {info=} to .csv")
@@ -278,7 +278,7 @@ try:
                                 # # Open all switches
                                 # # ======
                                 # For the relay board: HIGH = OFF = OPEN // LOW = ON = CLOSE
-                    logging.info(f"ERROR: keithley measurement {e=}")
+                    logging.info(f"ERROR: keithley measurement {e}")
 
                                 # Rest between measurement
         time.sleep(rest_duration)

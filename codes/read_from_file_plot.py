@@ -68,6 +68,32 @@ def plot_ecram (_, file_path):
     ax1.plot(x, y)
     ax2.plot(x, y2)
 
+def plot_drain_effect (_, file_path):
+        # global file_path
+    data = pd.read_csv(file_path)
+    x = data['time']
+    y = data['i_channel']
+    y2 = data['v_gate']
+
+        # clear current plot
+    ax1.cla()
+    ax2.cla()
+
+        # configure the plot
+
+    # ax1.set_ylim(-2, 2)
+    # ax1.set_xlim(0, 5)
+    ax1.set_xlabel('time [s]')
+    ax1.set_ylabel('i_channel [A]')
+    ax1.grid()
+
+    ax2.set_xlabel('time [s]')
+    ax2.set_ylabel('v_channel [V]')
+    ax2.grid()
+        
+    ax1.plot(x, y)
+    ax2.plot(x, y2)
+
 def plot_wavegen_test (_, file_path):
         # global file_path
     data = pd.read_csv(file_path)
@@ -119,6 +145,17 @@ def plot_transfer_curve (_, file_path):
     plt.plot(x, y)
     # return line
 
+def plot_output_curve (_, file_path):
+    # global file_path
+    data = pd.read_csv(file_path)
+    x = data['v_drain']
+    y = data['i_channel']
+        # clear
+    plt.cla()
+        # plot
+    plt.plot(x, y)
+    # return line
+
 def plot_oect_stdp (_, file_path):
     # global file_path
     data = pd.read_csv(file_path)
@@ -132,7 +169,7 @@ def plot_oect_stdp (_, file_path):
 # ======
 # Ram
 # ======
-# file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250703/stdp_wavegen_test.csv"
+# file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250710/ecram_oect6.csv"
 
 # # define the figure
 # # create a figure with two subplots
@@ -141,14 +178,14 @@ def plot_oect_stdp (_, file_path):
 
 # # the same axes initalizations as before (just now we do it for both of them)
 
-# ani = animation.FuncAnimation(fig, plot_wavegen_test, interval= 500, fargs= (file_path, ))
+# ani = animation.FuncAnimation(fig, plot_ecram, interval= 500, fargs= (file_path, ))
 # plt.show()
 
 # ======
 # Transfer curve
 # ======
 
-# file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250702/transfer_curve_oect6.csv"
+# file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250711/transfer_curve.csv"
 # # the same axes initalizations as before (just now we do it for both of them)
 
 # ani = animation.FuncAnimation(plt.gcf(), plot_transfer_curve, interval= 500, fargs= (file_path, ))
@@ -158,9 +195,33 @@ def plot_oect_stdp (_, file_path):
 # Oect stdp
 # ======
 
-file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250703/stdp_oect6.csv"
+# file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250703/stdp_oect6.csv"
+# # the same axes initalizations as before (just now we do it for both of them)
+
+# ani = animation.FuncAnimation(plt.gcf(), plot_oect_stdp, interval= 500, fargs= (file_path, ))
+# plt.show()
+
+# ======
+# Drain effect
+# ======
+# file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250711/drain_effect_oect6.csv"
+
+# # define the figure
+# # create a figure with two subplots
+# fig, (ax1, ax2) = plt.subplots(2, 1)
+
+
+# # the same axes initalizations as before (just now we do it for both of them)
+
+# ani = animation.FuncAnimation(fig, plot_drain_effect, interval= 500, fargs= (file_path, ))
+# plt.show()
+
+# ======
+# Output curve
+# ======
+
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250711/output_curve.csv"
 # the same axes initalizations as before (just now we do it for both of them)
 
-ani = animation.FuncAnimation(plt.gcf(), plot_oect_stdp, interval= 500, fargs= (file_path, ))
+ani = animation.FuncAnimation(plt.gcf(), plot_output_curve, interval= 500, fargs= (file_path, ))
 plt.show()
-

@@ -263,8 +263,8 @@ except KeyboardInterrupt:
         # # ======
         # # Open all switches
         # # ======
-    logging.info("Keithley measurement    : EXIT")
+    logging.info("AD3    : EXIT")
             # disconnect
-    arduino_board.digital[arduino_bin_mux_enable].write(1)
-            # turn off the keithley
-    keithley_instrument.smua.source.output = keithley_instrument.smua.OUTPUT_OFF   # turn off SMUA
+    dwf.FDwfAnalogOutReset(hdwf, c_int(0))
+    dwf.FDwfDeviceCloseAll()
+

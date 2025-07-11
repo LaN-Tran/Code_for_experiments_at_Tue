@@ -137,9 +137,9 @@ try:
         # # ======
     logging.info("Main    : Prepare measurement")
 
-    sw_settle_time = 0.1 # [s]
+    sw_settle_time = 0.5 # [s]
     keithley_settle_time = 0.5 # [s]
-    read_duration = 5 # [s]
+    read_duration = 0.5 # [s]
     wait_between_read_and_write = 2 # [s]
     nexp = 100
     wait_between_exp = 4
@@ -148,7 +148,7 @@ try:
         # # AD3 parameters for read phase
         # # ======
     drain_voltage = 0.2 # [V]
-    ad3_settle_time = 0.1 # [s]
+    ad3_settle_time = 0.5 # [s]
 
         # # ======
         # # AD3 parameters for write phase
@@ -171,7 +171,7 @@ try:
     w2_period = w1_period -  delta_tpre_tpost # [s]
     pulse_width_ch_2 = w1_pulse_width # [s]
     w2_freq = 1/ w2_period # [Hz]
-    w2_amplitude = 100e-3 # [V]
+    w2_amplitude = 200e-3 # [V]
     w2_offset = 0 # [V]
     w2_percentageSymmetry = (pulse_width_ch_2 / w2_period) * 100 # pulse width = 100 ms
     secWait_2 =  delta_tpre_tpost # [s]
@@ -215,6 +215,13 @@ try:
 
                 # Enable 2-wire.
     keithley_instrument.smua.sense = keithley_instrument.smua.SENSE_LOCAL
+
+                # Select channel A display.
+    keithley_instrument.display.screen = keithley_instrument.display.SMUA
+
+                # Display current.
+    keithley_instrument.display.smua.measure.func = keithley_instrument.display.MEASURE_DCAMPS
+
     
                     
                 # # ======
@@ -237,9 +244,10 @@ try:
         dwf.FDwfAnalogOutOffsetSet(hdwf, c_int(w1_ch_drain), c_double(drain_voltage))
         # FDwfAnalogOutConfigure(HDWF hdwf, int idxChannel, int fStart)
         # fStart – Start the instrument: 0 stop, 1 start, 3 apply.
-        dwf.FDwfAnalogOutConfigure(hdwf, c_int(w1_ch_drain), 3)
+        dwf.FDwfAnalogOutConfigure(hdwf, c_int(w1_ch_drain), c_int(0))
         time.sleep(ad3_settle_time)
-        dwf.FDwfAnalogOutConfigure(hdwf, c_int(w1_ch_drain), 1)
+        dwf.FDwfAnalogOutConfigure(hdwf, c_int(w1_ch_drain), c_int(1))
+        time.sleep(ad3_settle_time)
 
         # close the read switch (Y0)
                 # Y0 configure
@@ -271,11 +279,13 @@ try:
                 logging.info(f"{CatchError=}")
                     
             current_time = time.time()
-        
-        # stop the drain voltage
-        dwf.FDwfAnalogOutConfigure(hdwf, c_int(w1_ch_drain), 0)
+
+        time.sleep(0.5)
         # open the read switch
         arduino_board.digital[arduino_bin_mux_enable].write(1)
+        # stop the drain voltage
+        dwf.FDwfAnalogOutConfigure(hdwf, c_int(w1_ch_drain), c_int(0))
+
 
         # wait between read and write
         time.sleep(wait_between_read_and_write)
@@ -283,54 +293,56 @@ try:
         # write
         # configure the AD3 wavegen configure (W1, W2) -> apply and stop 
         logging.info("configure w1, drain for writing")
-        dwf.FDwfAnalogOutNodeEnableSet(hdwf, w1_ch_drain, dwfconstants.AnalogOutNodeCarrier, c_int(1))
-        dwf.FDwfAnalogOutNodeFunctionSet(hdwf, w1_ch_drain, dwfconstants.AnalogOutNodeCarrier, dwfconstants.funcPulse)
+        dwf.FDwfAnalogOutNodeEnableSet(hdwf, c_int(w1_ch_drain), dwfconstants.AnalogOutNodeCarrier, c_int(1))
+        dwf.FDwfAnalogOutNodeFunctionSet(hdwf, c_int(w1_ch_drain), dwfconstants.AnalogOutNodeCarrier, dwfconstants.funcPulse)
         # set freq for the customed signal
-        dwf.FDwfAnalogOutNodeFrequencySet(hdwf, w1_ch_drain, dwfconstants.AnalogOutNodeCarrier, c_double(w1_freq))
+        dwf.FDwfAnalogOutNodeFrequencySet(hdwf, c_int(w1_ch_drain), dwfconstants.AnalogOutNodeCarrier, c_double(w1_freq))
         # FDwfAnalogOutNodeSymmetrySet(HDWF hdwf, int idxChannel, AnalogOutNode node, double percentageSymmetry)
-        dwf.FDwfAnalogOutNodeSymmetrySet(hdwf, w1_ch_drain, dwfconstants.AnalogOutNodeCarrier, c_double(w1_percentageSymmetry))
-        dwf.FDwfAnalogOutOffsetSet(hdwf, w1_ch_drain, c_double(w1_offset))
-        dwf.FDwfAnalogOutNodeAmplitudeSet(hdwf, w1_ch_drain, dwfconstants.AnalogOutNodeCarrier, c_double(w1_amplitude))
+        dwf.FDwfAnalogOutNodeSymmetrySet(hdwf, c_int(w1_ch_drain), dwfconstants.AnalogOutNodeCarrier, c_double(w1_percentageSymmetry))
+        dwf.FDwfAnalogOutOffsetSet(hdwf, c_int(w1_ch_drain), c_double(w1_offset))
+        dwf.FDwfAnalogOutNodeAmplitudeSet(hdwf, c_int(w1_ch_drain), dwfconstants.AnalogOutNodeCarrier, c_double(w1_amplitude))
 
         # FDwfAnalogOutRunSet(HDWF hdwf, int idxChannel, double secRun)
         secRun =  w1_period # determine the 1 period of the signal
-        dwf.FDwfAnalogOutRunSet(hdwf, w1_ch_drain, c_double(secRun))
+        dwf.FDwfAnalogOutRunSet(hdwf, c_int(w1_ch_drain), c_double(secRun))
         # FDwfAnalogOutWaitSet(HDWF hdwf, int idxChannel, double secWait)
-        dwf.FDwfAnalogOutWaitSet(hdwf, w1_ch_drain, c_double(secWait_1))
+        dwf.FDwfAnalogOutWaitSet(hdwf, c_int(w1_ch_drain), c_double(secWait_1))
         # FDwfAnalogOutRepeatSet(HDWF hdwf, int idxChannel, int cRepeat);
         cRepeat= n_write_cycle # how many periods 
-        dwf.FDwfAnalogOutRepeatSet(hdwf, w1_ch_drain, c_int(cRepeat))
+        dwf.FDwfAnalogOutRepeatSet(hdwf, c_int(w1_ch_drain), c_int(cRepeat))
         idle = dwfconstants.DwfAnalogOutIdleOffset
-        dwf.FDwfAnalogOutIdleSet(hdwf, w1_ch_drain, idle)
+        dwf.FDwfAnalogOutIdleSet(hdwf, c_int(w1_ch_drain), idle)
         # apply the configuration
         # FDwfAnalogOutConfigure(HDWF hdwf, int idxChannel, int fStart)
         # fStart – Start the instrument: 0 stop, 1 start, 3 apply.
-        dwf.FDwfAnalogOutConfigure(hdwf, w1_ch_drain, c_int(0))
+        dwf.FDwfAnalogOutConfigure(hdwf, c_int(w1_ch_drain), c_int(0))
+        time.sleep(ad3_settle_time)
 
         logging.info("configure w2, gate for writing")
-        dwf.FDwfAnalogOutNodeEnableSet(hdwf, w2_ch_gate, dwfconstants.AnalogOutNodeCarrier, c_int(1))
-        dwf.FDwfAnalogOutNodeFunctionSet(hdwf, w2_ch_gate, dwfconstants.AnalogOutNodeCarrier, dwfconstants.funcPulse)
-        dwf.FDwfAnalogOutNodeFrequencySet(hdwf, w2_ch_gate, dwfconstants.AnalogOutNodeCarrier, c_double(w2_freq))
+        dwf.FDwfAnalogOutNodeEnableSet(hdwf, c_int(w2_ch_gate), dwfconstants.AnalogOutNodeCarrier, c_int(1))
+        dwf.FDwfAnalogOutNodeFunctionSet(hdwf, c_int(w2_ch_gate), dwfconstants.AnalogOutNodeCarrier, dwfconstants.funcPulse)
+        dwf.FDwfAnalogOutNodeFrequencySet(hdwf, c_int(w2_ch_gate), dwfconstants.AnalogOutNodeCarrier, c_double(w2_freq))
         # FDwfAnalogOutNodeSymmetrySet(HDWF hdwf, int idxChannel, AnalogOutNode node, double percentageSymmetry)
-        dwf.FDwfAnalogOutNodeSymmetrySet(hdwf, w2_ch_gate, dwfconstants.AnalogOutNodeCarrier, c_double(w2_percentageSymmetry))
+        dwf.FDwfAnalogOutNodeSymmetrySet(hdwf, c_int(w2_ch_gate), dwfconstants.AnalogOutNodeCarrier, c_double(w2_percentageSymmetry))
         dwf.FDwfAnalogOutOffsetSet(hdwf, w2_ch_gate, c_double(w2_offset))
-        dwf.FDwfAnalogOutNodeAmplitudeSet(hdwf, w2_ch_gate, dwfconstants.AnalogOutNodeCarrier, c_double(w2_amplitude))
+        dwf.FDwfAnalogOutNodeAmplitudeSet(hdwf, c_int(w2_ch_gate), dwfconstants.AnalogOutNodeCarrier, c_double(w2_amplitude))
         # FDwfAnalogOutRunSet(HDWF hdwf, int idxChannel, double secRun)
         secRun = w2_period
-        dwf.FDwfAnalogOutRunSet(hdwf, w2_ch_gate, c_double(secRun))
+        dwf.FDwfAnalogOutRunSet(hdwf, c_int(w2_ch_gate), c_double(secRun))
         # FDwfAnalogOutRepeatSet(HDWF hdwf, int idxChannel, int cRepeat);
-        dwf.FDwfAnalogOutRepeatSet(hdwf, w2_ch_gate, c_int(cRepeat))
+        dwf.FDwfAnalogOutRepeatSet(hdwf, c_int(w2_ch_gate), c_int(cRepeat))
         idle = dwfconstants.DwfAnalogOutIdleOffset
-        dwf.FDwfAnalogOutIdleSet(hdwf, w2_ch_gate, idle)
+        dwf.FDwfAnalogOutIdleSet(hdwf, c_int(w2_ch_gate), idle)
         # FDwfAnalogOutTriggerSourceSet(HDWF hdwf, int idxChannel, TRIGSRC trigsrc)
         trgsrc = dwfconstants.trigsrcAnalogOut1
-        dwf.FDwfAnalogOutTriggerSourceSet(hdwf, w2_ch_gate, trgsrc)
+        dwf.FDwfAnalogOutTriggerSourceSet(hdwf, c_int(w2_ch_gate), trgsrc)
         # FDwfAnalogOutTriggerSlopeSet(HDWF hdwf, int idxChannel, DwfTriggerSlope slope)
         slope = dwfconstants.DwfTriggerSlopeRise
-        dwf.FDwfAnalogOutTriggerSlopeSet(hdwf, w2_ch_gate, slope)
-        dwf.FDwfAnalogOutWaitSet(hdwf, w2_ch_gate, c_double(secWait_2))
+        dwf.FDwfAnalogOutTriggerSlopeSet(hdwf, c_int(w2_ch_gate), slope)
+        dwf.FDwfAnalogOutWaitSet(hdwf, c_int(w2_ch_gate), c_double(secWait_2))
         # apply the configuration
-        dwf.FDwfAnalogOutConfigure(hdwf, w2_ch_gate, c_int(0))
+        dwf.FDwfAnalogOutConfigure(hdwf, c_int(w2_ch_gate), c_int(0))
+        time.sleep(ad3_settle_time)
 
         # close the write switch
         # y1 for write
@@ -342,21 +354,26 @@ try:
         time.sleep(sw_settle_time)
 
         # start AD3 wavegen (W1, W2)
-        dwf.FDwfAnalogOutConfigure(hdwf, w2_ch_gate, c_int(1))
+        dwf.FDwfAnalogOutConfigure(hdwf, c_int(w2_ch_gate), c_int(1))
         time.sleep(1)
-        dwf.FDwfAnalogOutConfigure(hdwf, w1_ch_drain, c_int(1))
+        dwf.FDwfAnalogOutConfigure(hdwf, c_int(w1_ch_drain), c_int(1))
 
         # wait until the AD3 finish
         sts = c_ubyte()
         wavegen_done = dwfconstants.DwfStateDone
         while sts.value != wavegen_done.value:
-            dwf.FDwfAnalogOutStatus(hdwf, w2_ch_gate, byref(sts))
+            dwf.FDwfAnalogOutStatus(hdwf, c_int(w2_ch_gate), byref(sts))
             time.sleep(0.5)
             logging.info(f"{sts=}")
             logging.info(f"{wavegen_done=}")
         
+        time.sleep(0.5)
         # open the write switch
         arduino_board.digital[arduino_bin_mux_enable].write(1)
+
+        # stop the wave gen
+        dwf.FDwfAnalogOutConfigure(hdwf, c_int(w2_ch_gate), c_int(0))
+        dwf.FDwfAnalogOutConfigure(hdwf, c_int(w1_ch_drain), c_int(0))
 
         # wait between exp
         time.sleep(wait_between_exp)
@@ -371,6 +388,6 @@ except KeyboardInterrupt:
             # turn off the keithley
     keithley_instrument.smua.source.output = keithley_instrument.smua.OUTPUT_OFF   # turn off SMUA
             # AD3 close and reset
-    dwf.FDwfAnalogOutReset(hdwf, c_int(0))
-    dwf.FDwfAnalogOutReset(hdwf, c_int(1))
+    dwf.FDwfAnalogOutReset(hdwf, c_int(w2_ch_gate))
+    dwf.FDwfAnalogOutReset(hdwf, c_int(w1_ch_drain))
     dwf.FDwfDeviceCloseAll()
