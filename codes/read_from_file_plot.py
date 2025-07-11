@@ -220,8 +220,19 @@ def plot_oect_stdp (_, file_path):
 # Output curve
 # ======
 
-file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250711/output_curve.csv"
+# file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250711/output_curve.csv"
+# # the same axes initalizations as before (just now we do it for both of them)
+
+# ani = animation.FuncAnimation(plt.gcf(), plot_output_curve, interval= 500, fargs= (file_path, ))
+# plt.show()
+
+# ======
+# ram keithley ad3
+# ======
+
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250711/ecram_keithley_AD3_oect6.csv"
 # the same axes initalizations as before (just now we do it for both of them)
 
-ani = animation.FuncAnimation(plt.gcf(), plot_output_curve, interval= 500, fargs= (file_path, ))
+ani = animation.FuncAnimation(plt.gcf(), plot_oect_stdp, interval= 500, fargs= (file_path, ))
 plt.show()
+

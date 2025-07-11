@@ -87,7 +87,7 @@ rest_duration = 1 # s
 drain_voltage_smallest = -0.5 # V (for liquid electrolite)
 drain_voltage_largest = 0.5 # V (for liquid electrolite)
 drain_voltage_step = 0.1 # V
-gate_voltage = -0.5 # V
+gate_voltage = 0.5 # V
 try:
                 # ======
                 # Prepare record file

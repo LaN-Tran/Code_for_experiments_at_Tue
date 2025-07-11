@@ -85,7 +85,7 @@ from scipy import signal
 # ======
 # 1 plots
 # ======
-data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250711/drain_effect_oect6.csv")
+data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250711/ecram_keithley_AD3_oect6.csv")
 
 stdp_post_pre_t = data['time']
 stdp_post_pre_i = data['i_channel']
