@@ -127,7 +127,7 @@ time.sleep(1)
     # # Record file
     # # ======
         # path to the measurement record
-file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250711/ecram_keithley_AD3_oect6.csv"
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250721/ecram_keithley_AD3.csv"
 
 
 try:

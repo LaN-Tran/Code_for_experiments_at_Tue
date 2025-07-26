@@ -47,7 +47,7 @@ logging.basicConfig(format=format, level=logging.INFO,
 
         # init the instrument handle
     # k = Keithley2600('USB0::0x05E6::0x2636::4480001::INSTR', visa_library = 'C:/windows/System32/visa64.dll')
-keithley_instrument = Keithley2600('USB0::0x05E6::0x2602::4522205::INSTR', visa_library = 'C:/windows/System32/visa64.dll')
+keithley_instrument = Keithley2600('USB0::0x05E6::0x2636::4480001::INSTR', visa_library = 'C:/windows/System32/visa64.dll')
         # Turn everything OFF
 keithley_instrument.smua.source.output = keithley_instrument.smua.OUTPUT_OFF   # turn off SMUA
 keithley_instrument.smub.source.output = keithley_instrument.smub.OUTPUT_OFF   # turn off SMUB
@@ -73,7 +73,7 @@ arduino_board.digital[arduino_bin_mux_enable].write(1)
 time.sleep(1)
 
         # path to the measurement record
-file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250710/ecram_oect6.csv"
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250718/ecram.csv"
 
 logging.info("Main    : Prepare measurement")
 
@@ -83,19 +83,19 @@ drain_bias_voltage = -0.2 # [s]
 keithley_settle_time = 0.1 # [s]
 wait_before_exp = 5 # [s]
 nexp = 10
-n_pulse_type_1 = 3
-amp_pulse_type_1 = -1 # (Vgs > 0, decrease gm. bcz source is always 0, and drain - source are symmertrical)
-pulse_width_type_1 = 1
+n_pulse_type_1 = 5
+amp_pulse_type_1 = 2 # (Vgs > 0, decrease gm. bcz source is always 0, and drain - source are symmertrical)
+pulse_width_type_1 = 0.5
 pulse_period_type_1 = 1
 no_pulse_time_type_1 = pulse_period_type_1 - pulse_width_type_1
-wait_between_pulse_type_1 = 120
-wait_between_pulse_type_1_and_pulse_type_2 = 1
-n_pulse_type_2 = 3
-amp_pulse_type_2 = 1 # (Vgs < 0, increase gm.  bcz source is always 0, and drain - source are symmertrical)
-pulse_width_type_2 = 1
+wait_between_pulse_type_1 = 5
+wait_between_pulse_type_1_and_pulse_type_2 = 5
+n_pulse_type_2 = 5
+amp_pulse_type_2 = -2 # (Vgs < 0, increase gm.  bcz source is always 0, and drain - source are symmertrical)
+pulse_width_type_2 = 0.5
 pulse_period_type_2 = 1
 no_pulse_time_type_2 = pulse_period_type_2 - pulse_width_type_2
-wait_between_pulse_type_2 = 120
+wait_between_pulse_type_2 = 5
 wait_between_exp = 1
 
 try:

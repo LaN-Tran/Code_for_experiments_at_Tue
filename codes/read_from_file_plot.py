@@ -169,7 +169,7 @@ def plot_oect_stdp (_, file_path):
 # ======
 # Ram
 # ======
-# file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250710/ecram_oect6.csv"
+# file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250718/ecram.csv"
 
 # # define the figure
 # # create a figure with two subplots
@@ -185,11 +185,11 @@ def plot_oect_stdp (_, file_path):
 # Transfer curve
 # ======
 
-# file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250711/transfer_curve.csv"
-# # the same axes initalizations as before (just now we do it for both of them)
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250724/transfer_curve.csv"
+# the same axes initalizations as before (just now we do it for both of them)
 
-# ani = animation.FuncAnimation(plt.gcf(), plot_transfer_curve, interval= 500, fargs= (file_path, ))
-# plt.show()
+ani = animation.FuncAnimation(plt.gcf(), plot_transfer_curve, interval= 500, fargs= (file_path, ))
+plt.show()
 
 # ======
 # Oect stdp
@@ -230,9 +230,9 @@ def plot_oect_stdp (_, file_path):
 # ram keithley ad3
 # ======
 
-file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250711/ecram_keithley_AD3_oect6.csv"
-# the same axes initalizations as before (just now we do it for both of them)
+# file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250721/ecram_keithley_AD3.csv"
+# # the same axes initalizations as before (just now we do it for both of them)
 
-ani = animation.FuncAnimation(plt.gcf(), plot_oect_stdp, interval= 500, fargs= (file_path, ))
-plt.show()
+# ani = animation.FuncAnimation(plt.gcf(), plot_oect_stdp, interval= 500, fargs= (file_path, ))
+# plt.show()
 

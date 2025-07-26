@@ -73,7 +73,7 @@ arduino_board.digital[arduino_bin_mux_enable].write(1)
 time.sleep(1)
 
         # path to the measurement record
-file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250711/transfer_curve.csv"
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250721/transfer_curve.csv"
 
 logging.info("Main    : Prepare measurement")
 
@@ -82,12 +82,12 @@ number_of_measurements = 5
 settle_time = 1 # s # after the smu configuration
     
 sw_settle_time = 10e-3 # s
-rest_duration = 1 # s
+rest_duration = 0.2 # s
 
 gate_voltage_smallest = -0.5 # V (for liquid electrolite)
 gate_voltage_largest = 0.5 # V (for liquid electrolite)
 gate_voltage_step = 0.1 # V
-drain_voltage = 0.5 # V
+drain_voltage = -0.2 # V
 try:
                 # ======
                 # Prepare record file
@@ -116,8 +116,8 @@ try:
     keithley_instrument.smub.source.levelv = gate_voltage_smallest
 
                     # Select measure I autorange.
-    keithley_instrument.smub.measure.autozero = keithley_instrument.smua.AUTOZERO_OFF
-    keithley_instrument.smub.measure.autorangei = keithley_instrument.smua.AUTORANGE_ON
+    keithley_instrument.smub.measure.autozero = keithley_instrument.smub.AUTOZERO_OFF
+    keithley_instrument.smub.measure.autorangei = keithley_instrument.smub.AUTORANGE_ON
                     
 
                 # # ======
