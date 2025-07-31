@@ -125,24 +125,25 @@ keithley_instrument.smua.nvbuffer1.collecttimestamps = 1
     # w2_period = w1_period - delta_tpre_tpost ; w2 must have wait time = delta_tpre_tpost 
 delta_tpre_tpost = 50e-3 # [s]
 n_write_cycle = 5
-
-w1_ch_drain = 1 # 
-w1_period = 2 # [s]
-w1_pulse_width = 100e-3 # [s]
-w1_freq = 1/(w1_period) # [Hz]
-w1_amplitude = pulse_volt # [V]
-w1_offset = 0 # [V]
-w1_percentageSymmetry =  w1_pulse_width * 100/ w1_period # [%]
-secWait_1 = 0 # [s]
             
 w2_ch_gate = 0
-w2_period = w1_period -  delta_tpre_tpost # [s]
-pulse_width_ch_2 = w1_pulse_width # [s]
+w2_period =  2 # [s]
+pulse_width_ch_2 = 100e-3 # [s]
 w2_freq = 1/ w2_period # [Hz]
 w2_amplitude = 0.7 # [V]
 w2_offset = 0 # [V]
 w2_percentageSymmetry = (pulse_width_ch_2 / w2_period) * 100 # pulse width = 100 ms
-secWait_2 =  delta_tpre_tpost # [s]
+secWait_2 =  0 # [s]
+
+
+w1_ch_drain = 1 # 
+w1_period = w2_period -  delta_tpre_tpost # [s]
+w1_pulse_width = pulse_width_ch_2 # [s]
+w1_freq = 1/(w1_period) # [Hz]
+w1_amplitude = pulse_volt # [V]
+w1_offset = 0 # [V]
+w1_percentageSymmetry =  w1_pulse_width * 100/ w1_period # [%]
+secWait_1 = delta_tpre_tpost # [s]
 
 ad3_settle_time = 0.1 # [s]
         # write
@@ -160,6 +161,12 @@ dwf.FDwfAnalogOutNodeAmplitudeSet(hdwf, c_int(w1_ch_drain), dwfconstants.AnalogO
         # FDwfAnalogOutRunSet(HDWF hdwf, int idxChannel, double secRun)
 secRun =  w1_period # determine the 1 period of the signal
 dwf.FDwfAnalogOutRunSet(hdwf, c_int(w1_ch_drain), c_double(secRun))
+        # FDwfAnalogOutTriggerSourceSet(HDWF hdwf, int idxChannel, TRIGSRC trigsrc)
+trgsrc = dwfconstants.trigsrcAnalogOut1
+dwf.FDwfAnalogOutTriggerSourceSet(hdwf, c_int(w1_ch_drain), trgsrc)
+        # FDwfAnalogOutTriggerSlopeSet(HDWF hdwf, int idxChannel, DwfTriggerSlope slope)
+slope = dwfconstants.DwfTriggerSlopeRise
+dwf.FDwfAnalogOutTriggerSlopeSet(hdwf, c_int(w1_ch_drain), slope)
         # FDwfAnalogOutWaitSet(HDWF hdwf, int idxChannel, double secWait)
 dwf.FDwfAnalogOutWaitSet(hdwf, c_int(w1_ch_drain), c_double(secWait_1))
         # FDwfAnalogOutRepeatSet(HDWF hdwf, int idxChannel, int cRepeat);
@@ -189,11 +196,9 @@ dwf.FDwfAnalogOutRepeatSet(hdwf, c_int(w2_ch_gate), c_int(cRepeat))
 idle = dwfconstants.DwfAnalogOutIdleOffset
 dwf.FDwfAnalogOutIdleSet(hdwf, c_int(w2_ch_gate), idle)
         # FDwfAnalogOutTriggerSourceSet(HDWF hdwf, int idxChannel, TRIGSRC trigsrc)
-trgsrc = dwfconstants.trigsrcAnalogOut2
+trgsrc = dwfconstants.trigsrcNone
 dwf.FDwfAnalogOutTriggerSourceSet(hdwf, c_int(w2_ch_gate), trgsrc)
-        # FDwfAnalogOutTriggerSlopeSet(HDWF hdwf, int idxChannel, DwfTriggerSlope slope)
-slope = dwfconstants.DwfTriggerSlopeRise
-dwf.FDwfAnalogOutTriggerSlopeSet(hdwf, c_int(w2_ch_gate), slope)
+
 dwf.FDwfAnalogOutWaitSet(hdwf, c_int(w2_ch_gate), c_double(secWait_2))
         # apply the configuration
 dwf.FDwfAnalogOutConfigure(hdwf, c_int(w2_ch_gate), c_int(0))
@@ -348,15 +353,15 @@ try:
         time.sleep(sw_settle_time)
         # write to drain and gate
         # start AD3 wavegen (W1, W2)
-        dwf.FDwfAnalogOutConfigure(hdwf, c_int(w2_ch_gate), c_int(1))
-        time.sleep(1)
         dwf.FDwfAnalogOutConfigure(hdwf, c_int(w1_ch_drain), c_int(1))
+        time.sleep(1)
+        dwf.FDwfAnalogOutConfigure(hdwf, c_int(w2_ch_gate), c_int(1))
 
         # wait until the AD3 finish
         sts = c_ubyte()
         wavegen_done = dwfconstants.DwfStateDone
         while sts.value != wavegen_done.value:
-            dwf.FDwfAnalogOutStatus(hdwf, c_int(w2_ch_gate), byref(sts))
+            dwf.FDwfAnalogOutStatus(hdwf, c_int(w1_ch_drain), byref(sts))
             time.sleep(0.5)
             logging.info(f"{sts=}")
             logging.info(f"{wavegen_done=}")

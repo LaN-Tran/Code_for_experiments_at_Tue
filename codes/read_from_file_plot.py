@@ -2,6 +2,7 @@ import csv
 import pandas as pd
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
+import numpy as np
 
 # Reference
 # [1] [animate a single plot](https://www.youtube.com/watch?v=Ercd-Ip5PfQ&list=PLOG3-y9fHFjkn2ug2u2fuV8T-H_H_seul&index=77)
@@ -166,10 +167,22 @@ def plot_oect_stdp (_, file_path):
         # plot
     plt.plot(x, y)
     # return line
+
+def k_pulse_read (_, file_path):
+    # global file_path
+    data = pd.read_csv(file_path)
+    # x = data['time']
+    y = data['i_channel']
+        # clear
+    plt.cla()
+        # plot
+    x = np.arange(0, len(y))
+    plt.plot(x, y)
+    # return line
 # ======
 # Ram
 # ======
-# file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250718/ecram.csv"
+# file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250729/ecram.csv"
 
 # # define the figure
 # # create a figure with two subplots
@@ -185,11 +198,11 @@ def plot_oect_stdp (_, file_path):
 # Transfer curve
 # ======
 
-file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250724/transfer_curve.csv"
-# the same axes initalizations as before (just now we do it for both of them)
+# file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250731/transfer_curve.csv"
+# # the same axes initalizations as before (just now we do it for both of them)
 
-ani = animation.FuncAnimation(plt.gcf(), plot_transfer_curve, interval= 500, fargs= (file_path, ))
-plt.show()
+# ani = animation.FuncAnimation(plt.gcf(), plot_transfer_curve, interval= 500, fargs= (file_path, ))
+# plt.show()
 
 # ======
 # Oect stdp
@@ -227,12 +240,12 @@ plt.show()
 # plt.show()
 
 # ======
-# ram keithley ad3
+# keithley pulse read ad3
 # ======
 
-# file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250721/ecram_keithley_AD3.csv"
-# # the same axes initalizations as before (just now we do it for both of them)
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250731/pulse_exp.csv"
+# the same axes initalizations as before (just now we do it for both of them)
 
-# ani = animation.FuncAnimation(plt.gcf(), plot_oect_stdp, interval= 500, fargs= (file_path, ))
-# plt.show()
+ani = animation.FuncAnimation(plt.gcf(), k_pulse_read, interval= 500, fargs= (file_path, ))
+plt.show()
 
