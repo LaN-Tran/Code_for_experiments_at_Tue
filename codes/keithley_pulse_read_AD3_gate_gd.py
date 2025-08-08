@@ -83,11 +83,11 @@ dwf.FDwfDeviceAutoConfigureSet(hdwf, c_int(0)) # 0 = the device will only be con
         # ======
         # Keithley, smua drain for read
         # ======
-keithley_instrument = Keithley2600('USB0::0x05E6::0x2602::4522205::INSTR', visa_library = 'C:/windows/System32/visa64.dll', timeout = 100000)
+keithley_instrument = Keithley2600('USB0::0x05E6::0x2636::4480001::INSTR', visa_library = 'C:/windows/System32/visa64.dll', timeout = 100000)
 keithley_instrument.smua.source.output = keithley_instrument.smua.OUTPUT_OFF
 
 # SMUA (drain parameters)
-pulse_volt = 1 # [V]
+pulse_volt = 0.4 # [V]
 bias_volt = 0 # [V], positve zero; if pulse negative, set to negative zero
 
         # configure smua pulse v read I (drain)
@@ -123,14 +123,14 @@ keithley_instrument.smua.nvbuffer1.collecttimestamps = 1
         # # ======
     # w1_period = write period -> wait time = 0 [s]
     # w2_period = w1_period - delta_tpre_tpost ; w2 must have wait time = delta_tpre_tpost 
-delta_tpre_tpost = 50e-3 # [s]
-n_write_cycle = 5
+delta_tpre_tpost = 100e-3 # [s]
+n_write_cycle = 40
             
 w2_ch_gate = 0
-w2_period =  2 # [s]
+w2_period =  500e-3 # [s]
 pulse_width_ch_2 = 100e-3 # [s]
 w2_freq = 1/ w2_period # [Hz]
-w2_amplitude = 0.7 # [V]
+w2_amplitude = 0.8 # [V]
 w2_offset = 0 # [V]
 w2_percentageSymmetry = (pulse_width_ch_2 / w2_period) * 100 # pulse width = 100 ms
 secWait_2 =  0 # [s]
@@ -227,8 +227,8 @@ time.sleep(1)
         # # ======
         # # record to file
         # # ======
-file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250731/pulse_exp.csv"
-file_path_avg = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250731/pulse_exp_avg.csv"
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250808/pulse_exp.csv"
+file_path_avg = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250808/pulse_exp_avg.csv"
                 # ======
                 # Prepare record file
                 # ======
@@ -269,12 +269,113 @@ comment_exp = input("comment about exp (dg or gd): ")
 
 try:
     # for n_exp
-    nexp = 5
-    sw_settle_time = 0.1 # [s]
+    nexp = 20
+    sw_settle_time = 1 # [s]
     wait_between_read_and_write = 5 # [s]
     wait_between_exp = 5 # [s] = wait between write and read
+
+        # wait for initial conds stable
+    time.sleep(5)
+
     for idx_exp in range(0, nexp):
-        # read
+        # # read
+        # logging.info("reading phase")
+        # print("read phase")
+        # # arduino mux connect to read configure keithely (y2)
+        #         # Y0 configure
+        # arduino_board.digital[arduino_bin_mux_s0].write(0)
+        # arduino_board.digital[arduino_bin_mux_s1].write(1)
+        # arduino_board.digital[arduino_bin_mux_s2].write(0)
+        #         # close switch
+        # arduino_board.digital[arduino_bin_mux_enable].write(0)
+        # time.sleep(sw_settle_time)
+        # # read from keithley
+        # keithley_instrument.smua.source.output = keithley_instrument.smua.OUTPUT_ON
+        # number_reading_pulses = 1
+        # t_on = pulse_width_ch_2 # [s]
+        # t_off = 500e-3 # [s]
+        #     # time.sleep(5)
+        # keithley_instrument.smua.measure.nplc = 1 # [PLC], PLC = 50Hz = 20ms; nplc < ton 
+        # keithley_instrument.smua.nvbuffer1.clear()
+        # try:
+        #     keithley_instrument.PulseVMeasureI(keithley_instrument.smua, bias_volt, pulse_volt, t_on, t_off, number_reading_pulses)
+        #     logging.info(f"read successfully")
+        #     # save to file
+        #     cur_time = time.time()
+        #     cur_datetime = datetime.now()
+        #     n_samples = keithley_instrument.smua.nvbuffer1.n
+        #     average = 0
+        #     for i in range(0, n_samples):
+        #         measured_i = keithley_instrument.smua.nvbuffer1.readings[i+1]
+        #         keithely_time_stamp = keithley_instrument.smua.nvbuffer1.sourcevalues[i+1]
+        #         measured_vd = keithley_instrument.smua.nvbuffer1.sourcevalues[i+1]
+        #         with open(file_path, 'a') as file: 
+        #                             # NOTICE: THE WHILE LOOP/ FOR LOOP INSIDE -> NO CONSTANT UPDATE TO FILE AT ALL -> NO ANIMATION
+        #             file_writer = csv.DictWriter(file, fieldnames=field_names)
+        #             info = {
+        #                     'time':cur_time - time_ref + keithely_time_stamp,
+        #                     'i_channel': measured_i,
+        #                     'date_time': cur_datetime,
+        #                     'comment': comment_exp + '; vg: [V]' + str(w2_amplitude) 
+        #                                 + '; vd: [V]'+ str(w1_amplitude) 
+        #                                 + '; delta_t: [s]' + str(delta_tpre_tpost)
+        #                                 + '; n_read_points: ' + str(n_samples),    
+        #                     }
+        #             file_writer.writerow(info)
+        #         average = average + measured_i
+        #     average = average/ n_samples
+        #     with open(file_path_avg, 'a') as file: 
+        #             # NOTICE: THE WHILE LOOP/ FOR LOOP INSIDE -> NO CONSTANT UPDATE TO FILE AT ALL -> NO ANIMATION
+        #         file_writer = csv.DictWriter(file, fieldnames=field_names_avg)
+        #         info = {
+        #                 'time':cur_time - time_ref,
+        #                 'i_channel_avg': average,
+        #                 'date_time': cur_datetime,
+        #                 'comment': comment_exp + '; vg: [V]' + str(w2_amplitude) 
+        #                                 + '; vd: [V]'+ str(w1_amplitude) 
+        #                                 + '; delta_t: [s]' + str(delta_tpre_tpost)
+        #                                 + '; n_read_points: ' + str(n_samples),    
+        #                 }
+        #         file_writer.writerow(info)
+            
+        #     # clear keithley buffer before another read
+
+        # except Exception as e:
+        #     logging.info(f"Keithley error: {e=}")
+        #     logging.info(f"EXIT: {e=}")
+        #     sys.exit(-1)
+        
+        # time.sleep(wait_between_read_and_write)
+        logging.info("writing phase")
+        print("writing phase")
+        # write at gate, drain
+        # arduino mux connect to write configure ad3 (y3)
+                # Y0 configure
+        arduino_board.digital[arduino_bin_mux_s0].write(1)
+        arduino_board.digital[arduino_bin_mux_s1].write(1)
+        arduino_board.digital[arduino_bin_mux_s2].write(0)
+                        # close switch
+        arduino_board.digital[arduino_bin_mux_enable].write(0)
+        time.sleep(sw_settle_time)
+        # write to drain and gate
+        # start AD3 wavegen (W1, W2)
+        dwf.FDwfAnalogOutConfigure(hdwf, c_int(w1_ch_drain), c_int(1))
+        time.sleep(1)
+        dwf.FDwfAnalogOutConfigure(hdwf, c_int(w2_ch_gate), c_int(1))
+
+        # wait until the AD3 finish
+        sts = c_ubyte()
+        wavegen_done = dwfconstants.DwfStateDone
+        while sts.value != wavegen_done.value:
+            dwf.FDwfAnalogOutStatus(hdwf, c_int(w1_ch_drain), byref(sts))
+            time.sleep(0.5)
+            logging.info(f"{sts=}")
+            logging.info(f"{wavegen_done=}")
+
+        logging.info("writing successfully")
+        # wait between exp
+        time.sleep(wait_between_read_and_write)
+                # read
         logging.info("reading phase")
         print("read phase")
         # arduino mux connect to read configure keithely (y2)
@@ -287,8 +388,8 @@ try:
         time.sleep(sw_settle_time)
         # read from keithley
         keithley_instrument.smua.source.output = keithley_instrument.smua.OUTPUT_ON
-        number_reading_pulses = 10
-        t_on = 100e-3 # [s]
+        number_reading_pulses = 1
+        t_on = pulse_width_ch_2 # [s]
         t_off = 500e-3 # [s]
             # time.sleep(5)
         keithley_instrument.smua.measure.nplc = 1 # [PLC], PLC = 50Hz = 20ms; nplc < ton 
@@ -340,34 +441,7 @@ try:
             logging.info(f"Keithley error: {e=}")
             logging.info(f"EXIT: {e=}")
             sys.exit(-1)
-        
-        time.sleep(wait_between_read_and_write)
-        logging.info("writing phase")
-        print("writing phase")
-        # write at gate, drain
-        # arduino mux connect to write configure ad3 (y3)
-                # Y0 configure
-        arduino_board.digital[arduino_bin_mux_s0].write(1)
-        arduino_board.digital[arduino_bin_mux_s1].write(1)
-        arduino_board.digital[arduino_bin_mux_s2].write(0)
-        time.sleep(sw_settle_time)
-        # write to drain and gate
-        # start AD3 wavegen (W1, W2)
-        dwf.FDwfAnalogOutConfigure(hdwf, c_int(w1_ch_drain), c_int(1))
-        time.sleep(1)
-        dwf.FDwfAnalogOutConfigure(hdwf, c_int(w2_ch_gate), c_int(1))
 
-        # wait until the AD3 finish
-        sts = c_ubyte()
-        wavegen_done = dwfconstants.DwfStateDone
-        while sts.value != wavegen_done.value:
-            dwf.FDwfAnalogOutStatus(hdwf, c_int(w1_ch_drain), byref(sts))
-            time.sleep(0.5)
-            logging.info(f"{sts=}")
-            logging.info(f"{wavegen_done=}")
-
-        logging.info("writing successfully")
-        # wait between exp
         time.sleep(wait_between_exp)
 
     logging.info("MEASUREMENT FINISH")
