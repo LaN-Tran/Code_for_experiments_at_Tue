@@ -123,12 +123,12 @@ keithley_instrument.smua.nvbuffer1.collecttimestamps = 1
         # # ======
     # w1_period = write period -> wait time = 0 [s]
     # w2_period = w1_period - delta_tpre_tpost ; w2 must have wait time = delta_tpre_tpost 
-delta_tpre_tpost = 100e-3 # [s]
+delta_tpre_tpost = 30e-3 # [s]
 n_write_cycle = 40
             
 w2_ch_gate = 0
 w2_period =  500e-3 # [s]
-pulse_width_ch_2 = 100e-3 # [s]
+pulse_width_ch_2 = 50e-3 # [s]
 w2_freq = 1/ w2_period # [Hz]
 w2_amplitude = 0.8 # [V]
 w2_offset = 0 # [V]
@@ -227,8 +227,8 @@ time.sleep(1)
         # # ======
         # # record to file
         # # ======
-file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250808/pulse_exp.csv"
-file_path_avg = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250808/pulse_exp_avg.csv"
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250818/pulse_exp.csv"
+file_path_avg = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250818/pulse_exp_avg.csv"
                 # ======
                 # Prepare record file
                 # ======
@@ -392,7 +392,7 @@ try:
         t_on = pulse_width_ch_2 # [s]
         t_off = 500e-3 # [s]
             # time.sleep(5)
-        keithley_instrument.smua.measure.nplc = 1 # [PLC], PLC = 50Hz = 20ms; nplc < ton 
+        keithley_instrument.smua.measure.nplc = 0.1 # [PLC], PLC = 50Hz = 20ms; nplc < ton 
         keithley_instrument.smua.nvbuffer1.clear()
         try:
             keithley_instrument.PulseVMeasureI(keithley_instrument.smua, bias_volt, pulse_volt, t_on, t_off, number_reading_pulses)
@@ -416,7 +416,13 @@ try:
                             'comment': comment_exp + '; vg: [V]' + str(w2_amplitude) 
                                         + '; vd: [V]'+ str(w1_amplitude) 
                                         + '; delta_t: [s]' + str(delta_tpre_tpost)
-                                        + '; n_read_points: ' + str(n_samples),    
+                                        + '; pulse_width [s]: ' + str(pulse_width_ch_2)
+                                        + '; pulse_period [s]: ' + str(w2_period)
+                                        + '; n_read_points: ' + str(n_samples)
+                                        + '; n_write_cycle : ' + str(n_write_cycle)
+                                        + '; sw_settle_time [s]: ' + str(sw_settle_time)
+                                        + '; wait_between_read_and_write [s]: ' + str(wait_between_read_and_write)
+                                        + '; wait_between_exp [s]: ' + str(wait_between_exp),
                             }
                     file_writer.writerow(info)
                 average = average + measured_i
@@ -431,7 +437,13 @@ try:
                         'comment': comment_exp + '; vg: [V]' + str(w2_amplitude) 
                                         + '; vd: [V]'+ str(w1_amplitude) 
                                         + '; delta_t: [s]' + str(delta_tpre_tpost)
-                                        + '; n_read_points: ' + str(n_samples),    
+                                        + '; pulse_width [s]: ' + str(pulse_width_ch_2)
+                                        + '; pulse_period [s]: ' + str(w2_period)
+                                        + '; n_read_points: ' + str(n_samples)
+                                        + '; n_write_cycle : ' + str(n_write_cycle)
+                                        + '; sw_settle_time [s]: ' + str(sw_settle_time)
+                                        + '; wait_between_read_and_write [s]: ' + str(wait_between_read_and_write)
+                                        + '; wait_between_exp [s]: ' + str(wait_between_exp),   
                         }
                 file_writer.writerow(info)
             
