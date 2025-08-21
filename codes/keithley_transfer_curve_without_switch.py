@@ -55,7 +55,7 @@ time.sleep(1)
 
 
         # path to the measurement record
-file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250724/transfer_curve.csv"
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250821/transfer_curve.csv"
 
 logging.info("Main    : Prepare measurement")
 
@@ -66,10 +66,10 @@ settle_time = 1 # s # after the smu configuration
 sw_settle_time = 10e-3 # s
 rest_duration = 0.2 # s
 
-gate_voltage_smallest = -0.5 # V (for liquid electrolite)
-gate_voltage_largest = 0.5 # V (for liquid electrolite)
+gate_voltage_smallest = -1 # V (for liquid electrolite)
+gate_voltage_largest = 1 # V (for liquid electrolite)
 gate_voltage_step = 0.1 # V
-drain_voltage = 0.2 # V
+drain_voltage = 0.4 # V
 try:
                 # ======
                 # Prepare record file
