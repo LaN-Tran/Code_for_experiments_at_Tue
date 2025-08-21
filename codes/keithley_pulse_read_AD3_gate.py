@@ -222,8 +222,8 @@ time.sleep(1)
         # # ======
         # # record to file
         # # ======
-file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250818/pulse_exp.csv"
-file_path_avg = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250818/pulse_exp_avg.csv"
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250821/pulse_exp.csv"
+file_path_avg = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250821/pulse_exp_avg.csv"
                 # ======
                 # Prepare record file
                 # ======
@@ -443,6 +443,8 @@ try:
                 file_writer.writerow(info)
             
             # clear keithley buffer before another read
+            keithley_instrument.smua.source.output = keithley_instrument.smua.OUTPUT_ON  
+            time.sleep(keithley_settle_time)
 
         except Exception as e:
             logging.info(f"Keithley error: {e=}")
