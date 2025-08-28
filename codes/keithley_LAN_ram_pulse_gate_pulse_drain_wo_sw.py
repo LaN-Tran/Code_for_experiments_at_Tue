@@ -1,6 +1,6 @@
 """
     Automation Keithley 2602B measurement
-    Transfer curve experiment
+    Pulse experiment, LAN
     Author:  Tran Le Phuong Lan.
     Created:  2025-08-27
 
@@ -47,11 +47,13 @@ logging.basicConfig(format=format, level=logging.INFO,
 
         # init the instrument handle
     # k = Keithley2600('USB0::0x05E6::0x2636::4480001::INSTR', visa_library = 'C:/windows/System32/visa64.dll')
-keithley_instrument = Keithley2600('USB0::0x05E6::0x2636::4480001::INSTR', visa_library = 'C:/windows/System32/visa64.dll')
-keithley_instrument.timeout = 10000
+rm = pyvisa.ResourceManager('C:/windows/System32/visa64.dll')
+keithley_instrument = rm.open_resource('USB0::0x05E6::0x2636::4480001::INSTR')
+keithley_instrument.timeout = 5000
+
         # Turn everything OFF
-keithley_instrument.smua.source.output = keithley_instrument.smua.OUTPUT_OFF   # turn off SMUA
-keithley_instrument.smub.source.output = keithley_instrument.smub.OUTPUT_OFF   # turn off SMUB
+keithley_instrument.write('smua.source.output = smua.OUTPUT_OFF')
+keithley_instrument.write('smub.source.output = smub.OUTPUT_OFF')
 time.sleep(1)
 
 
@@ -95,56 +97,56 @@ try:
                 # Configure smub as voltage source (Gate)
                 # ======
                     # reset the channel
-    keithley_instrument.smub.reset()
+    keithley_instrument.write('smub.reset()')
                 
                 # Clear buffer 1.
-    keithley_instrument.smub.nvbuffer1.clear()
+    keithley_instrument.write('smub.nvbuffer1.clear()')
 
                     # Select measure I autorange.
-    keithley_instrument.smub.measure.autorangei = keithley_instrument.smub.AUTORANGE_ON
-    keithley_instrument.smub.measure.autozero = keithley_instrument.smub.AUTOZERO_ONCE # ? more stable with AUTOZERO_AUTO, 
+    keithley_instrument.write('smub.measure.autorangei = smub.AUTOZERO_AUTO')
+    keithley_instrument.write('smub.measure.autozero = smub.AUTOZERO_ONCE') # ? more stable with AUTOZERO_AUTO, 
                                                                                         # when the measured current is ~.e-13
 
                     # Select the voltage source function.
-    keithley_instrument.smub.source.func = keithley_instrument.smub.OUTPUT_DCVOLTS
+    keithley_instrument.write('smub.source.func = smub.OUTPUT_DCVOLTS')
                     
                     # Set the bias voltage.
-    keithley_instrument.smub.source.levelv = gate_bias_voltage
+    keithley_instrument.write(f"smub.source.levelv = {gate_bias_voltage}")
                     
                 # # ======
                 # # Configure smua as source v, measure i (Drain)
                 # # ======
                     # Restore 2600B defaults.
-    keithley_instrument.smua.reset()
+    keithley_instrument.write(f"smua.reset()")
 
                     # Select channel A display.
-    keithley_instrument.display.screen = keithley_instrument.display.SMUA
+    keithley_instrument.write(f"display.screen = display.SMUA")
 
                     # Display current.
-    keithley_instrument.display.smua.measure.func = keithley_instrument.display.MEASURE_DCAMPS
+    keithley_instrument.write(f"display.smua.measure.func = display.MEASURE_DCAMPS")
 
                     # Select measure I autorange.
-    keithley_instrument.smua.measure.autozero = keithley_instrument.smua.AUTOZERO_ONCE #AUTOZERO_AUTO
-    keithley_instrument.smua.measure.autorangei = keithley_instrument.smua.AUTORANGE_ON 
+    keithley_instrument.write(f"smua.measure.autozero = smua.AUTOZERO_AUTO")
+    keithley_instrument.write(f"smua.measure.autorangei = smua.AUTORANGE_ON")
 
                     # Select ASCII data format.
                 # smu.write('format.data = format.ASCII')
 
                     # Clear buffer 1.
-    keithley_instrument.smua.nvbuffer1.clear()
+    keithley_instrument.write(f"smua.nvbuffer1.clear()")
 
                     # Select the source voltage function.
-    keithley_instrument.smua.source.func = keithley_instrument.smua.OUTPUT_DCVOLTS
+    keithley_instrument.write(f"smua.source.func = smua.OUTPUT_DCVOLTS")
 
                     # Set the bias voltage.
-    keithley_instrument.smua.source.levelv = drain_bias_voltage
+    keithley_instrument.write(f"smua.source.levelv = {drain_bias_voltage}")
                     
                 # # ======
                 # # Turn on Keithley
                 # # ======
     logging.info("Turn on Keithley")
-    keithley_instrument.smua.source.output = keithley_instrument.smua.OUTPUT_ON  
-    keithley_instrument.smub.source.output = keithley_instrument.smub.OUTPUT_ON  
+    keithley_instrument.write(f"smua.source.output = smua.OUTPUT_ON")
+    keithley_instrument.write(f"smub.source.output = smub.OUTPUT_ON")  
     time.sleep(keithley_settle_time)
 
     logging.info("start measurement")
@@ -156,10 +158,11 @@ try:
     current_time = time.time()
     while (current_time - start_time) < wait_before_exp:
         try:
-            measured_i_channel = keithley_instrument.smua.measure.i()
-            measured_v_drain = keithley_instrument.smua.measure.v()
-            measured_i_gate =  keithley_instrument.smub.measure.i()
-            measured_v_gate = keithley_instrument.smub.measure.v()
+            
+            measured_i_channel = float(keithley_instrument.query('print(smua.measure.i())'))
+            measured_v_drain = float(keithley_instrument.query('print(smua.measure.v())'))
+            measured_i_gate =  float(keithley_instrument.query('print(smub.measure.i())'))
+            measured_v_gate = float(keithley_instrument.query('print(smub.measure.v())'))
             # record to file
             with open(file_path, 'a') as file: 
                         # NOTICE: THE WHILE LOOP/ FOR LOOP INSIDE -> NO CONSTANT UPDATE TO FILE AT ALL -> NO ANIMATION
@@ -187,16 +190,16 @@ try:
                 # pulse width (close switch)
 
                     # apply pulse (gate)
-                keithley_instrument.smub.source.levelv = amp_pulse_type_1
+                keithley_instrument.write(f"smub.source.levelv = {amp_pulse_type_1}") 
                     # start pulse
                 start_time = time.time()
                 current_time = time.time()
                 while (current_time - start_time) < pulse_width_type_1:
                     try:
-                        measured_i_channel = keithley_instrument.smua.measure.i()
-                        measured_v_drain = keithley_instrument.smua.measure.v()
-                        measured_i_gate =  keithley_instrument.smub.measure.i()
-                        measured_v_gate = keithley_instrument.smub.measure.v()
+                        measured_i_channel = float(keithley_instrument.query('print(smua.measure.i())'))
+                        measured_v_drain = float(keithley_instrument.query('print(smua.measure.v())'))
+                        measured_i_gate =  float(keithley_instrument.query('print(smub.measure.i())'))
+                        measured_v_gate = float(keithley_instrument.query('print(smub.measure.v())'))
                         # record to file
                         with open(file_path, 'a') as file: 
                                     # NOTICE: THE WHILE LOOP/ FOR LOOP INSIDE -> NO CONSTANT UPDATE TO FILE AT ALL -> NO ANIMATION
@@ -218,16 +221,16 @@ try:
 
                 # no pulse (open switch)
                     # apply bias voltage (gate)
-                keithley_instrument.smub.source.levelv = gate_bias_voltage
+                keithley_instrument.write(f"smub.source.levelv = {gate_bias_voltage}") 
                     # start record
                 start_time = time.time()
                 current_time = time.time()
                 while (current_time - start_time) < no_pulse_time_type_1:
                     try:
-                        measured_i_channel = keithley_instrument.smua.measure.i()
-                        measured_v_drain = keithley_instrument.smua.measure.v()
-                        measured_i_gate = keithley_instrument.smub.measure.i()
-                        measured_v_gate = keithley_instrument.smub.measure.v()
+                        measured_i_channel = float(keithley_instrument.query('print(smua.measure.i())'))
+                        measured_v_drain = float(keithley_instrument.query('print(smua.measure.v())'))
+                        measured_i_gate =  float(keithley_instrument.query('print(smub.measure.i())'))
+                        measured_v_gate = float(keithley_instrument.query('print(smub.measure.v())'))
                         # record to file
                         with open(file_path, 'a') as file: 
                                     # NOTICE: THE WHILE LOOP/ FOR LOOP INSIDE -> NO CONSTANT UPDATE TO FILE AT ALL -> NO ANIMATION
@@ -252,10 +255,10 @@ try:
                 current_time = time.time()
                 while (current_time - start_time) < wait_between_pulse_type_1:
                     try:
-                        measured_i_channel = keithley_instrument.smua.measure.i()
-                        measured_v_drain = keithley_instrument.smua.measure.v()
-                        measured_i_gate = keithley_instrument.smub.measure.i()
-                        measured_v_gate = keithley_instrument.smub.measure.v()
+                        measured_i_channel = float(keithley_instrument.query('print(smua.measure.i())'))
+                        measured_v_drain = float(keithley_instrument.query('print(smua.measure.v())'))
+                        measured_i_gate =  float(keithley_instrument.query('print(smub.measure.i())'))
+                        measured_v_gate = float(keithley_instrument.query('print(smub.measure.v())'))
                         # record to file
                         with open(file_path, 'a') as file: 
                                     # NOTICE: THE WHILE LOOP/ FOR LOOP INSIDE -> NO CONSTANT UPDATE TO FILE AT ALL -> NO ANIMATION
@@ -280,10 +283,10 @@ try:
             current_time = time.time()
             while (current_time - start_time) < wait_between_pulse_type_1_and_pulse_type_2:
                 try:
-                    measured_i_channel = keithley_instrument.smua.measure.i()
-                    measured_v_drain = keithley_instrument.smua.measure.v()
-                    measured_i_gate = keithley_instrument.smub.measure.i()
-                    measured_v_gate = keithley_instrument.smub.measure.v()
+                    measured_i_channel = float(keithley_instrument.query('print(smua.measure.i())'))
+                    measured_v_drain = float(keithley_instrument.query('print(smua.measure.v())'))
+                    measured_i_gate =  float(keithley_instrument.query('print(smub.measure.i())'))
+                    measured_v_gate = float(keithley_instrument.query('print(smub.measure.v())'))
                         # record to file
                     with open(file_path, 'a') as file: 
                         file_writer = csv.DictWriter(file, fieldnames=field_names)
@@ -306,16 +309,16 @@ try:
                 # pulse width (close switch)
 
                     # apply pulse (drain)
-                keithley_instrument.smua.source.levelv = amp_pulse_type_2
+                keithley_instrument.write(f"smua.source.levelv = {amp_pulse_type_2}") 
                     # start pulse
                 start_time = time.time()
                 current_time = time.time()
                 while (current_time - start_time) < pulse_width_type_2:
                     try:
-                        measured_i_channel = keithley_instrument.smua.measure.i()
-                        measured_v_drain = keithley_instrument.smua.measure.v()
-                        measured_i_gate = keithley_instrument.smub.measure.i()
-                        measured_v_gate = keithley_instrument.smub.measure.v()
+                        measured_i_channel = float(keithley_instrument.query('print(smua.measure.i())'))
+                        measured_v_drain = float(keithley_instrument.query('print(smua.measure.v())'))
+                        measured_i_gate =  float(keithley_instrument.query('print(smub.measure.i())'))
+                        measured_v_gate = float(keithley_instrument.query('print(smub.measure.v())'))
                         # record to file
                         with open(file_path, 'a') as file: 
                                     # NOTICE: THE WHILE LOOP/ FOR LOOP INSIDE -> NO CONSTANT UPDATE TO FILE AT ALL -> NO ANIMATION
@@ -336,16 +339,16 @@ try:
 
                 # no pulse (open switch)
                     # apply bias voltage (gate)
-                keithley_instrument.smua.source.levelv = drain_bias_voltage
+                keithley_instrument.write(f"smua.source.levelv = {drain_bias_voltage}") 
                     # start record
                 start_time = time.time()
                 current_time = time.time()
                 while (current_time - start_time) < no_pulse_time_type_2:
                     try:
-                        measured_i_channel = keithley_instrument.smua.measure.i()
-                        measured_v_drain = keithley_instrument.smua.measure.v()
-                        measured_i_gate = keithley_instrument.smub.measure.i()
-                        measured_v_gate = keithley_instrument.smub.measure.v()
+                        measured_i_channel = float(keithley_instrument.query('print(smua.measure.i())'))
+                        measured_v_drain = float(keithley_instrument.query('print(smua.measure.v())'))
+                        measured_i_gate =  float(keithley_instrument.query('print(smub.measure.i())'))
+                        measured_v_gate = float(keithley_instrument.query('print(smub.measure.v())'))
                         # record to file
                         with open(file_path, 'a') as file: 
                                     # NOTICE: THE WHILE LOOP/ FOR LOOP INSIDE -> NO CONSTANT UPDATE TO FILE AT ALL -> NO ANIMATION
@@ -370,10 +373,11 @@ try:
                 current_time = time.time()
                 while (current_time - start_time) < wait_between_pulse_type_2:
                     try:
-                        measured_i_channel = keithley_instrument.smua.measure.i()
-                        measured_v_drain = keithley_instrument.smua.measure.v()
-                        measured_i_gate = keithley_instrument.smub.measure.i()
-                        measured_v_gate = keithley_instrument.smub.measure.v()
+                        measured_i_channel = float(keithley_instrument.query('print(smua.measure.i())'))
+                        measured_v_drain = float(keithley_instrument.query('print(smua.measure.v())'))
+                        measured_i_gate =  float(keithley_instrument.query('print(smub.measure.i())'))
+                        measured_v_gate = float(keithley_instrument.query('print(smub.measure.v())'))
+
                         # record to file
                         with open(file_path, 'a') as file: 
                                     # NOTICE: THE WHILE LOOP/ FOR LOOP INSIDE -> NO CONSTANT UPDATE TO FILE AT ALL -> NO ANIMATION
@@ -398,10 +402,11 @@ try:
             current_time = time.time()
             while (current_time - start_time) < wait_between_exp:
                 try:
-                    measured_i_channel = keithley_instrument.smua.measure.i()
-                    measured_v_drain = keithley_instrument.smua.measure.v()
-                    measured_i_gate = keithley_instrument.smub.measure.i()
-                    measured_v_gate = keithley_instrument.smub.measure.v()
+                    measured_i_channel = float(keithley_instrument.query('print(smua.measure.i())'))
+                    measured_v_drain = float(keithley_instrument.query('print(smua.measure.v())'))
+                    measured_i_gate =  float(keithley_instrument.query('print(smub.measure.i())'))
+                    measured_v_gate = float(keithley_instrument.query('print(smub.measure.v())'))
+
                         # record to file
                     with open(file_path, 'a') as file: 
                         file_writer = csv.DictWriter(file, fieldnames=field_names)
@@ -426,8 +431,8 @@ try:
     # # ======
     logging.info("Keithley measurement    : EXIT")
             # turn off the keithley
-    keithley_instrument.smua.source.output = keithley_instrument.smua.OUTPUT_OFF   # turn off SMUA
-    keithley_instrument.smub.source.output = keithley_instrument.smub.OUTPUT_OFF   # turn off SMUB
+    keithley_instrument.write(f"smua.source.output = smua.OUTPUT_OFF")    # turn off SMUA
+    keithley_instrument.write(f"smub.source.output = smub.OUTPUT_OFF")    # turn off SMUB
 
 except KeyboardInterrupt:
         # # ======
@@ -435,5 +440,5 @@ except KeyboardInterrupt:
         # # ======
     logging.info("Keithley measurement    : EXIT")
             # turn off the keithley
-    keithley_instrument.smua.source.output = keithley_instrument.smua.OUTPUT_OFF   # turn off SMUA
-    keithley_instrument.smub.source.output = keithley_instrument.smub.OUTPUT_OFF   # turn off SMUB
+    keithley_instrument.write(f"smua.source.output = smua.OUTPUT_OFF")    # turn off SMUA
+    keithley_instrument.write(f"smub.source.output = smub.OUTPUT_OFF")    # turn off SMUB
