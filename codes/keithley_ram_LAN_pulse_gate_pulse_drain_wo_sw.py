@@ -48,8 +48,8 @@ logging.basicConfig(format=format, level=logging.INFO,
         # init the instrument handle
     # k = Keithley2600('USB0::0x05E6::0x2636::4480001::INSTR', visa_library = 'C:/windows/System32/visa64.dll')
 rm = pyvisa.ResourceManager('C:/windows/System32/visa64.dll')
-keithley_instrument = rm.open_resource('USB0::0x05E6::0x2636::4480001::INSTR')
-keithley_instrument.timeout = 5000
+keithley_instrument = rm.open_resource('TCPIP0::169.254.0.1::inst0::INSTR')
+keithley_instrument.timeout = 10000
 
         # Turn everything OFF
 keithley_instrument.write('smua.source.output = smua.OUTPUT_OFF')
@@ -58,7 +58,7 @@ time.sleep(1)
 
 
         # path to the measurement record
-file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250828/ecram_pulse_drain.csv"
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250901/ecram_pulse_drain.csv"
 
 logging.info("Main    : Prepare measurement")
 
@@ -68,16 +68,16 @@ drain_bias_voltage = 0.05 # [s]
 keithley_settle_time = 0.1 # [s]
 wait_before_exp = 5 # [s]
 nexp = 20
-n_pulse_type_1 = 5
+n_pulse_type_1 = 50
 amp_pulse_type_1 = 1 # (Vgs > 0, decrease gm. bcz source is always 0, and drain - source are symmertrical)
 pulse_width_type_1 = 0.5
 pulse_period_type_1 = 1 # (gate pulse)
 no_pulse_time_type_1 = pulse_period_type_1 - pulse_width_type_1
 wait_between_pulse_type_1 = 5 
 wait_between_pulse_type_1_and_pulse_type_2 = 1
-n_pulse_type_2 = 10
+n_pulse_type_2 = 50
 amp_pulse_type_2 = 0.4 # (drain pulse)
-pulse_width_type_2 = 0.8
+pulse_width_type_2 = 0.5
 pulse_period_type_2 = 1
 no_pulse_time_type_2 = pulse_period_type_2 - pulse_width_type_2
 wait_between_pulse_type_2 = 5
@@ -103,9 +103,9 @@ try:
     keithley_instrument.write('smub.nvbuffer1.clear()')
 
                     # Select measure I autorange.
-    keithley_instrument.write('smub.measure.autorangei = smub.AUTOZERO_AUTO')
     keithley_instrument.write('smub.measure.autozero = smub.AUTOZERO_ONCE') # ? more stable with AUTOZERO_AUTO, 
                                                                                         # when the measured current is ~.e-13
+    keithley_instrument.write('smub.measure.autorangei = smub.AUTORANGE_ON')
 
                     # Select the voltage source function.
     keithley_instrument.write('smub.source.func = smub.OUTPUT_DCVOLTS')
@@ -126,7 +126,7 @@ try:
     keithley_instrument.write(f"display.smua.measure.func = display.MEASURE_DCAMPS")
 
                     # Select measure I autorange.
-    keithley_instrument.write(f"smua.measure.autozero = smua.AUTOZERO_AUTO")
+    keithley_instrument.write(f"smua.measure.autozero = smua.AUTOZERO_ONCE")
     keithley_instrument.write(f"smua.measure.autorangei = smua.AUTORANGE_ON")
 
                     # Select ASCII data format.
