@@ -63,17 +63,17 @@ with open(file_tsp_path) as fp:
 keithley_instrument.write("endscript") 
 
 # SMUA (drain parameters, extract from `pulse_train_2ch.tsp`)
-pulse_volt = 0.2 # [V]
+vd_amplitude = 0.4 #0.05 # pulse_volt # [V]
+vg_amp = 0.8
 bias_volt = 0 # [V], positve zero; if pulse negative, set to negative zero
- 
-delta_tpre_tpost = 0.05 # [s]
-n_write_cycle = 10
+
 
 pulse_period = 0.4 # [s]
 pulse_width = 0.02 # [s]
+delta_tpre_tpost = 0.05 # [s]
+n_write_cycle = 10
 
-vd_amplitude = 0.2 #0.05 # pulse_volt # [V]
-vg_amp = 0.4
+
 
 write_func_complete = delta_tpre_tpost + n_write_cycle*pulse_period
 
