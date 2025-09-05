@@ -1,5 +1,6 @@
 -- reference: factory code - PulseVMeasureI
 -- Temporary variables used by this function. 
+reset()
 local l_tonwm
 local bias, level
 local ton, toff
@@ -11,7 +12,7 @@ display.clear()
 
 bias = 0
 
-level = 0.2
+level = 0.05
 
 ton = 0.2
 
