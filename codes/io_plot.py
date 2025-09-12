@@ -16,6 +16,7 @@
 import matplotlib.pyplot as plt
 import pandas as pd
 from scipy import signal
+import numpy as np
 
 # ======
 # Applying filter
@@ -56,9 +57,42 @@ from scipy import signal
 # plt.show()
 
 # ======
+# 3 plots
+# ======
+data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250912/ecram_pulse_drain.csv")
+# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250901/ecram.csv")
+
+stdp_post_pre_t = data['time']
+stdp_post_pre_i = data['i_channel']
+stdp_post_pre_ig = data['i_gate']
+stdp_post_pre_v = data['v_gate']
+
+
+fig, (ax1, ax2, ax3) = plt.subplots(3, 1, sharex=True)
+
+ax1.set_xlabel('time [s]')
+ax1.set_ylabel('v gate [V]')
+ax1.grid()
+
+ax2.set_xlabel('time [s]')
+ax2.set_ylabel('i channel [A]')
+ax2.grid()
+
+ax3.set_xlabel('time [s]')
+ax3.set_ylabel('i gate [A]')
+ax3.grid()
+
+ax1.plot(stdp_post_pre_t, stdp_post_pre_v)
+ax2.plot(stdp_post_pre_t, stdp_post_pre_i)
+ax3.plot(stdp_post_pre_t, stdp_post_pre_ig)
+
+
+plt.show()
+
+# ======
 # 2 plots
 # ======
-# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250702/ecram.csv")
+# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250827/ecram_pulse_drain.csv")
 
 # stdp_post_pre_t = data['time']
 # stdp_post_pre_i = data['i_channel']
@@ -85,12 +119,11 @@ from scipy import signal
 # ======
 # 1 plots
 # ======
-data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250721/transfer_curve_evaline_1_oect2_01.csv")
+# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250910/pulse_exp_c3v1_sDx.csv")
 
-stdp_post_pre_t = data['v_gate']
-stdp_post_pre_i = data['i_channel']
+# stdp_post_pre_i = data['i_channel']
+# stdp_post_pre_t = np.arange(0, len(stdp_post_pre_i))#data['time']#np.arange(0, len(stdp_post_pre_i))#data['v_gate'] #np.arange(0, len(stdp_post_pre_i))#data['v_gate']
 
+# plt.plot(stdp_post_pre_t, stdp_post_pre_i)
 
-plt.plot(stdp_post_pre_t, stdp_post_pre_i)
-
-plt.show()
+# plt.show()

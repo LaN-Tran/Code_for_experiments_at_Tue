@@ -63,8 +63,8 @@ with open(file_tsp_path) as fp:
 keithley_instrument.write("endscript") 
 
 # SMUA (drain parameters, extract from `pulse_train_2ch.tsp`)
-vd_amplitude = 0.8 #0.05 # pulse_volt # [V]
-vg_amp = 0.01
+vd_amplitude = 0.001 #0.05 # pulse_volt # [V]
+vg_amp = 0.8
 bias_volt = 0 # [V], positve zero; if pulse negative, set to negative zero
 
 
@@ -86,8 +86,8 @@ read_func_complete = (read_pulse_on + read_pulse_off)*number_read_pulses
         # # ======
         # # record to file
         # # ======
-file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250911/pulse_exp.csv"
-file_path_avg = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250911/pulse_exp_avg.csv"
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250912/pulse_exp.csv"
+file_path_avg = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250912/pulse_exp_avg.csv"
                 # ======
                 # Prepare record file
                 # ======
@@ -123,7 +123,7 @@ comment_exp = input("comment about exp (dg or gd): ")
 
 try:
     # for n_exp
-    nexp = 100
+    nexp = 20
     sw_settle_time = 1 # [s]
     wait_between_read_and_write = 5 # [s]
     wait_between_exp = 5 # [s] = wait between write and read

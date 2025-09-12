@@ -43,7 +43,7 @@ def read_from_file_and_plot_v2 (_, file_path):
     ax2.plot(x, y2)
 
 
-def plot_ecram (_, file_path):
+def plot_ecram_2plots (_, file_path):
         # global file_path
     data = pd.read_csv(file_path)
     x = data['time']
@@ -69,16 +69,18 @@ def plot_ecram (_, file_path):
     ax1.plot(x, y)
     ax2.plot(x, y2)
 
-def plot_drain_effect (_, file_path):
+def plot_ecram_3plots (_, file_path):
         # global file_path
     data = pd.read_csv(file_path)
     x = data['time']
     y = data['i_channel']
     y2 = data['v_gate']
+    y3 = data['i_gate']
 
         # clear current plot
     ax1.cla()
     ax2.cla()
+    ax3.cla()
 
         # configure the plot
 
@@ -89,11 +91,67 @@ def plot_drain_effect (_, file_path):
     ax1.grid()
 
     ax2.set_xlabel('time [s]')
-    ax2.set_ylabel('v_channel [V]')
+    ax2.set_ylabel('v_gate [V]')
     ax2.grid()
+
+    ax3.set_xlabel('time [s]')
+    ax3.set_ylabel('i_gate [A]')
+    ax3.grid()
         
     ax1.plot(x, y)
     ax2.plot(x, y2)
+    ax3.plot(x, y3)
+
+def plot_ecram_4plots (_, file_path):
+        # global file_path
+    data = pd.read_csv(file_path)
+    x = data['time']
+    y = data['i_channel']
+    y2 = data['v_gate']
+    y3 = data['i_gate']
+    y4 = data['v_drain']
+
+        # clear current plot
+    ax1.cla()
+    ax2.cla()
+    ax3.cla()
+    ax4.cla()
+
+        # configure the plot
+
+    # ax1.set_ylim(-2, 2)
+    # ax1.set_xlim(0, 5)
+    ax1.set_xlabel('time [s]')
+    ax1.set_ylabel('i_channel [A]')
+    ax1.grid()
+
+    ax2.set_xlabel('time [s]')
+    ax2.set_ylabel('v_gate [V]')
+    ax2.grid()
+
+    ax3.set_xlabel('time [s]')
+    ax3.set_ylabel('i_gate [A]')
+    ax3.grid()
+
+    ax4.set_xlabel('time [s]')
+    ax4.set_ylabel('v_drain [A]')
+    ax4.grid()
+        
+    ax1.plot(x, y)
+    ax2.plot(x, y2)
+    ax3.plot(x, y3)
+    ax4.plot(x, y4)
+
+def plot_drain_effect (_, file_path):
+# global file_path
+    data = pd.read_csv(file_path)
+    x = data['time']
+    y = data['i_channel']
+        # clear
+    plt.cla()
+        # plot
+    plt.plot(x, y)
+    # return line
 
 def plot_wavegen_test (_, file_path):
         # global file_path
@@ -143,7 +201,21 @@ def plot_transfer_curve (_, file_path):
         # clear
     plt.cla()
         # plot
+    plt.xlabel('Vgate [V]')
+    plt.ylabel('Id [A]')
     plt.plot(x, y)
+    # return line
+
+def plot_transfer_curve_diode (_, file_path):
+    # global file_path
+    data = pd.read_csv(file_path)
+    x = data['v_drain']
+    y = data['i_channel']
+        # clear
+    plt.cla()
+        # plot
+    plt.plot(x, y)
+    
     # return line
 
 def plot_output_curve (_, file_path):
@@ -172,7 +244,8 @@ def k_pulse_read (_, file_path):
     # global file_path
     data = pd.read_csv(file_path)
     # x = data['time']
-    y = data['i_channel']
+    # y = data['i_channel']
+    y = data['i_channel_avg']
         # clear
     plt.cla()
         # plot
@@ -180,9 +253,9 @@ def k_pulse_read (_, file_path):
     plt.plot(x, y)
     # return line
 # ======
-# Ram
+# Ram, 2 plot
 # ======
-# file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250729/ecram.csv"
+# file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250901/ecram.csv"
 
 # # define the figure
 # # create a figure with two subplots
@@ -191,17 +264,57 @@ def k_pulse_read (_, file_path):
 
 # # the same axes initalizations as before (just now we do it for both of them)
 
-# ani = animation.FuncAnimation(fig, plot_ecram, interval= 500, fargs= (file_path, ))
+# ani = animation.FuncAnimation(fig, plot_ecram_2plots, interval= 500, fargs= (file_path, ))
 # plt.show()
 
+# # ======
+# # Ram, 3 plot
+# # ======
+# file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250828/ecram_pulse_drain.csv"
+
+# # define the figure
+# # create a figure with two subplots
+# fig, (ax1, ax2, ax3) = plt.subplots(3, 1)
+
+
+# # the same axes initalizations as before (just now we do it for both of them)
+
+# ani = animation.FuncAnimation(fig, plot_ecram_3plots, interval= 500, fargs= (file_path, ))
+# plt.show()
+
+# ======
+# Ram, 4 plot
+# ======
+# file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250912/ecram_pulse_drain.csv"
+# # file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250901/ecram.csv"
+
+# # define the figure
+# # create a figure with two subplots
+# fig, (ax1, ax2, ax3, ax4) = plt.subplots(4, 1)
+
+
+# # the same axes initalizations as before (just now we do it for both of them)
+
+# ani = animation.FuncAnimation(fig, plot_ecram_4plots, interval= 500, fargs= (file_path, ))
+# plt.show()
 # ======
 # Transfer curve
 # ======
 
-# file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250731/transfer_curve.csv"
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250912/transfer_curve.csv"
+# the same axes initalizations as before (just now we do it for both of them)
+
+ani = animation.FuncAnimation(plt.gcf(), plot_transfer_curve, interval= 500, fargs= (file_path, ))
+plt.show()
+
+# ======
+# Transfer curve, diode
+# ======
+
+# file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250822/transfer_curve_diode.csv"
 # # the same axes initalizations as before (just now we do it for both of them)
 
-# ani = animation.FuncAnimation(plt.gcf(), plot_transfer_curve, interval= 500, fargs= (file_path, ))
+# ani = animation.FuncAnimation(plt.gcf(), plot_transfer_curve_diode, interval= 500, fargs= (file_path, ))
 # plt.show()
 
 # ======
@@ -217,16 +330,10 @@ def k_pulse_read (_, file_path):
 # ======
 # Drain effect
 # ======
-# file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250711/drain_effect_oect6.csv"
-
-# # define the figure
-# # create a figure with two subplots
-# fig, (ax1, ax2) = plt.subplots(2, 1)
-
-
+# file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250807/drain_effect.csv"
 # # the same axes initalizations as before (just now we do it for both of them)
 
-# ani = animation.FuncAnimation(fig, plot_drain_effect, interval= 500, fargs= (file_path, ))
+# ani = animation.FuncAnimation(plt.gcf(), plot_drain_effect, interval= 500, fargs= (file_path, ))
 # plt.show()
 
 # ======
@@ -243,9 +350,9 @@ def k_pulse_read (_, file_path):
 # keithley pulse read ad3
 # ======
 
-file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250731/pulse_exp.csv"
-# the same axes initalizations as before (just now we do it for both of them)
+# file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250912/pulse_exp_avg.csv"
+# # the same axes initalizations as before (just now we do it for both of them)
 
-ani = animation.FuncAnimation(plt.gcf(), k_pulse_read, interval= 500, fargs= (file_path, ))
-plt.show()
+# ani = animation.FuncAnimation(plt.gcf(), k_pulse_read, interval= 500, fargs= (file_path, ))
+# plt.show()
 
