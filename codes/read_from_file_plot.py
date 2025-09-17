@@ -206,6 +206,34 @@ def plot_transfer_curve (_, file_path):
     plt.plot(x, y)
     # return line
 
+def plot_transfer_curve_2plot (_, file_path):
+    # global file_path
+    data = pd.read_csv(file_path)
+    x = data['time']
+    y = data['i_channel']
+    y2 = data['v_gate']
+    y3 = data['i_gate']
+    y4 = data['v_drain']
+
+        # clear current plot
+    ax1.cla()
+    ax2.cla()
+
+        # configure the plot
+
+    # ax1.set_ylim(-2, 2)
+    # ax1.set_xlim(0, 5)
+    ax1.set_xlabel('Vg [V]')
+    ax1.set_ylabel('i_channel [A]')
+    ax1.grid()
+
+    ax2.set_xlabel('Vg [V]')
+    ax2.set_ylabel('i_gate [A]')
+    ax2.grid()
+        
+    ax1.plot(y2, y)
+    ax2.plot(y2, y3)
+
 def plot_transfer_curve_diode (_, file_path):
     # global file_path
     data = pd.read_csv(file_path)
@@ -301,10 +329,15 @@ def k_pulse_read (_, file_path):
 # Transfer curve
 # ======
 
-file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250912/transfer_curve.csv"
+file_path = "C://Users//20245580//work//Code_for_experiments_at_Tue//exp_data//20250917//transfer_curve.csv"
 # the same axes initalizations as before (just now we do it for both of them)
 
-ani = animation.FuncAnimation(plt.gcf(), plot_transfer_curve, interval= 500, fargs= (file_path, ))
+# define the figure
+# create a figure with two subplots
+fig, (ax1, ax2) = plt.subplots(1, 2)
+
+# ani = animation.FuncAnimation(plt.gcf(), plot_transfer_curve, interval= 500, fargs= (file_path, ))
+ani = animation.FuncAnimation(plt.gcf(), plot_transfer_curve_2plot, interval= 500, fargs= (file_path, ))
 plt.show()
 
 # ======
