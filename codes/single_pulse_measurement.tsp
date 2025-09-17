@@ -14,11 +14,11 @@ bias = 0
 
 level = 0.05
 
-ton = 0.2
+ton = 0.5
 
-toff = 0.2
+toff = 1
 
-points = 5
+points = 3
 
 -- Update display with test info. 
 
@@ -34,15 +34,19 @@ smu.source.offfunc = smu.OUTPUT_DCVOLTS
 -- function configuration
 smu.source.output = smu.OUTPUT_OFF 
 
-smu.source.rangev = level 
+smu.source.rangev = level
 
-smu.source.levelv = bias 
+smu.source.levelv = bias
 
 smu.source.func = smu.OUTPUT_DCVOLTS 
 
 smu.measure.autozero = smu.AUTOZERO_OFF 
 
-smu.measure.filter.enable = smu.FILTER_OFF 
+smu.measure.autorangei = smu.AUTORANGE_ON
+
+smu.measure.filter.enable = smu.FILTER_OFF
+
+smu.measure.nplc = 1
 
 l_tonwm = ton - (smu.measure.nplc/localnode.linefreq) - 250E-6 
 
