@@ -18,7 +18,7 @@ import pyvisa
 from  keithley2600 import Keithley2600
 import time
 import logging
-import pyfirmata
+# import pyfirmata
 import csv
 import os
 from datetime import datetime
@@ -40,7 +40,7 @@ logging.basicConfig(format=format, level=logging.INFO,
         # Keithley, smua drain for read
         # ======
 rm = pyvisa.ResourceManager('C:/windows/System32/visa64.dll')
-keithley_instrument = rm.open_resource('USB0::0x05E6::0x2636::4480001::INSTR')
+keithley_instrument = rm.open_resource('TCPIP0::169.254.0.1::inst0::INSTR')
 keithley_instrument.timeout = 10000
         # configure
 keithley_instrument.write(f"smua.measure.nplc = 1")
@@ -49,14 +49,14 @@ keithley_instrument.write(f"smua.measure.nplc = 1")
         # Upload the keithley scripts to keithley for the program
         # ======
 # script for writing phase
-file_tsp_path = "C:\\Users\\20245580\\LabCode\\Codes_For_Experiments\\codes\\pulse_train_2ch_dg.tsp" 
+file_tsp_path = "C:\\Users\\20245580\\work\\Code_for_experiments_at_Tue\\codes\\pulse_train_2ch_dg.tsp" 
 keithley_instrument.write(f"loadscript Write")
 with open(file_tsp_path) as fp:
     for line in fp: keithley_instrument.write(line)
 keithley_instrument.write("endscript") 
 
 # script for reading phase
-file_tsp_path = "C:\\Users\\20245580\\LabCode\\Codes_For_Experiments\\codes\\single_pulse_measurement.tsp" 
+file_tsp_path = "C:\\Users\\20245580\\work\\Code_for_experiments_at_Tue\\codes\\single_pulse_measurement.tsp" 
 keithley_instrument.write(f"loadscript Read")
 with open(file_tsp_path) as fp:
     for line in fp: keithley_instrument.write(line)
