@@ -84,10 +84,11 @@ dwf.FDwfDeviceAutoConfigureSet(hdwf, c_int(0)) # 0 = the device will only be con
         # Keithley, smua drain for read
         # ======
 keithley_instrument = Keithley2600('USB0::0x05E6::0x2636::4480001::INSTR', visa_library = 'C:/windows/System32/visa64.dll', timeout = 100000)
+# keithley_instrument = Keithley2600('TCPIP0::169.254.0.1::inst0::INSTR', visa_library = 'C:/windows/System32/visa64.dll', timeout = 10000)
 keithley_instrument.smua.source.output = keithley_instrument.smua.OUTPUT_OFF
 
 # SMUA (drain parameters)
-pulse_volt = 0.4 # [V]
+pulse_volt = 0.8 # [V]
 bias_volt = 0 # [V], positve zero; if pulse negative, set to negative zero
 
         # configure smua pulse v read I (drain)
@@ -124,13 +125,13 @@ keithley_instrument.smua.nvbuffer1.collecttimestamps = 1
     # w1_period = write period -> wait time = 0 [s]
     # w2_period = w1_period - delta_tpre_tpost ; w2 must have wait time = delta_tpre_tpost 
 delta_tpre_tpost = 30e-3 # [s]
-n_write_cycle = 40
+n_write_cycle = 5
 
 w1_ch_drain = 1 # 
-w1_period = 500e-3 # [s]
-w1_pulse_width = 50e-3 # [s]
+w1_period = 300e-3 # [s]
+w1_pulse_width = 100e-3 # [s]
 w1_freq = 1/(w1_period) # [Hz]
-w1_amplitude = pulse_volt #0.1 # pulse_volt # [V]
+w1_amplitude = pulse_volt #0.05 # pulse_volt # [V]
 w1_offset = 0 # [V]
 w1_percentageSymmetry =  w1_pulse_width * 100/ w1_period # [%]
 secWait_1 = 0 # [s]
@@ -222,8 +223,8 @@ time.sleep(1)
         # # ======
         # # record to file
         # # ======
-file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250821/pulse_exp.csv"
-file_path_avg = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250821/pulse_exp_avg.csv"
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250902/pulse_exp.csv"
+file_path_avg = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250902/pulse_exp_avg.csv"
                 # ======
                 # Prepare record file
                 # ======
@@ -256,7 +257,8 @@ time_ref = time.time()
 
 logging.info("Turn on Keithley")
 keithley_settle_time = 0.1 # [s]
-keithley_instrument.smua.source.output = keithley_instrument.smua.OUTPUT_ON  
+# keithley_instrument.smua.source.output = keithley_instrument.smua.OUTPUT_ON
+keithley_instrument.smua.source.output = keithley_instrument.smua.OUTPUT_OFF  
 time.sleep(keithley_settle_time)
 
 logging.info("comment about the exp")
@@ -266,8 +268,8 @@ try:
     # for n_exp
     nexp = 20
     sw_settle_time = 1 # [s]
-    wait_between_read_and_write = 5 # [s]
-    wait_between_exp = 5 # [s] = wait between write and read
+    wait_between_read_and_write = 10 # [s]
+    wait_between_exp = 10 # [s] = wait between write and read
 
     # wait for initial conds stable
     time.sleep(5)
@@ -386,7 +388,7 @@ try:
         t_on = w1_pulse_width # [s]
         t_off = 500e-3 # [s]
             # time.sleep(5)
-        keithley_instrument.smua.measure.nplc = 0.1 # [PLC], PLC = 50Hz = 20ms; nplc < ton 
+        keithley_instrument.smua.measure.nplc = 1 # [PLC], PLC = 50Hz = 20ms; nplc < ton 
         keithley_instrument.smua.nvbuffer1.clear()
         try:
             keithley_instrument.PulseVMeasureI(keithley_instrument.smua, bias_volt, pulse_volt, t_on, t_off, number_reading_pulses)
@@ -409,6 +411,7 @@ try:
                             'date_time': cur_datetime,
                             'comment': comment_exp + '; vg: [V]' + str(w2_amplitude) 
                                         + '; vd: [V]'+ str(w1_amplitude) 
+                                        + '; read_pulse: [V]'+ str(pulse_volt)
                                         + '; delta_t: [s]' + str(delta_tpre_tpost)
                                         + '; pulse_width [s]: ' + str(w1_pulse_width)
                                         + '; pulse_period [s]: ' + str(w1_period)
@@ -431,6 +434,7 @@ try:
                         'date_time': cur_datetime,
                         'comment': comment_exp + '; vg: [V]' + str(w2_amplitude) 
                                         + '; vd: [V]'+ str(w1_amplitude) 
+                                        + '; read_pulse: [V]'+ str(pulse_volt)
                                         + '; delta_t: [s]' + str(delta_tpre_tpost)
                                         + '; pulse_width [s]: ' + str(w1_pulse_width)
                                         + '; pulse_period [s]: ' + str(w1_period)
@@ -443,8 +447,8 @@ try:
                 file_writer.writerow(info)
             
             # clear keithley buffer before another read
-            keithley_instrument.smua.source.output = keithley_instrument.smua.OUTPUT_ON  
-            time.sleep(keithley_settle_time)
+        #     keithley_instrument.smua.source.output = keithley_instrument.smua.OUTPUT_ON  
+        #     time.sleep(keithley_settle_time)
 
         except Exception as e:
             logging.info(f"Keithley error: {e=}")
@@ -455,7 +459,6 @@ try:
         time.sleep(wait_between_exp)
 
     logging.info("MEASUREMENT FINISH")
-    keithley_instrument.smua.source.output = keithley_instrument.smua.OUTPUT_OFF
                 # disconnect
     arduino_board.digital[arduino_bin_mux_enable].write(1)
             # turn off the keithley

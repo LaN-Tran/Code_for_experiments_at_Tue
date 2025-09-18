@@ -59,7 +59,7 @@ import numpy as np
 # ======
 # 3 plots
 # ======
-data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250912/ecram_pulse_drain.csv")
+data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250915/ecram_pulse_drain.csv")
 # data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250901/ecram.csv")
 
 stdp_post_pre_t = data['time']
@@ -119,11 +119,11 @@ plt.show()
 # ======
 # 1 plots
 # ======
-# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250910/pulse_exp_c3v1_sDx.csv")
+data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250912/pulse_exp_avg.csv")
 
-# stdp_post_pre_i = data['i_channel']
-# stdp_post_pre_t = np.arange(0, len(stdp_post_pre_i))#data['time']#np.arange(0, len(stdp_post_pre_i))#data['v_gate'] #np.arange(0, len(stdp_post_pre_i))#data['v_gate']
+stdp_post_pre_i = data['i_channel_avg']
+stdp_post_pre_t = np.arange(0, len(stdp_post_pre_i))#data['time']#np.arange(0, len(stdp_post_pre_i))#data['v_gate'] #np.arange(0, len(stdp_post_pre_i))#data['v_gate']
 
-# plt.plot(stdp_post_pre_t, stdp_post_pre_i)
+plt.plot(stdp_post_pre_t, stdp_post_pre_i)
 
-# plt.show()
+plt.show()

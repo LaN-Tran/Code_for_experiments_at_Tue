@@ -285,7 +285,7 @@ def k_pulse_read (_, file_path):
 # ======
 # Ram, 4 plot
 # ======
-# file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250912/ecram_pulse_drain.csv"
+# file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250915/ecram_pulse_drain.csv"
 # # file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250901/ecram.csv"
 
 # # define the figure
@@ -301,11 +301,11 @@ def k_pulse_read (_, file_path):
 # Transfer curve
 # ======
 
-file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250912/transfer_curve.csv"
-# the same axes initalizations as before (just now we do it for both of them)
+# file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250915/transfer_curve.csv"
+# # the same axes initalizations as before (just now we do it for both of them)
 
-ani = animation.FuncAnimation(plt.gcf(), plot_transfer_curve, interval= 500, fargs= (file_path, ))
-plt.show()
+# ani = animation.FuncAnimation(plt.gcf(), plot_transfer_curve, interval= 500, fargs= (file_path, ))
+# plt.show()
 
 # ======
 # Transfer curve, diode
@@ -350,9 +350,9 @@ plt.show()
 # keithley pulse read ad3
 # ======
 
-# file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250912/pulse_exp_avg.csv"
-# # the same axes initalizations as before (just now we do it for both of them)
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250915/pulse_exp_avg.csv"
+# the same axes initalizations as before (just now we do it for both of them)
 
-# ani = animation.FuncAnimation(plt.gcf(), k_pulse_read, interval= 500, fargs= (file_path, ))
-# plt.show()
+ani = animation.FuncAnimation(plt.gcf(), k_pulse_read, interval= 500, fargs= (file_path, ))
+plt.show()
 

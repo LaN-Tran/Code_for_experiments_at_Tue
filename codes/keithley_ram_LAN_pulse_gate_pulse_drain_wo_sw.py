@@ -59,7 +59,7 @@ time.sleep(1)
 
 
         # path to the measurement record
-file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250912/ecram_pulse_drain.csv"
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250915/ecram_pulse_drain.csv"
 
 logging.info("Main    : Prepare measurement")
 
@@ -71,18 +71,18 @@ wait_before_exp = 5 # [s]
 nexp = 20
 n_pulse_type_1 = 5
 amp_pulse_type_1 = 0.8 # (Vgs > 0, decrease gm. bcz source is always 0, and drain - source are symmertrical)
-pulse_width_type_1 = 0.5
-pulse_period_type_1 = 1 # (gate pulse)
+pulse_width_type_1 = 2
+pulse_period_type_1 = 4 # (gate pulse)
 no_pulse_time_type_1 = pulse_period_type_1 - pulse_width_type_1
-wait_between_pulse_type_1 = 15
-wait_between_pulse_type_1_and_pulse_type_2 = 15
+wait_between_pulse_type_1 = 60
+wait_between_pulse_type_1_and_pulse_type_2 = 5
 n_pulse_type_2 = 5
 amp_pulse_type_2 = 0.8 # (drain pulse)
-pulse_width_type_2 = 0.5
-pulse_period_type_2 = 1
+pulse_width_type_2 = 2
+pulse_period_type_2 = 4
 no_pulse_time_type_2 = pulse_period_type_2 - pulse_width_type_2
-wait_between_pulse_type_2 = 15
-wait_between_exp = 15
+wait_between_pulse_type_2 = 60
+wait_between_exp = 5
 
 try:
     

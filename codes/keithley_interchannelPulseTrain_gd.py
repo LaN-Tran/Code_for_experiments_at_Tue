@@ -63,10 +63,9 @@ with open(file_tsp_path) as fp:
 keithley_instrument.write("endscript") 
 
 # SMUA (drain parameters, extract from `pulse_train_2ch.tsp`)
-bias_volt = 0 # [V], positve zero; if pulse negative, set to negative zero
-
-vd_amplitude = 0.4 #0.05 # pulse_volt # [V]
+vd_amplitude = 0.3 #0.05 # pulse_volt # [V]
 vg_amp = 0.8
+bias_volt = 0 # [V], positve zero; if pulse negative, set to negative zero
 
 pulse_period = 0.4 # [s]
 pulse_width = 0.02 # [s]
@@ -123,8 +122,8 @@ try:
     # for n_exp
     nexp = 20
     sw_settle_time = 1 # [s]
-    wait_between_read_and_write = 10 # [s]
-    wait_between_exp = 10 # [s] = wait between write and read
+    wait_between_read_and_write = 5 # [s]
+    wait_between_exp = 5 # [s] = wait between write and read
 
     # wait for initial conds stable
     time.sleep(5)

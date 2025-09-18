@@ -16,8 +16,8 @@ display.settext("InterchannelPulseVTrain")
 smu1 = smua
 smu2 = smub
 
-pulse_vd = 0.001
-pulse_vg = 0.8
+pulse_vd = 0.8
+pulse_vg = 0.001
 
 pulse_v1 = pulse_vd
 pulse_v2 = pulse_vg
