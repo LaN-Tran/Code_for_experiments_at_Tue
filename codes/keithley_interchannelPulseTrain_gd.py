@@ -40,7 +40,7 @@ logging.basicConfig(format=format, level=logging.INFO,
         # Keithley, smua drain for read
         # ======
 rm = pyvisa.ResourceManager('C:/windows/System32/visa64.dll')
-keithley_instrument = rm.open_resource('TCPIP0::169.254.0.1::inst0::INSTR')
+keithley_instrument = rm.open_resource('USB0::0x05E6::0x2636::4480001::INSTR')
 keithley_instrument.timeout = 10000
         # configure
 keithley_instrument.write(f"smua.measure.nplc = 1")
@@ -49,42 +49,44 @@ keithley_instrument.write(f"smua.measure.nplc = 1")
         # Upload the keithley scripts to keithley for the program
         # ======
 # script for writing phase
-file_tsp_path = "C:\\Users\\20245580\\work\\Code_for_experiments_at_Tue\\codes\\pulse_train_2ch_gd.tsp" 
+file_tsp_path = "C:\\Users\\20245580\\LabCode\\Codes_For_Experiments\\codes\\pulse_train_2ch_gd.tsp" 
 keithley_instrument.write(f"loadscript Write")
 with open(file_tsp_path) as fp:
     for line in fp: keithley_instrument.write(line)
 keithley_instrument.write("endscript") 
 
 # script for reading phase
-file_tsp_path = "C:\\Users\\20245580\\work\\Code_for_experiments_at_Tue\\codes\\single_pulse_measurement.tsp" 
+file_tsp_path = "C:\\Users\\20245580\\LabCode\\Codes_For_Experiments\\codes\\single_pulse_measurement.tsp" 
 keithley_instrument.write(f"loadscript Read")
 with open(file_tsp_path) as fp:
     for line in fp: keithley_instrument.write(line)
 keithley_instrument.write("endscript") 
 
 # SMUA (drain parameters, extract from `pulse_train_2ch.tsp`)
-vd_amplitude = 0.3 #0.05 # pulse_volt # [V]
-vg_amp = 0.8
+vd_amplitude = 0.8 #0.05 # pulse_volt # [V]
+vg_amp = 0.9
 bias_volt = 0 # [V], positve zero; if pulse negative, set to negative zero
 
-pulse_period = 0.4 # [s]
-pulse_width = 0.02 # [s]
-delta_tpre_tpost = 0.05 # [s]
-n_write_cycle = 10
+pulse_period = 0.5 # [s]
+pulse_width = 0.1 # [s]
+delta_tpre_tpost = 0.028 # [s]
+n_write_cycle = 60
 
 write_func_complete = delta_tpre_tpost + n_write_cycle*pulse_period
 
         # read pulse
-read_pulse_on = 0.2
-read_pulse_off = 0.2
-number_read_pulses = 5
+pulse_period_read = 1.5 # [s]
+pulse_width_read = 0.5 # [s]
+read_pulse_on = 0.5
+read_pulse_off = 1
+number_read_pulses = 3
 read_func_complete = (read_pulse_on + read_pulse_off)*number_read_pulses
 
         # # ======
         # # record to file
         # # ======
-file_path = "C:\\Users\\20245580\\work\\Code_for_experiments_at_Tue\\exp_data\\20250905\\pulse_exp.csv"
-file_path_avg = "C:\\Users\\20245580\\work\\Code_for_experiments_at_Tue\\exp_data\\20250905\\pulse_exp_avg.csv"
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250923/pulse_exp.csv"
+file_path_avg = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250923/pulse_exp_avg.csv"
                 # ======
                 # Prepare record file
                 # ======
@@ -169,6 +171,8 @@ try:
                             'comment': comment_exp + '; vg: [V]' + str(vg_amp) 
                                         + '; vd: [V]'+ str(vd_amplitude) 
                                         + '; read_pulse: [V]'+ str(measured_vd)
+                                        + '; rpulse_width [s]: ' + str(pulse_width_read)
+                                        + '; rpulse_period [s]: ' + str(pulse_period_read)
                                         + '; delta_t: [s]' + str(delta_tpre_tpost)
                                         + '; pulse_width [s]: ' + str(pulse_width)
                                         + '; pulse_period [s]: ' + str(pulse_period)
@@ -192,6 +196,8 @@ try:
                         'comment': comment_exp + '; vg: [V]' + str(vg_amp) 
                                         + '; vd: [V]'+ str(vd_amplitude) 
                                         + '; read_pulse: [V]'+ str(measured_vd)
+                                        + '; rpulse_width [s]: ' + str(pulse_width_read)
+                                        + '; rpulse_period [s]: ' + str(pulse_period_read)
                                         + '; delta_t: [s]' + str(delta_tpre_tpost)
                                         + '; pulse_width [s]: ' + str(pulse_width)
                                         + '; pulse_period [s]: ' + str(pulse_period)
