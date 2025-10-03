@@ -54,19 +54,19 @@ time.sleep(1)
 
 
         # path to the measurement record
-file_path = "C:\\Users\\20245580\\work\\Code_for_experiments_at_Tue\\exp_data\\20250917\\transfer_curve.csv"
+file_path = "C:\\Users\\20245580\\work\\Code_for_experiments_at_Tue\\exp_data\\20251003\\transfer_curve.csv"
 
 logging.info("Main    : Prepare measurement")
 
-number_of_measurements = 5
+number_of_measurements = 3
 
 settle_time = 1 # s # after the smu configuration
     
 sw_settle_time = 10e-3 # s
 rest_duration = 0.2 # s
 
-gate_voltage_smallest = -0.5 # V (for liquid electrolite)
-gate_voltage_largest = 0.5 # V (for liquid electrolite)
+gate_voltage_smallest = 0 # V (for liquid electrolite)
+gate_voltage_largest = 0.3 # V (for liquid electrolite)
 gate_voltage_step = 0.1 # V
 drain_voltage = 0.05 # V
 try:
@@ -265,8 +265,8 @@ try:
         # # ======
     logging.info("Keithley measurement    : EXIT")
             # turn off the keithley 
-    keithley_instrument.write(f"smua.source.output = smua.OUTPUT_OFF")
-    keithley_instrument.write(f"smub.source.output = smub.OUTPUT_OFF")
+    # keithley_instrument.write(f"smua.source.output = smua.OUTPUT_OFF")
+    # keithley_instrument.write(f"smub.source.output = smub.OUTPUT_OFF")
 
 except KeyboardInterrupt:
      # # ======
@@ -274,8 +274,8 @@ except KeyboardInterrupt:
         # # ======
     logging.info("Keithley measurement    : EXIT")
             # turn off the keithley
-    keithley_instrument.write(f"smua.source.output = smua.OUTPUT_OFF")
-    keithley_instrument.write(f"smub.source.output = smub.OUTPUT_OFF")
+    # keithley_instrument.write(f"smua.source.output = smua.OUTPUT_OFF")
+    # keithley_instrument.write(f"smub.source.output = smub.OUTPUT_OFF")
 
 
 

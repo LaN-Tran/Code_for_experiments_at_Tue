@@ -12,11 +12,11 @@ display.clear()
 
 bias = 0
 
-level = 0.05
+level = 0.8--0.05
 
-ton = 0.5
+ton = 0.02--0.5
 
-toff = 1
+toff = 1.5--1
 
 points = 3
 
@@ -46,7 +46,7 @@ smu.measure.autorangei = smu.AUTORANGE_ON
 
 smu.measure.filter.enable = smu.FILTER_OFF
 
-smu.measure.nplc = 1
+smu.measure.nplc = 0.1--1
 
 l_tonwm = ton - (smu.measure.nplc/localnode.linefreq) - 250E-6 
 
