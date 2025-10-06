@@ -16,7 +16,7 @@ level = 1
 
 ton = 2
 
-toff = 3
+toff = 5
 
 points = 4
 

@@ -55,6 +55,7 @@ lines[56]= 'file_path = \"C:/Users/20245580/LabCode/Codes_For_Experiments/exp_da
 # Write the modified lines back to the file
 with open(filename, 'w') as file:
     file.writelines(lines)
+logging.info("FINISH MODIFY keithley_transfer_curve_stdp_automate.py")
 
 logging.info("MODIFY single_pulse_measurement_automate_stdp.tsp")
 print(f"{'='*5}\nsingle_pulse_measurement_automate_stdp.tsp\n{'='*5}")
@@ -83,8 +84,36 @@ lines[20]= 'points = ' + number_of_rpulses\
 # Write the modified lines back to the file
 with open(filename, 'w') as file:
     file.writelines(lines)
-
 logging.info("FINISH MODIFY single_pulse_measurement_automate_stdp.tsp")
+
+logging.info("MODIFY multiple_pulse_measurement_automate_stdp.tsp")
+print(f"{'='*5}\nsingle_pulse_measurement_automate_stdp.tsp\n{'='*5}")
+filename = 'C:\\Users\\20245580\\LabCode\\Codes_For_Experiments\\codes\\multiple_pulse_measurement_automate_stdp.tsp'
+with open(filename, 'r') as file:
+    lines = file.readlines()
+
+print(f"!! read pulse amplitude, pulse width, pulse period,...")
+read_pulse_amp = input("enter \\read pulse amplitude [V]\\, NO SPACE: ")
+t_on = input("enter \\read pulse width [s]\\, NO SPACE: ")
+t_off = input("enter \\read pulse off [s]\\, NO SPACE: ")
+number_of_rpulses = input("enter \\number of read pulses\\, NO SPACE: ")
+    # level
+lines[14]= 'level = ' + read_pulse_amp\
+            + '\n' 
+    # ton
+lines[16]= 'ton = ' + t_on\
+            + '\n' 
+    # toff
+lines[18]= 'toff = ' + t_off\
+            + '\n' 
+    # # of rpulses
+lines[20]= 'points = ' + number_of_rpulses\
+            + '\n' 
+
+# Write the modified lines back to the file
+with open(filename, 'w') as file:
+    file.writelines(lines)
+logging.info("FINISH MODIFY multiple_pulse_measurement_automate_stdp.tsp")
 
 logging.info("MODIFY pulse_train_2ch_dg_automate_stdp.tsp")
     # Read file and modify content
@@ -218,25 +247,3 @@ lines[129]= '    wait_between_exp = ' + wait_write_to_read \
 with open(filename, 'w') as file:
     file.writelines(lines)
 logging.info("FINISH MODIFY keithley_interchannelPulseTrain_stdp_automate.py")
-
-
-logging.info("Set dg (Drain=Pre before Gate=Post)")
-filename = 'C:\\Users\\20245580\\LabCode\\Codes_For_Experiments\\codes\\keithley_interchannelPulseTrain_stdp_automate.py'
-with open(filename, 'r') as file:
-    lines = file.readlines()
-    # point to tsp run file
-lines[51]= 'file_tsp_path = \"C:/Users/20245580/LabCode/Codes_For_Experiments/codes/pulse_train_2ch_dg_automate_stdp.tsp\"' \
-                        + '\n' 
-    # point to tsp read file
-lines[58]= 'file_tsp_path = \"C:/Users/20245580/LabCode/Codes_For_Experiments/codes/single_pulse_measurement_automate_stdp.tsp\"' \
-                        + '\n' 
-# Write the modified lines back to the file
-with open(filename, 'w') as file:
-    file.writelines(lines)
-
-            # record the voltage pulse (amplitude, pulse width, pulse periode, # of pulses) + delta (t_pre-t_post)
-        # run code `?` to only measured the g_after.. in a duration of 20min -> collect an array of g_after
-        # process the array of g_after to array of percentage of change (g_after's - g_init)/ g_init
-            # record this array of g_after's + time 
-        # process average (of array percentage of change) 
-            # record average (of array percentage of change) + delta -> a fully stdp file

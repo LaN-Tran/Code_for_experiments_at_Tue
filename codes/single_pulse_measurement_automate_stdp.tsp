@@ -12,13 +12,13 @@ display.clear()
 
 bias = 0
 
-level = 0.8--0.05
+level = 1
 
-ton = 0.02--0.5
+ton = 2
 
-toff = 1.5--1
+toff = 3
 
-points = 3
+points = 4
 
 -- Update display with test info. 
 

@@ -54,7 +54,7 @@ time.sleep(1)
 
 
         # path to the measurement record
-file_path = "C:\\Users\\20245580\\work\\Code_for_experiments_at_Tue\\exp_data\\20251003\\transfer_curve.csv"
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250980/transfer_curve.csv"
 
 logging.info("Main    : Prepare measurement")
 

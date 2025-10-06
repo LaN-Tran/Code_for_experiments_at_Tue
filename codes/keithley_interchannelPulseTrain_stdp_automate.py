@@ -49,46 +49,46 @@ keithley_instrument.write(f"smua.measure.nplc = 1")
         # Upload the keithley scripts to keithley for the program
         # ======
 # script for writing phase
-file_tsp_path = "C:\\Users\\20245580\\work\\Code_for_experiments_at_Tue\\codes\\pulse_train_2ch_dg.tsp" 
+file_tsp_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/codes/pulse_train_2ch_dg_automate_stdp.tsp"
 keithley_instrument.write(f"loadscript Write")
 with open(file_tsp_path) as fp:
     for line in fp: keithley_instrument.write(line)
 keithley_instrument.write("endscript") 
 
 # script for reading phase
-file_tsp_path = "C:\\Users\\20245580\\work\\Code_for_experiments_at_Tue\\codes\\single_pulse_measurement.tsp" 
+file_tsp_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/codes/single_pulse_measurement_automate_stdp.tsp"
 keithley_instrument.write(f"loadscript Read")
 with open(file_tsp_path) as fp:
     for line in fp: keithley_instrument.write(line)
 keithley_instrument.write("endscript") 
 
 # SMUA (drain parameters, extract from `pulse_train_2ch.tsp`)
-vd_amplitude = 0.8 # [V]
-vg_amp = 0.9 # [V]
+vd_amplitude = 5 # [V]
+vg_amp = 6 # [V]
 bias_volt = 0 # [V], positve zero; if pulse negative, set to negative zero
 
 
-pulse_period = 0.02 # [s]
-pulse_width = 0.05 # [s]
-delta_tpre_tpost = 0.01 # [s]
-n_write_cycle = 10
+pulse_period = 7 # [s]
+pulse_width = 8 # [s]
+delta_tpre_tpost = 9 # [s]
+n_write_cycle = 11
 
 write_func_complete = delta_tpre_tpost + n_write_cycle*pulse_period
 
         # read pulse
 
 
-pulse_width_read = 0.02 # [s]
-read_pulse_off = 5 # [s]
-number_read_pulses = 5
+pulse_width_read = 2 # [s]
+read_pulse_off = 3 # [s]
+number_read_pulses = 4
 pulse_period_read = pulse_width_read +  read_pulse_off # [s]
 read_func_complete = (pulse_period_read)*number_read_pulses
 
         # # ======
         # # record to file
         # # ======
-file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20251106/pulse_exp.csv"
-file_path_avg = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20251106/pulse_exp_avg.csv"
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250980/pulse_exp.csv"
+file_path_avg = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250980/pulse_exp_avg.csv"
                 # ======
                 # Prepare record file
                 # ======
@@ -124,10 +124,10 @@ comment_exp = input("comment about exp (dg or gd): ")
 
 try:
     # for n_exp
-    nexp = 5
+    nexp = 11
     sw_settle_time = 1 # [s]
-    wait_between_read_and_write = 20 # [s]
-    wait_between_exp = 20 # [s] = wait between write and read
+    wait_between_read_and_write = 12 # [s]
+    wait_between_exp = 13 # [s] = wait between write and read
 
     # wait for initial conds stable
     time.sleep(5)

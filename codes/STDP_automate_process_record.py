@@ -38,24 +38,24 @@ logging.basicConfig(format=format, level=logging.INFO,
         # # ======
 logging.info("configure arduino mux")
     # MUX 1 (Y0: transfer curve, Y1: ecram)
-# arduino_bin_mux1_z =  3# 
+arduino_bin_mux1_z =  3# 
 
-# arduino_bin_mux1_s0 = 5 # (lsb)
-# arduino_bin_mux1_s1 = 7 #
-# arduino_bin_mux1_s2 = 9 # (msb)
+arduino_bin_mux1_s0 = 5 # (lsb)
+arduino_bin_mux1_s1 = 7 #
+arduino_bin_mux1_s2 = 9 # (msb)
 
-# arduino_bin_mux1_enable = 11 #
+arduino_bin_mux1_enable = 11 #
 
-#     # MUX 2 (Y0: transfer curve, Y1: ecram)
-# arduino_bin_mux2_z = 2 # (HIGH = OFF/ LOW = ON)
+    # MUX 2 (Y0: transfer curve, Y1: ecram)
+arduino_bin_mux2_z = 2 # (HIGH = OFF/ LOW = ON)
 
-# arduino_bin_mux2_s0 = 4 # (lsb)
-# arduino_bin_mux2_s1 = 6 #
-# arduino_bin_mux2_s2 = 8 # (msb)
+arduino_bin_mux2_s0 = 4 # (lsb)
+arduino_bin_mux2_s1 = 6 #
+arduino_bin_mux2_s2 = 8 # (msb)
 
-# arduino_bin_mux2_enable = 10 #
-#     # init arduino aboard
-# arduino_board = pyfirmata.Arduino('COM8')
+arduino_bin_mux2_enable = 10 #
+    # init arduino aboard
+arduino_board = pyfirmata.Arduino('COM8')
 
         # ======
         # Keithley, smua drain for read
@@ -114,6 +114,13 @@ number_read_pulses = 4
 pulse_period_read = pulse_width_read +  read_pulse_off # [s]
 read_func_complete = (pulse_period_read)*number_read_pulses
 
+arduino_settle_time = 1 # [s]
+wait_between_exp = 30 # [s]
+# for g_init
+num_rps = 10
+# for g_after
+num_rps_after_stdp = 40
+
         # ======
         # start measurement
         # ======
@@ -121,55 +128,55 @@ logging.info("start measurement")
 time_ref = time.time()
 
 logging.info("comment about the exp")
-comment_exp = input("comment about exp (dg or gd): ")
+comment_exp = input("(dg or gd), NO SPACE: ")
 
 try:
     
         logging.info("CONFIGURE transfer curve setup")
         # # arduino mux1 connect to Y0
                 # Y0 configure
-        # arduino_board.digital[arduino_bin_mux1_s0].write(0)
-        # arduino_board.digital[arduino_bin_mux1_s1].write(0)
-        # arduino_board.digital[arduino_bin_mux1_s2].write(0)
-        #         # close switch
-        # arduino_board.digital[arduino_bin_mux1_enable].write(0)
-        # time.sleep(arduino_settle_time)
+        arduino_board.digital[arduino_bin_mux1_s0].write(0)
+        arduino_board.digital[arduino_bin_mux1_s1].write(0)
+        arduino_board.digital[arduino_bin_mux1_s2].write(0)
+                # close switch
+        arduino_board.digital[arduino_bin_mux1_enable].write(0)
+        time.sleep(arduino_settle_time)
 
-        # # # arduino mux2 connect to Y0
-        #         # Y0 configure
-        # arduino_board.digital[arduino_bin_mux2_s0].write(0)
-        # arduino_board.digital[arduino_bin_mux2_s1].write(0)
-        # arduino_board.digital[arduino_bin_mux2_s2].write(0)
-        #         # close switch
-        # arduino_board.digital[arduino_bin_mux2_enable].write(0)
-        # time.sleep(arduino_settle_time)
+        # # arduino mux2 connect to Y0
+                # Y0 configure
+        arduino_board.digital[arduino_bin_mux2_s0].write(0)
+        arduino_board.digital[arduino_bin_mux2_s1].write(0)
+        arduino_board.digital[arduino_bin_mux2_s2].write(0)
+                # close switch
+        arduino_board.digital[arduino_bin_mux2_enable].write(0)
+        time.sleep(arduino_settle_time)
         logging.info("FINISH transfer curve setup")
         
         logging.info("RUN transfer curve")
-        # import keithley_transfer_curve_automate_stdp.py
+        import keithley_transfer_curve_automate_stdp
                 #         # open switch
-        # arduino_board.digital[arduino_bin_mux1_enable].write(1)
-        # arduino_board.digital[arduino_bin_mux2_enable].write(1)
+        arduino_board.digital[arduino_bin_mux1_enable].write(1)
+        arduino_board.digital[arduino_bin_mux2_enable].write(1)
         logging.info("FINISH RUN transfer curve")
 
         logging.info("CONFIGURE ECRAM setup")
         # # arduino mux1 connect to Y1
                 # Y1 configure
-        # arduino_board.digital[arduino_bin_mux1_s0].write(0)
-        # arduino_board.digital[arduino_bin_mux1_s1].write(1)
-        # arduino_board.digital[arduino_bin_mux1_s2].write(0)
-        #         # close switch
-        # arduino_board.digital[arduino_bin_mux1_enable].write(0)
-        # time.sleep(arduino_settle_time)
+        arduino_board.digital[arduino_bin_mux1_s0].write(0)
+        arduino_board.digital[arduino_bin_mux1_s1].write(1)
+        arduino_board.digital[arduino_bin_mux1_s2].write(0)
+                # close switch
+        arduino_board.digital[arduino_bin_mux1_enable].write(0)
+        time.sleep(arduino_settle_time)
 
-        # # # arduino mux2 connect to Y1
-        #         # Y1 configure
-        # arduino_board.digital[arduino_bin_mux2_s0].write(0)
-        # arduino_board.digital[arduino_bin_mux2_s1].write(1)
-        # arduino_board.digital[arduino_bin_mux2_s2].write(0)
-        #         # close switch
-        # arduino_board.digital[arduino_bin_mux2_enable].write(0)
-        # time.sleep(arduino_settle_time)
+        # # arduino mux2 connect to Y1
+                # Y1 configure
+        arduino_board.digital[arduino_bin_mux2_s0].write(0)
+        arduino_board.digital[arduino_bin_mux2_s1].write(1)
+        arduino_board.digital[arduino_bin_mux2_s2].write(0)
+                # close switch
+        arduino_board.digital[arduino_bin_mux2_enable].write(0)
+        time.sleep(arduino_settle_time)
         logging.info("FINISH ECRAM setup")
 
 
@@ -182,17 +189,6 @@ try:
         print("read phase")
         record_g_init = []
         for idx_exp in range(0, num_rps):
-
-                # time.sleep(wait_between_read_and_write)
-                logging.info("writing phase")
-                print("writing phase")
-                keithley_instrument.write("Write.run()") 
-
-                time.sleep(write_func_complete)
-                
-                logging.info("writing successfully")
-
-                time.sleep(wait_between_read_and_write)
                 
                 # read
                 logging.info("reading phase")
@@ -219,20 +215,7 @@ try:
                                                 'time':cur_time - time_ref + keithely_time_stamp,
                                                 'i_channel': measured_i,
                                                 'date_time': cur_datetime,
-                                                'comment': comment_exp + '; vg: [V]' + str(vg_amp) 
-                                                                + '; vd: [V]'+ str(vd_amplitude) 
-                                                                + '; read_pulse: [V]'+ str(measured_vd)
-                                                                + '; rpulse_width [s]: ' + str(pulse_width_read)
-                                                                + '; rpulse_period [s]: ' + str(pulse_period_read)
-                                                                + '; delta_t: [s]' + str(delta_tpre_tpost)
-                                                                + '; pulse_width [s]: ' + str(pulse_width)
-                                                                + '; pulse_period [s]: ' + str(pulse_period)
-                                                                + '; n_read_points: ' + str(n_samples)
-                                                                + '; n_write_cycle : ' + str(n_write_cycle)
-                                                                + '; sw_settle_time [s]: ' + str(sw_settle_time)
-                                                                + '; wait_between_read_and_write [s]: ' + str(wait_between_read_and_write)
-                                                                + '; wait_between_exp [s]: ' + str(wait_between_exp),
-
+                                                'comment': comment_exp
                                                 }
                                         file_writer.writerow(info)
                                 average = average + measured_i
@@ -241,6 +224,9 @@ try:
                 except Exception as e:
                         logging.info(f"Keithley error: {e=}")
                         logging.info(f"EXIT: {e=}")
+                                # open switch
+                        arduino_board.digital[arduino_bin_mux1_enable].write(1)
+                        arduino_board.digital[arduino_bin_mux2_enable].write(1)
                         sys.exit(-1)
 
                 # wait between exp
@@ -254,18 +240,24 @@ try:
         with open(filename, 'r') as file:
                 lines = file.readlines()
         # point to tsp run file
-        lines[51]= 'file_tsp_path = \"C:/Users/20245580/LabCode/Codes_For_Experiments/codes/pulse_train_2ch_dg_automate_stdp.tsp\"' \
-                                + '\n' 
+        if comment_exp == 'dg':
+                lines[51]= 'file_tsp_path = \"C:/Users/20245580/LabCode/Codes_For_Experiments/codes/pulse_train_2ch_dg_automate_stdp.tsp\"' \
+                                        + '\n'
+        if comment_exp == 'gd':
+                lines[51]= 'file_tsp_path = \"C:/Users/20245580/LabCode/Codes_For_Experiments/codes/pulse_train_2ch_gd_automate_stdp.tsp\"' \
+                                        + '\n' 
         # Write the modified lines back to the file
         with open(filename, 'w') as file:
                 file.writelines(lines)
         
         # record the delta_t
-        delta_t = -10
+        delta_t = 10
+        if comment_exp == 'dg':
+                delta_t = -delta_t
 
         logging.info("RUN dg/gd (Drain=Pre before Gate=Post)")
-        # import keithley_transfer_curve_automate_stdp.py
-        logging.info("FINISH dg (Drain=Pre before Gate=Post)")
+        import keithley_interchannelPulseTrain_stdp_automate
+        logging.info("FINISH dg/gd (Drain=Pre before Gate=Post)")
         
         logging.info("READING channel conductance, after stdp")
 
@@ -307,20 +299,7 @@ try:
                                                 'time':cur_time - time_ref + keithely_time_stamp,
                                                 'i_channel': measured_i,
                                                 'date_time': cur_datetime,
-                                                'comment': comment_exp + '; vg: [V]' + str(vg_amp) 
-                                                                + '; vd: [V]'+ str(vd_amplitude) 
-                                                                + '; read_pulse: [V]'+ str(measured_vd)
-                                                                + '; rpulse_width [s]: ' + str(pulse_width_read)
-                                                                + '; rpulse_period [s]: ' + str(pulse_period_read)
-                                                                + '; delta_t: [s]' + str(delta_tpre_tpost)
-                                                                + '; pulse_width [s]: ' + str(pulse_width)
-                                                                + '; pulse_period [s]: ' + str(pulse_period)
-                                                                + '; n_read_points: ' + str(n_samples)
-                                                                + '; n_write_cycle : ' + str(n_write_cycle)
-                                                                + '; sw_settle_time [s]: ' + str(sw_settle_time)
-                                                                + '; wait_between_read_and_write [s]: ' + str(wait_between_read_and_write)
-                                                                + '; wait_between_exp [s]: ' + str(wait_between_exp),
-
+                                                'comment': comment_exp 
                                                 }
                                         file_writer.writerow(info)
                                 average = average + measured_i
