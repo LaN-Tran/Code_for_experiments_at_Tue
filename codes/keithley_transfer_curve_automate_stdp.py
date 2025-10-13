@@ -39,14 +39,14 @@ import matplotlib.animation as animation
 format = "%(asctime)s: %(message)s"
 log_file_path = 'example.log'
 logging.basicConfig(format=format, level=logging.INFO,  
-                        datefmt="%H:%M:%S", filename= log_file_path, filemode= 'w')
+                        datefmt="%H:%M:%S", filename= log_file_path, filemode= 'a')
 
         # init the instrument handle
     # k = Keithley2600('USB0::0x05E6::0x2636::4480001::INSTR', visa_library = 'C:/windows/System32/visa64.dll')
 rm = pyvisa.ResourceManager('C:/windows/System32/visa64.dll')
 # keithley_instrument = rm.open_resource('TCPIP0::169.254.0.1::inst0::INSTR')
 keithley_instrument = rm.open_resource('TCPIP0::169.254.0.1::inst0::INSTR')
-keithley_instrument.timeout = 10000
+keithley_instrument.timeout = 20000
         # Turn everything OFF
 keithley_instrument.write('smua.source.output = smua.OUTPUT_OFF')
 keithley_instrument.write('smub.source.output = smub.OUTPUT_OFF')
@@ -54,11 +54,11 @@ time.sleep(1)
 
 
         # path to the measurement record
-file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250980/transfer_curve.csv"
+file_path = "C:/Users/20245580/work/Code_for_experiments_at_Tue/exp_data/20251013/transfer_curve.csv"
 
 logging.info("Main    : Prepare measurement")
 
-number_of_measurements = 3
+number_of_measurements = 1
 
 settle_time = 1 # s # after the smu configuration
     
@@ -195,6 +195,9 @@ try:
                                 # # Open all switches
                                 # # ======
                                 # For the relay board: HIGH = OFF = OPEN // LOW = ON = CLOSE
+                    keithley_instrument.write(f"smua.source.output = smua.OUTPUT_OFF")
+                    keithley_instrument.write(f"smub.source.output = smub.OUTPUT_OFF")
+                    keithley_instrument.close()
                     logging.info(f"ERROR: keithley measurement: {e=}")
                     
 
@@ -255,6 +258,10 @@ try:
                                 # # Open all switches
                                 # # ======
                                 # For the relay board: HIGH = OFF = OPEN // LOW = ON = CLOSE
+                
+                    keithley_instrument.write(f"smua.source.output = smua.OUTPUT_OFF")
+                    keithley_instrument.write(f"smub.source.output = smub.OUTPUT_OFF")
+                    keithley_instrument.close()
                     logging.info(f"ERROR: keithley measurement {e=}")
 
                                 # Rest between measurement
@@ -263,8 +270,11 @@ try:
         # # ======
         # # Open all switches
         # # ======
-    logging.info("Keithley measurement    : EXIT")
-            # turn off the keithley 
+    logging.info("Keithley measurement    : EXIT NORMALLY")
+            # turn off the keithley
+    # keithley_instrument.write(f"smua.source.output = smua.OUTPUT_OFF")
+    # keithley_instrument.write(f"smub.source.output = smub.OUTPUT_OFF")
+    keithley_instrument.close()
     # keithley_instrument.write(f"smua.source.output = smua.OUTPUT_OFF")
     # keithley_instrument.write(f"smub.source.output = smub.OUTPUT_OFF")
 
@@ -272,10 +282,11 @@ except KeyboardInterrupt:
      # # ======
         # # Open all switches
         # # ======
-    logging.info("Keithley measurement    : EXIT")
+    logging.info("Keithley measurement    : EXIT INTERRUPTED")
             # turn off the keithley
-    # keithley_instrument.write(f"smua.source.output = smua.OUTPUT_OFF")
-    # keithley_instrument.write(f"smub.source.output = smub.OUTPUT_OFF")
+    keithley_instrument.write(f"smua.source.output = smua.OUTPUT_OFF")
+    keithley_instrument.write(f"smub.source.output = smub.OUTPUT_OFF")
+    keithley_instrument.close()
 
 
 
