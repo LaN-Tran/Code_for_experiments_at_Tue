@@ -115,11 +115,11 @@ pulse_period_read = pulse_width_read +  read_pulse_off # [s]
 read_func_complete = (pulse_period_read)*number_read_pulses
 
 arduino_settle_time = 1 # [s]
-wait_between_exp = 1 # [s]
+wait_between_exp = 20 # [s]
 # for g_init
-num_rps = 3
+num_rps = 1
 # for g_after
-num_rps_after_stdp = 5
+num_rps_after_stdp = 2
 
         # ======
         # start measurement
@@ -162,8 +162,8 @@ try:
         logging.info("CONFIGURE ECRAM setup")
         # # arduino mux1 connect to Y1
                 # Y1 configure
-        arduino_board.digital[arduino_bin_mux1_s0].write(0)
-        arduino_board.digital[arduino_bin_mux1_s1].write(1)
+        arduino_board.digital[arduino_bin_mux1_s0].write(1)
+        arduino_board.digital[arduino_bin_mux1_s1].write(0)
         arduino_board.digital[arduino_bin_mux1_s2].write(0)
                 # close switch
         arduino_board.digital[arduino_bin_mux1_enable].write(0)
@@ -171,8 +171,8 @@ try:
 
         # # arduino mux2 connect to Y1
                 # Y1 configure
-        arduino_board.digital[arduino_bin_mux2_s0].write(0)
-        arduino_board.digital[arduino_bin_mux2_s1].write(1)
+        arduino_board.digital[arduino_bin_mux2_s0].write(1)
+        arduino_board.digital[arduino_bin_mux2_s1].write(0)
         arduino_board.digital[arduino_bin_mux2_s2].write(0)
                 # close switch
         arduino_board.digital[arduino_bin_mux2_enable].write(0)

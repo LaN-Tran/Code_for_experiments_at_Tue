@@ -16,7 +16,7 @@ level = 0.8
 
 ton = 0.02
 
-toff = 1.5
+toff = 2
 
 points = 1
 

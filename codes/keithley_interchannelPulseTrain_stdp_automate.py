@@ -40,7 +40,7 @@ logging.basicConfig(format=format, level=logging.INFO,
         # ======
 rm = pyvisa.ResourceManager('C:/windows/System32/visa64.dll')
 keithley_instrument = rm.open_resource('TCPIP0::169.254.0.1::inst0::INSTR')
-keithley_instrument.timeout = 20000
+keithley_instrument.timeout = 10000
         # configure
 keithley_instrument.write(f"smua.measure.nplc = 1")
 
@@ -62,7 +62,7 @@ with open(file_tsp_path) as fp:
 keithley_instrument.write("endscript") 
 
 # SMUA (drain parameters, extract from `pulse_train_2ch.tsp`)
-vd_amplitude = 0.8 # [V]
+vd_amplitude = 0 # [V]
 vg_amp = 0.8 # [V]
 bias_volt = 0 # [V], positve zero; if pulse negative, set to negative zero
 
@@ -70,16 +70,15 @@ bias_volt = 0 # [V], positve zero; if pulse negative, set to negative zero
 pulse_period = 0.05 # [s]
 pulse_width = 0.02 # [s]
 delta_tpre_tpost = 0.002 # [s]
-n_write_cycle = 20
-
+n_write_cycle = 5
 write_func_complete = delta_tpre_tpost + n_write_cycle*pulse_period
 
         # read pulse
 
 
 pulse_width_read = 0.02 # [s]
-read_pulse_off = 1.5 # [s]
-number_read_pulses = 3
+read_pulse_off = 2 # [s]
+number_read_pulses = 1
 pulse_period_read = pulse_width_read +  read_pulse_off # [s]
 read_func_complete = (pulse_period_read)*number_read_pulses
 
@@ -123,10 +122,10 @@ comment_exp = input("comment about exp (dg or gd): ")
 
 try:
     # for n_exp
-    nexp = 3
+    nexp = 7
     sw_settle_time = 1 # [s]
-    wait_between_read_and_write = 5 # [s]
-    wait_between_exp = 5 # [s] = wait between write and read
+    wait_between_read_and_write = 15 # [s]
+    wait_between_exp = 15 # [s] = wait between write and read
 
     # wait for initial conds stable
     time.sleep(5)

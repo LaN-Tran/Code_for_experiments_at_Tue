@@ -58,7 +58,7 @@ file_path = "C:/Users/20245580/work/Code_for_experiments_at_Tue/exp_data/2025101
 
 logging.info("Main    : Prepare measurement")
 
-number_of_measurements = 1
+number_of_measurements = 3
 
 settle_time = 1 # s # after the smu configuration
     

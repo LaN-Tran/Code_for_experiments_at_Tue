@@ -197,49 +197,49 @@ wait_read_to_write = input("enter \\wait r-t-w [s]\\, NO SPACE: ")
 wait_write_to_read = input("enter \\wait w-t-r [s]\\, NO SPACE: ")
 
     # Vd
-lines[65]= 'vd_amplitude = ' + Vd_amp + ' # [V]'\
+lines[64]= 'vd_amplitude = ' + Vd_amp + ' # [V]'\
             + '\n' 
     # Vg
-lines[66]= 'vg_amp = ' + Vg_amp + ' # [V]'\
+lines[65]= 'vg_amp = ' + Vg_amp + ' # [V]'\
             + '\n' 
     # w pulse period
-lines[70]= 'pulse_period = ' + pulse_period + ' # [s]'\
+lines[69]= 'pulse_period = ' + pulse_period + ' # [s]'\
             + '\n' 
     # w pulse width
-lines[71]= 'pulse_width = ' + pulse_width + ' # [s]'\
+lines[70]= 'pulse_width = ' + pulse_width + ' # [s]'\
             + '\n' 
     # delta_t
-lines[72]= 'delta_tpre_tpost = ' + delta_t + ' # [s]'\
+lines[71]= 'delta_tpre_tpost = ' + delta_t + ' # [s]'\
             + '\n' 
     # number of w pulses
 nwp = str(int(number_of_pulses) + 1)
-lines[73]= 'n_write_cycle = ' + nwp\
+lines[72]= 'n_write_cycle = ' + nwp\
             + '\n' 
     # r pulse width
-lines[80]= 'pulse_width_read = ' + t_on + ' # [s]'\
+lines[78]= 'pulse_width_read = ' + t_on + ' # [s]'\
             + '\n' 
     # r pulse off
-lines[81]= 'read_pulse_off = ' + t_off + ' # [s]'\
+lines[79]= 'read_pulse_off = ' + t_off + ' # [s]'\
             + '\n' 
     # # of r pulses
-lines[82]= 'number_read_pulses = ' + number_of_rpulses \
+lines[80]= 'number_read_pulses = ' + number_of_rpulses \
             + '\n' 
     # record file exp path
-lines[89]= 'file_path = \"C:/Users/20245580/work/Code_for_experiments_at_Tue/exp_data' \
+lines[87]= 'file_path = \"C:/Users/20245580/work/Code_for_experiments_at_Tue/exp_data' \
                         + '/' + exp_date + '/pulse_exp.csv\"' \
                         + '\n' 
     # record file exp_avg path
-lines[90]= 'file_path_avg = \"C:/Users/20245580/work/Code_for_experiments_at_Tue/exp_data' \
+lines[88]= 'file_path_avg = \"C:/Users/20245580/work/Code_for_experiments_at_Tue/exp_data' \
                         + '/' + exp_date + '/pulse_exp_avg.csv\"' \
                         + '\n' 
     # number of exps
-lines[126]= '    nexp = ' + nexp\
+lines[124]= '    nexp = ' + nexp\
             + '\n' 
     # wait r-t-w
-lines[128]= '    wait_between_read_and_write = ' + wait_read_to_write + ' # [s]'\
+lines[126]= '    wait_between_read_and_write = ' + wait_read_to_write + ' # [s]'\
             + '\n' 
     # wait r-t-w
-lines[129]= '    wait_between_exp = ' + wait_write_to_read \
+lines[127]= '    wait_between_exp = ' + wait_write_to_read \
             + ' # [s] = wait between write and read'\
             + '\n' 
 
