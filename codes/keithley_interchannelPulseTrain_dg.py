@@ -40,7 +40,7 @@ logging.basicConfig(format=format, level=logging.INFO,
         # Keithley, smua drain for read
         # ======
 rm = pyvisa.ResourceManager('C:/windows/System32/visa64.dll')
-keithley_instrument = rm.open_resource('TCPIP0::169.254.0.1::inst0::INSTR')
+keithley_instrument = rm.open_resource('USB0::0x05E6::0x2636::4480001::INSTR')
 keithley_instrument.timeout = 10000
         # configure
 keithley_instrument.write(f"smua.measure.nplc = 1")
@@ -49,14 +49,14 @@ keithley_instrument.write(f"smua.measure.nplc = 1")
         # Upload the keithley scripts to keithley for the program
         # ======
 # script for writing phase
-file_tsp_path = "C:\\Users\\20245580\\work\\Code_for_experiments_at_Tue\\codes\\pulse_train_2ch_dg.tsp" 
+file_tsp_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/codes\\pulse_train_2ch_dg.tsp" 
 keithley_instrument.write(f"loadscript Write")
 with open(file_tsp_path) as fp:
     for line in fp: keithley_instrument.write(line)
 keithley_instrument.write("endscript") 
 
 # script for reading phase
-file_tsp_path = "C:\\Users\\20245580\\work\\Code_for_experiments_at_Tue\\codes\\single_pulse_measurement.tsp" 
+file_tsp_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/codes\\single_pulse_measurement.tsp" 
 keithley_instrument.write(f"loadscript Read")
 with open(file_tsp_path) as fp:
     for line in fp: keithley_instrument.write(line)
@@ -71,7 +71,7 @@ bias_volt = 0 # [V], positve zero; if pulse negative, set to negative zero
 pulse_period = 0.05  # [s]
 pulse_width = 0.02 # [s]
 delta_tpre_tpost = 0.05 # [s]
-n_write_cycle = 10
+n_write_cycle = 9
 
 write_func_complete = delta_tpre_tpost + n_write_cycle*pulse_period
 
@@ -87,8 +87,8 @@ read_func_complete = (pulse_period_read)*number_read_pulses
         # # ======
         # # record to file
         # # ======
-file_path = "C:\\Users\\20245580\\work\\Code_for_experiments_at_Tue\\exp_data\\20251003\\pulse_exp.csv"
-file_path_avg = "C:\\Users\\20245580\\work\\Code_for_experiments_at_Tue\\exp_data\\20251003\\pulse_exp_avg.csv"
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data\\20251014\\pulse_exp.csv"
+file_path_avg = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data\\20251014\\pulse_exp_avg.csv"
                 # ======
                 # Prepare record file
                 # ======
@@ -103,7 +103,7 @@ else:
                 file_writer.writeheader()
 
 
-field_names_avg = ['time', 'i_channel_avg', 'date_time', 'comment']
+field_names_avg = ['time', 'i_channel_avg', 'v_drain', 'date_time', 'comment']
 if os.path.exists(file_path_avg):
         print("File exists.")
 else:
@@ -124,10 +124,10 @@ comment_exp = input("comment about exp (dg or gd): ")
 
 try:
     # for n_exp
-    nexp = 15
+    nexp = 7
     sw_settle_time = 1 # [s]
-    wait_between_read_and_write = 10 # [s]
-    wait_between_exp = 10 # [s] = wait between write and read
+    wait_between_read_and_write = 15 # [s]
+    wait_between_exp = 15 # [s] = wait between write and read
 
     # wait for initial conds stable
     time.sleep(5)
@@ -223,13 +223,24 @@ try:
             sys.exit(-1)
 
         # wait between exp -> change to read during Vd 0V, Vg 0V
-        time.sleep(wait_between_exp)
-        logging.info("before exp")
+        # time.sleep(wait_between_exp)
+        logging.info("wait_between_exp")
+
+        keithley_instrument.write(f"smua.measure.autozero = smua.AUTOZERO_OFF")
+        keithley_instrument.write(f"smua.measure.autorangei = smua.AUTORANGE_ON")
+        keithley_instrument.write(f"smua.source.func = smua.OUTPUT_DCVOLTS")
+        keithley_instrument.write(f"smua.source.levelv =  0")
+
+        keithley_instrument.write(f"smub.source.func = smub.OUTPUT_DCVOLTS")
+        keithley_instrument.write(f"smub.source.levelv =  0")
+
+        keithley_instrument.write(f"smua.source.output = smua.OUTPUT_ON")
+        keithley_instrument.write(f"smub.source.output = smub.OUTPUT_ON")
         start_time = time.time()
         while (time.time() - start_time) < wait_between_exp:
                 try:
-                        measured_i_channel = keithley_instrument.smua.measure.i()
-                        measured_v_drain = keithley_instrument.smua.measure.v()
+                        measured_i_channel = float(keithley_instrument.query('print(smua.measure.i())'))
+                        measured_v_drain = float(keithley_instrument.query('print(smua.measure.v())'))
                         # measured_i_gate =  keithley_instrument.smub.measure.i()
                         # measured_v_gate = keithley_instrument.smub.measure.v()
                         # record to file
@@ -237,7 +248,7 @@ try:
                                         # NOTICE: THE WHILE LOOP/ FOR LOOP INSIDE -> NO CONSTANT UPDATE TO FILE AT ALL -> NO ANIMATION
                                 file_writer = csv.DictWriter(file, fieldnames=field_names)
                                 info = {
-                                        'time':time.time() - time_ref + keithely_time_stamp,
+                                        'time':time.time() - time_ref,
                                         'i_channel': measured_i_channel,
                                         'v_drain' : measured_v_drain,
                                         'date_time': cur_datetime,
@@ -257,7 +268,31 @@ try:
 
                                         }
                                 file_writer.writerow(info)
-                        
+
+                        with open(file_path_avg, 'a') as file: 
+                                # NOTICE: THE WHILE LOOP/ FOR LOOP INSIDE -> NO CONSTANT UPDATE TO FILE AT ALL -> NO ANIMATION
+                                file_writer = csv.DictWriter(file, fieldnames=field_names_avg)
+                                info = {
+                                        'time':time.time() - time_ref,
+                                        'i_channel_avg': measured_i_channel,
+                                        'v_drain' : measured_v_drain,
+                                        'date_time': cur_datetime,
+                                        'comment': comment_exp + '; vg: [V]' + str(vg_amp) 
+                                                        + '; vd: [V]'+ str(measured_v_drain) 
+                                                        + '; read_pulse: [V]'+ str(measured_vd)
+                                                        + '; rpulse_width [s]: ' + str(pulse_width_read)
+                                                        + '; rpulse_period [s]: ' + str(pulse_period_read)
+                                                        + '; delta_t: [s]' + str(delta_tpre_tpost)
+                                                        + '; pulse_width [s]: ' + str(pulse_width)
+                                                        + '; pulse_period [s]: ' + str(pulse_period)
+                                                        + '; n_read_points: ' + str(n_samples)
+                                                        + '; n_write_cycle : ' + str(n_write_cycle)
+                                                        + '; sw_settle_time [s]: ' + str(sw_settle_time)
+                                                        + '; wait_between_read_and_write [s]: ' + str(wait_between_read_and_write)
+                                                        + '; wait_between_exp [s]: ' + str(wait_between_exp),
+
+                                        }
+                                file_writer.writerow(info)
                 except Exception as CatchError:
                         logging.info("ERROR: keithley measure function error")
                         logging.info(f"{CatchError=}")
