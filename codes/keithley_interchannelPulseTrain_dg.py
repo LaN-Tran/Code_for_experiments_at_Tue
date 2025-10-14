@@ -93,7 +93,7 @@ file_path_avg = "C:\\Users\\20245580\\work\\Code_for_experiments_at_Tue\\exp_dat
                 # Prepare record file
                 # ======
 logging.info("Prepare record file")
-field_names = ['time', 'i_channel', 'date_time', 'comment']
+field_names = ['time', 'i_channel', 'v_drain', 'date_time', 'comment']
 if os.path.exists(file_path):
         print("File exists.")
 else:
@@ -169,6 +169,7 @@ try:
                     info = {
                             'time':cur_time - time_ref + keithely_time_stamp,
                             'i_channel': measured_i,
+                            'v_drain' : measured_vd,
                             'date_time': cur_datetime,
                             'comment': comment_exp + '; vg: [V]' + str(vg_amp) 
                                         + '; vd: [V]'+ str(vd_amplitude) 
@@ -194,6 +195,7 @@ try:
                 info = {
                         'time':cur_time - time_ref,
                         'i_channel_avg': average,
+                        'v_drain' : measured_vd,
                         'date_time': cur_datetime,
                         'comment': comment_exp + '; vg: [V]' + str(vg_amp) 
                                         + '; vd: [V]'+ str(vd_amplitude) 
@@ -220,8 +222,45 @@ try:
             logging.info(f"EXIT: {e=}")
             sys.exit(-1)
 
-        # wait between exp
+        # wait between exp -> change to read during Vd 0V, Vg 0V
         time.sleep(wait_between_exp)
+        logging.info("before exp")
+        start_time = time.time()
+        while (time.time() - start_time) < wait_between_exp:
+                try:
+                        measured_i_channel = keithley_instrument.smua.measure.i()
+                        measured_v_drain = keithley_instrument.smua.measure.v()
+                        # measured_i_gate =  keithley_instrument.smub.measure.i()
+                        # measured_v_gate = keithley_instrument.smub.measure.v()
+                        # record to file
+                        with open(file_path, 'a') as file: 
+                                        # NOTICE: THE WHILE LOOP/ FOR LOOP INSIDE -> NO CONSTANT UPDATE TO FILE AT ALL -> NO ANIMATION
+                                file_writer = csv.DictWriter(file, fieldnames=field_names)
+                                info = {
+                                        'time':time.time() - time_ref + keithely_time_stamp,
+                                        'i_channel': measured_i_channel,
+                                        'v_drain' : measured_v_drain,
+                                        'date_time': cur_datetime,
+                                        'comment': comment_exp + '; vg: [V]' + str(vg_amp) 
+                                                        + '; vd: [V]'+ str(measured_v_drain) 
+                                                        + '; read_pulse: [V]'+ str(measured_vd)
+                                                        + '; rpulse_width [s]: ' + str(pulse_width_read)
+                                                        + '; rpulse_period [s]: ' + str(pulse_period_read)
+                                                        + '; delta_t: [s]' + str(delta_tpre_tpost)
+                                                        + '; pulse_width [s]: ' + str(pulse_width)
+                                                        + '; pulse_period [s]: ' + str(pulse_period)
+                                                        + '; n_read_points: ' + str(n_samples)
+                                                        + '; n_write_cycle : ' + str(n_write_cycle)
+                                                        + '; sw_settle_time [s]: ' + str(sw_settle_time)
+                                                        + '; wait_between_read_and_write [s]: ' + str(wait_between_read_and_write)
+                                                        + '; wait_between_exp [s]: ' + str(wait_between_exp),
+
+                                        }
+                                file_writer.writerow(info)
+                        
+                except Exception as CatchError:
+                        logging.info("ERROR: keithley measure function error")
+                        logging.info(f"{CatchError=}")
 
     logging.info("MEASUREMENT FINISH")
     
