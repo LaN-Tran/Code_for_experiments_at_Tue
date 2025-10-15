@@ -15,7 +15,7 @@
 
 import matplotlib.pyplot as plt
 import pandas as pd
-from scipy import signal
+# from scipy import signal
 import numpy as np
 
 # ======
@@ -59,35 +59,35 @@ import numpy as np
 # ======
 # 3 plots
 # ======
-data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250915/ecram_pulse_drain.csv")
-# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250901/ecram.csv")
+# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250915/ecram_pulse_drain.csv")
+# # data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250901/ecram.csv")
 
-stdp_post_pre_t = data['time']
-stdp_post_pre_i = data['i_channel']
-stdp_post_pre_ig = data['i_gate']
-stdp_post_pre_v = data['v_gate']
-
-
-fig, (ax1, ax2, ax3) = plt.subplots(3, 1, sharex=True)
-
-ax1.set_xlabel('time [s]')
-ax1.set_ylabel('v gate [V]')
-ax1.grid()
-
-ax2.set_xlabel('time [s]')
-ax2.set_ylabel('i channel [A]')
-ax2.grid()
-
-ax3.set_xlabel('time [s]')
-ax3.set_ylabel('i gate [A]')
-ax3.grid()
-
-ax1.plot(stdp_post_pre_t, stdp_post_pre_v)
-ax2.plot(stdp_post_pre_t, stdp_post_pre_i)
-ax3.plot(stdp_post_pre_t, stdp_post_pre_ig)
+# stdp_post_pre_t = data['time']
+# stdp_post_pre_i = data['i_channel']
+# stdp_post_pre_ig = data['i_gate']
+# stdp_post_pre_v = data['v_gate']
 
 
-plt.show()
+# fig, (ax1, ax2, ax3) = plt.subplots(3, 1, sharex=True)
+
+# ax1.set_xlabel('time [s]')
+# ax1.set_ylabel('v gate [V]')
+# ax1.grid()
+
+# ax2.set_xlabel('time [s]')
+# ax2.set_ylabel('i channel [A]')
+# ax2.grid()
+
+# ax3.set_xlabel('time [s]')
+# ax3.set_ylabel('i gate [A]')
+# ax3.grid()
+
+# ax1.plot(stdp_post_pre_t, stdp_post_pre_v)
+# ax2.plot(stdp_post_pre_t, stdp_post_pre_i)
+# ax3.plot(stdp_post_pre_t, stdp_post_pre_ig)
+
+
+# plt.show()
 
 # ======
 # 2 plots
@@ -117,13 +117,26 @@ plt.show()
 
 
 # ======
-# 1 plots
+# 1 plots, pulse exp
 # ======
-data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250912/pulse_exp_avg.csv")
+# data = pd.read_csv("C:\\Users\\20245580\\work\\Code_for_experiments_at_Tue\\exp_data\\20251013\\pulse_exp.csv")
 
-stdp_post_pre_i = data['i_channel_avg']
-stdp_post_pre_t = np.arange(0, len(stdp_post_pre_i))#data['time']#np.arange(0, len(stdp_post_pre_i))#data['v_gate'] #np.arange(0, len(stdp_post_pre_i))#data['v_gate']
+# stdp_post_pre_i = data['i_channel']
+# stdp_post_pre_t = np.arange(0, len(stdp_post_pre_i))#data['time']#np.arange(0, len(stdp_post_pre_i))#data['v_gate'] #np.arange(0, len(stdp_post_pre_i))#data['v_gate']
 
-plt.plot(stdp_post_pre_t, stdp_post_pre_i)
+# plt.plot(stdp_post_pre_t, stdp_post_pre_i)
+
+# plt.show()
+
+
+# ======
+# 1 plots, stdp
+# ======
+data = pd.read_csv("C:\\Users\\20245580\\work\\Code_for_experiments_at_Tue\\exp_data\\20251015\\stdp_processed.csv")
+
+delta_t = data['delta']
+w_changge = data['change_percentage'] #np.arange(0, len(stdp_post_pre_i))#data['v_gate']
+
+plt.scatter(delta_t, w_changge)
 
 plt.show()

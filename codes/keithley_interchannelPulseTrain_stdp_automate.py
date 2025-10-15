@@ -48,7 +48,7 @@ keithley_instrument.write(f"smua.measure.nplc = 1")
         # Upload the keithley scripts to keithley for the program
         # ======
 # script for writing phase
-file_tsp_path = "C:/Users/20245580/work/Code_for_experiments_at_Tue/codes/pulse_train_2ch_dg_automate_stdp.tsp"
+file_tsp_path = "C:/Users/20245580/work/Code_for_experiments_at_Tue/codes/pulse_train_2ch_gd_automate_stdp.tsp"
 keithley_instrument.write(f"loadscript Write")
 with open(file_tsp_path) as fp:
     for line in fp: keithley_instrument.write(line)
@@ -62,15 +62,15 @@ with open(file_tsp_path) as fp:
 keithley_instrument.write("endscript") 
 
 # SMUA (drain parameters, extract from `pulse_train_2ch.tsp`)
-vd_amplitude = 0 # [V]
+vd_amplitude = 0.8 # [V]
 vg_amp = 0.8 # [V]
 bias_volt = 0 # [V], positve zero; if pulse negative, set to negative zero
 
 
-pulse_period = 0.05 # [s]
+pulse_period = 0.1 # [s]
 pulse_width = 0.02 # [s]
-delta_tpre_tpost = 0.002 # [s]
-n_write_cycle = 5
+delta_tpre_tpost = 0.003 # [s]
+n_write_cycle = 41
 write_func_complete = delta_tpre_tpost + n_write_cycle*pulse_period
 
         # read pulse
@@ -85,8 +85,8 @@ read_func_complete = (pulse_period_read)*number_read_pulses
         # # ======
         # # record to file
         # # ======
-file_path = "C:/Users/20245580/work/Code_for_experiments_at_Tue/exp_data/20251013/pulse_exp.csv"
-file_path_avg = "C:/Users/20245580/work/Code_for_experiments_at_Tue/exp_data/20251013/pulse_exp_avg.csv"
+file_path = "C:/Users/20245580/work/Code_for_experiments_at_Tue/exp_data/20251015/pulse_exp.csv"
+file_path_avg = "C:/Users/20245580/work/Code_for_experiments_at_Tue/exp_data/20251015/pulse_exp_avg.csv"
                 # ======
                 # Prepare record file
                 # ======
@@ -118,7 +118,7 @@ logging.info("start measurement")
 time_ref = time.time()
 
 logging.info("comment about the exp")
-comment_exp = input("comment about exp (dg or gd): ")
+comment_exp = 'none'#input("comment about exp (dg or gd): ")
 
 try:
     # for n_exp
@@ -151,7 +151,7 @@ try:
 
             time.sleep(read_func_complete)
 
-            logging.info(f"read successfully")
+            
             # save to file
             cur_time = time.time()
             cur_datetime = datetime.now()
@@ -212,7 +212,7 @@ try:
             # clear keithley buffer before another read
         #     keithley_instrument.smua.source.output = keithley_instrument.smua.OUTPUT_ON  
         #     time.sleep(keithley_settle_time)
-
+            logging.info(f"read successfully")
         except Exception as e:
             logging.info(f"Keithley error: {e=}")
             logging.info(f"EXIT: {e=}")

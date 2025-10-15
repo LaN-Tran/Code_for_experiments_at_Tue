@@ -81,8 +81,8 @@ logging.info("UPLOAD read keithley ")
         # # ======
         # # record to file
         # # ======
-file_path = "C:\\Users\\20245580\\work\\Code_for_experiments_at_Tue\\exp_data/20251013/stdp_process_monitor_exp.csv"
-file_path_processed_stdp= "C:\\Users\\20245580\\work\\Code_for_experiments_at_Tue\\exp_data/20251013/stdp_processed.csv"
+file_path = "C:\\Users\\20245580\\work\\Code_for_experiments_at_Tue\\exp_data/20251015/stdp_process_monitor_exp.csv"
+file_path_processed_stdp= "C:\\Users\\20245580\\work\\Code_for_experiments_at_Tue\\exp_data/20251015/stdp_processed.csv"
                 # ======
                 # Prepare record file
                 # ======
@@ -109,7 +109,7 @@ else:
         # Measurement parameters
         # ======
 pulse_width_read = 0.02 # [s]
-read_pulse_off = 1.5 # [s]
+read_pulse_off = 2 # [s]
 number_read_pulses = 1
 pulse_period_read = pulse_width_read +  read_pulse_off # [s]
 read_func_complete = (pulse_period_read)*number_read_pulses
@@ -260,7 +260,7 @@ try:
                 file.writelines(lines)
         
         # record the delta_t
-        delta_t = 0.002
+        delta_t = 0.003
         if comment_exp == 'dg':
                 delta_t = -delta_t
 
