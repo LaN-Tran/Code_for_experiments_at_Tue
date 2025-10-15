@@ -40,7 +40,7 @@ logging.info("MEASUREMENT SETUP")
 
 logging.info("MODIFY keithley_transfer_curve_stdp_automate.py")
     # Read file and modify content
-filename = 'C:\\Users\\20245580\\work\\Code_for_experiments_at_Tue\\codes\\keithley_transfer_curve_automate_stdp.py'
+filename = 'C:/Users/20245580/LabCode/Codes_For_Experiments/codes\\keithley_transfer_curve_automate_stdp.py'
 with open(filename, 'r') as file:
     lines = file.readlines()
 
@@ -48,7 +48,7 @@ with open(filename, 'r') as file:
 print(f"{'='*5}\nTransfer curve file content modification\n{'='*5}")
 print(f"!! Modify path of the recorded file")
 exp_date = input("enter <date> for folder exp_data/<date>, NO SPACE: ")
-lines[56]= 'file_path = \"C:/Users/20245580/work/Code_for_experiments_at_Tue/exp_data' \
+lines[56]= 'file_path = \"C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data' \
                         + '/' + exp_date + '/transfer_curve.csv\"' \
                         + '\n' 
 
@@ -59,7 +59,7 @@ logging.info("FINISH MODIFY keithley_transfer_curve_stdp_automate.py")
 
 logging.info("MODIFY single_pulse_measurement_automate_stdp.tsp")
 print(f"{'='*5}\nsingle_pulse_measurement_automate_stdp.tsp\n{'='*5}")
-filename = 'C:\\Users\\20245580\\work\\Code_for_experiments_at_Tue\\codes\\single_pulse_measurement_automate_stdp.tsp'
+filename = 'C:/Users/20245580/LabCode/Codes_For_Experiments/codes\\single_pulse_measurement_automate_stdp.tsp'
 with open(filename, 'r') as file:
     lines = file.readlines()
 
@@ -88,7 +88,7 @@ logging.info("FINISH MODIFY single_pulse_measurement_automate_stdp.tsp")
 
 logging.info("MODIFY multiple_pulse_measurement_automate_stdp.tsp")
 print(f"{'='*5}\multiple_pulse_measurement_automate_stdp.tsp\n{'='*5}")
-filename = 'C:\\Users\\20245580\\work\\Code_for_experiments_at_Tue\\codes\\multiple_pulse_measurement_automate_stdp.tsp'
+filename = 'C:/Users/20245580/LabCode/Codes_For_Experiments/codes\\multiple_pulse_measurement_automate_stdp.tsp'
 with open(filename, 'r') as file:
     lines = file.readlines()
 
@@ -118,7 +118,7 @@ logging.info("FINISH MODIFY multiple_pulse_measurement_automate_stdp.tsp")
 logging.info("MODIFY pulse_train_2ch_dg_automate_stdp.tsp")
     # Read file and modify content
 print(f"{'='*5}\npulse_train_2ch_dg_automate_stdp.tsp\n{'='*5}")
-filename = 'C:\\Users\\20245580\\work\\Code_for_experiments_at_Tue\\codes\\pulse_train_2ch_dg_automate_stdp.tsp'
+filename = 'C:/Users/20245580/LabCode/Codes_For_Experiments/codes\\pulse_train_2ch_dg_automate_stdp.tsp'
 with open(filename, 'r') as file:
     lines = file.readlines()
 
@@ -157,7 +157,7 @@ logging.info("MODIFY pulse_train_2ch_gd_automate_stdp.tsp")
     # Read file and modify content
 print(f"{'='*5}\npulse_train_2ch_gd_automate_stdp.tsp\n{'='*5}")
 print(f"Same parameters with pulse_train_2ch_dg_automate_stdp.tsp")
-filename = 'C:\\Users\\20245580\\work\\Code_for_experiments_at_Tue\\codes\\pulse_train_2ch_gd_automate_stdp.tsp'
+filename = 'C:/Users/20245580/LabCode/Codes_For_Experiments/codes\\pulse_train_2ch_gd_automate_stdp.tsp'
 with open(filename, 'r') as file:
     lines = file.readlines()
 
@@ -188,7 +188,7 @@ logging.info("FINISH MODIFY pulse_train_2ch_gd_automate_stdp.tsp")
 logging.info("MODIFY keithley_interchannelPulseTrain_stdp_automate.py")
     # Read file and modify content
 print(f"{'='*5}\nkeithley_interchannelPulseTrain_stdp_automate.py\n{'='*5}")
-filename = 'C:\\Users\\20245580\\work\\Code_for_experiments_at_Tue\\codes\\keithley_interchannelPulseTrain_stdp_automate.py'
+filename = 'C:/Users/20245580/LabCode/Codes_For_Experiments/codes\\keithley_interchannelPulseTrain_stdp_automate.py'
 with open(filename, 'r') as file:
     lines = file.readlines()
 
@@ -225,11 +225,11 @@ lines[79]= 'read_pulse_off = ' + t_off + ' # [s]'\
 lines[80]= 'number_read_pulses = ' + number_of_rpulses \
             + '\n' 
     # record file exp path
-lines[87]= 'file_path = \"C:/Users/20245580/work/Code_for_experiments_at_Tue/exp_data' \
+lines[87]= 'file_path = \"C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data' \
                         + '/' + exp_date + '/pulse_exp.csv\"' \
                         + '\n' 
     # record file exp_avg path
-lines[88]= 'file_path_avg = \"C:/Users/20245580/work/Code_for_experiments_at_Tue/exp_data' \
+lines[88]= 'file_path_avg = \"C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data' \
                         + '/' + exp_date + '/pulse_exp_avg.csv\"' \
                         + '\n' 
     # number of exps

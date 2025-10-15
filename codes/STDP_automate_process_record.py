@@ -55,7 +55,8 @@ arduino_bin_mux2_s2 = 8 # (msb)
 
 arduino_bin_mux2_enable = 10 #
     # init arduino aboard
-arduino_board = pyfirmata.Arduino('COM4')
+# arduino_board = pyfirmata.Arduino('COM4')
+arduino_board = pyfirmata.Arduino('COM8')
 arduino_board.digital[arduino_bin_mux1_enable].write(1)
 arduino_board.digital[arduino_bin_mux2_enable].write(1)
 
@@ -71,7 +72,7 @@ logging.info("OPEN keithley resource for reading")
         # ======
 
 # script for reading phase
-file_tsp_path = "C:\\Users\\20245580\\work\\Code_for_experiments_at_Tue\\codes\\single_pulse_measurement_automate_stdp.tsp"
+file_tsp_path = "C:\\Users\\20245580\\LabCode\\Codes_For_Experiments\\codes\\single_pulse_measurement_automate_stdp.tsp"
 logging.info("UPLOAD read keithley ")
 # keithley_instrument.write(f"loadscript Read")
 # with open(file_tsp_path) as fp:
@@ -81,8 +82,8 @@ logging.info("UPLOAD read keithley ")
         # # ======
         # # record to file
         # # ======
-file_path = "C:\\Users\\20245580\\work\\Code_for_experiments_at_Tue\\exp_data/20251015/stdp_process_monitor_exp.csv"
-file_path_processed_stdp= "C:\\Users\\20245580\\work\\Code_for_experiments_at_Tue\\exp_data/20251015/stdp_processed.csv"
+file_path = "C:\\Users\\20245580\\LabCode\\Codes_For_Experiments\\exp_data/20251015/stdp_process_monitor_exp.csv"
+file_path_processed_stdp= "C:\\Users\\20245580\\LabCode\\Codes_For_Experiments\\exp_data/20251015/stdp_processed.csv"
                 # ======
                 # Prepare record file
                 # ======
@@ -119,7 +120,7 @@ wait_between_exp = 20 # [s]
 # for g_init
 num_rps = 1
 # for g_after
-num_rps_after_stdp = 2
+num_rps_after_stdp = 1
 
         # ======
         # start measurement
@@ -189,7 +190,8 @@ try:
         record_g_init = []
 
         logging.info("OPEN keithley resource for reading")
-        keithley_instrument = rm.open_resource('TCPIP0::169.254.0.1::inst0::INSTR')
+        # keithley_instrument = rm.open_resource('TCPIP0::169.254.0.1::inst0::INSTR')
+        keithley_instrument = rm.open_resource('USB0::0x05E6::0x2636::4480001::INSTR')
         keithley_instrument.timeout = 20000
         logging.info("UPLOAD read keithley ")
         keithley_instrument.write(f"loadscript Read")
@@ -245,22 +247,22 @@ try:
         keithley_instrument.close()
         
         logging.info("Set dg/gd (Drain=Pre before Gate=Post)")
-        filename = 'C:\\Users\\20245580\\work\\Code_for_experiments_at_Tue\\codes\\keithley_interchannelPulseTrain_stdp_automate.py'
+        filename = 'C:\\Users\\20245580\\LabCode\\Codes_For_Experiments\\codes\\keithley_interchannelPulseTrain_stdp_automate.py'
         with open(filename, 'r') as file:
                 lines = file.readlines()
         # point to tsp run file
         if comment_exp == 'dg':
-                lines[50]= 'file_tsp_path = \"C:/Users/20245580/work/Code_for_experiments_at_Tue/codes/pulse_train_2ch_dg_automate_stdp.tsp\"' \
+                lines[50]= 'file_tsp_path = \"C:/Users/20245580/LabCode/Codes_For_Experiments/codes/pulse_train_2ch_dg_automate_stdp.tsp\"' \
                                         + '\n'
         if comment_exp == 'gd':
-                lines[50]= 'file_tsp_path = \"C:/Users/20245580/work/Code_for_experiments_at_Tue/codes/pulse_train_2ch_gd_automate_stdp.tsp\"' \
+                lines[50]= 'file_tsp_path = \"C:/Users/20245580/LabCode/Codes_For_Experiments/codes/pulse_train_2ch_gd_automate_stdp.tsp\"' \
                                         + '\n' 
         # Write the modified lines back to the file
         with open(filename, 'w') as file:
                 file.writelines(lines)
         
         # record the delta_t
-        delta_t = 0.003
+        delta_t = 0.001
         if comment_exp == 'dg':
                 delta_t = -delta_t
 
@@ -271,8 +273,8 @@ try:
         logging.info("READING channel conductance, after stdp")
 
         logging.info("OPEN keithley resource for reading")
-        keithley_instrument = rm.open_resource('TCPIP0::169.254.0.1::inst0::INSTR')
-        keithley_instrument.timeout = 10000
+        keithley_instrument = rm.open_resource('USB0::0x05E6::0x2636::4480001::INSTR')
+        keithley_instrument.timeout = 20000
         logging.info("UPLOAD read keithley ")
         keithley_instrument.write(f"loadscript Read")
         with open(file_tsp_path) as fp:

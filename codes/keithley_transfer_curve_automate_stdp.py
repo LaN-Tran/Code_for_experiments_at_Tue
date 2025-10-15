@@ -44,8 +44,7 @@ logging.basicConfig(format=format, level=logging.INFO,
         # init the instrument handle
     # k = Keithley2600('USB0::0x05E6::0x2636::4480001::INSTR', visa_library = 'C:/windows/System32/visa64.dll')
 rm = pyvisa.ResourceManager('C:/windows/System32/visa64.dll')
-# keithley_instrument = rm.open_resource('TCPIP0::169.254.0.1::inst0::INSTR')
-keithley_instrument = rm.open_resource('TCPIP0::169.254.0.1::inst0::INSTR')
+keithley_instrument = rm.open_resource('USB0::0x05E6::0x2636::4480001::INSTR')
 keithley_instrument.timeout = 20000
         # Turn everything OFF
 keithley_instrument.write('smua.source.output = smua.OUTPUT_OFF')
@@ -54,8 +53,8 @@ time.sleep(1)
 
 
         # path to the measurement record
-file_path = "C:/Users/20245580/work/Code_for_experiments_at_Tue/exp_data/20251015/transfer_curve.csv"
-
+        
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20251015/transfer_curve.csv"
 logging.info("Main    : Prepare measurement")
 
 number_of_measurements = 1
@@ -65,8 +64,8 @@ settle_time = 1 # s # after the smu configuration
 sw_settle_time = 10e-3 # s
 rest_duration = 0.2 # s
 
-gate_voltage_smallest = -0.3     # V (for liquid electrolite)
-gate_voltage_largest = 0.3 # V (for liquid electrolite)
+gate_voltage_smallest = 0     # V (for liquid electrolite)
+gate_voltage_largest = 0 # V (for liquid electrolite)
 gate_voltage_step = 0.1 # V
 drain_voltage = 0.05 # V
 try:

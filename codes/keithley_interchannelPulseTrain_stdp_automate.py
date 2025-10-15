@@ -39,7 +39,7 @@ logging.basicConfig(format=format, level=logging.INFO,
         # Keithley, smua drain for read
         # ======
 rm = pyvisa.ResourceManager('C:/windows/System32/visa64.dll')
-keithley_instrument = rm.open_resource('TCPIP0::169.254.0.1::inst0::INSTR')
+keithley_instrument = rm.open_resource('USB0::0x05E6::0x2636::4480001::INSTR')
 keithley_instrument.timeout = 10000
         # configure
 keithley_instrument.write(f"smua.measure.nplc = 1")
@@ -48,14 +48,14 @@ keithley_instrument.write(f"smua.measure.nplc = 1")
         # Upload the keithley scripts to keithley for the program
         # ======
 # script for writing phase
-file_tsp_path = "C:/Users/20245580/work/Code_for_experiments_at_Tue/codes/pulse_train_2ch_gd_automate_stdp.tsp"
+file_tsp_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/codes/pulse_train_2ch_dg_automate_stdp.tsp"
 keithley_instrument.write(f"loadscript Write")
 with open(file_tsp_path) as fp:
     for line in fp: keithley_instrument.write(line)
 keithley_instrument.write("endscript") 
 
 # script for reading phase
-file_tsp_path = "C:\\Users\\20245580\\work\\Code_for_experiments_at_Tue\\codes\\multiple_pulse_measurement_automate_stdp.tsp"
+file_tsp_path = "C:\\Users\\20245580\\LabCode\\Codes_For_Experiments\\codes\\multiple_pulse_measurement_automate_stdp.tsp"
 keithley_instrument.write(f"loadscript Read")
 with open(file_tsp_path) as fp:
     for line in fp: keithley_instrument.write(line)
@@ -69,7 +69,7 @@ bias_volt = 0 # [V], positve zero; if pulse negative, set to negative zero
 
 pulse_period = 0.1 # [s]
 pulse_width = 0.02 # [s]
-delta_tpre_tpost = 0.003 # [s]
+delta_tpre_tpost = 0.001 # [s]
 n_write_cycle = 41
 write_func_complete = delta_tpre_tpost + n_write_cycle*pulse_period
 
@@ -85,8 +85,8 @@ read_func_complete = (pulse_period_read)*number_read_pulses
         # # ======
         # # record to file
         # # ======
-file_path = "C:/Users/20245580/work/Code_for_experiments_at_Tue/exp_data/20251015/pulse_exp.csv"
-file_path_avg = "C:/Users/20245580/work/Code_for_experiments_at_Tue/exp_data/20251015/pulse_exp_avg.csv"
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20251015/pulse_exp.csv"
+file_path_avg = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20251015/pulse_exp_avg.csv"
                 # ======
                 # Prepare record file
                 # ======
