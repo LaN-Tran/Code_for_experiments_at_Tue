@@ -59,8 +59,8 @@ import numpy as np
 # ======
 # 3 plots
 # ======
-# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250915/ecram_pulse_drain.csv")
-# # data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250901/ecram.csv")
+# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20251104/ecram_pulse_drain.csv")
+# # data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20251016/ecram.csv")
 
 # stdp_post_pre_t = data['time']
 # stdp_post_pre_i = data['i_channel']
@@ -93,33 +93,34 @@ import numpy as np
 # 2 plots
 # ======
 # data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250827/ecram_pulse_drain.csv")
+data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20251111/ecram.csv")
 
-# stdp_post_pre_t = data['time']
-# stdp_post_pre_i = data['i_channel']
-# stdp_post_pre_v = data['v_gate']
-
-
-# fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
-
-# ax1.set_xlabel('time [s]')
-# ax1.set_ylabel('v gate [V]')
-# ax1.grid()
-
-# ax2.set_xlabel('time [s]')
-# ax2.set_ylabel('i channel [V], filtered')
-# ax2.grid()
-
-# ax1.plot(stdp_post_pre_t, stdp_post_pre_v)
-# ax2.plot(stdp_post_pre_t, stdp_post_pre_i)
+stdp_post_pre_t = data['time']
+stdp_post_pre_i = data['i_channel']
+stdp_post_pre_v = data['v_gate']
 
 
-# plt.show()
+fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
+
+ax1.set_xlabel('time [s]')
+ax1.set_ylabel('v gate [V]')
+ax1.grid()
+
+ax2.set_xlabel('time [s]')
+ax2.set_ylabel('i channel [V], filtered')
+ax2.grid()
+
+ax1.plot(stdp_post_pre_t, stdp_post_pre_v)
+ax2.plot(stdp_post_pre_t, stdp_post_pre_i)
+
+
+plt.show()
 
 
 # ======
 # 1 plots, pulse exp
 # ======
-# data = pd.read_csv("C:\\Users\\20245580\\work\\Code_for_experiments_at_Tue\\exp_data\\20251013\\pulse_exp.csv")
+# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments\\exp_data\\20251014\\pulse_exp_4D_4v1.csv")
 
 # stdp_post_pre_i = data['i_channel']
 # stdp_post_pre_t = np.arange(0, len(stdp_post_pre_i))#data['time']#np.arange(0, len(stdp_post_pre_i))#data['v_gate'] #np.arange(0, len(stdp_post_pre_i))#data['v_gate']
@@ -132,11 +133,11 @@ import numpy as np
 # ======
 # 1 plots, stdp
 # ======
-data = pd.read_csv("C:\\Users\\20245580\\work\\Code_for_experiments_at_Tue\\exp_data\\20251015\\stdp_processed.csv")
+# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data\\20251015\\stdp_processed.csv")
 
-delta_t = data['delta']
-w_changge = data['change_percentage'] #np.arange(0, len(stdp_post_pre_i))#data['v_gate']
+# delta_t = data['delta']
+# w_changge = data['change_percentage'] #np.arange(0, len(stdp_post_pre_i))#data['v_gate']
 
-plt.scatter(delta_t, w_changge)
+# plt.scatter(delta_t, w_changge)
 
-plt.show()
+# plt.show()
