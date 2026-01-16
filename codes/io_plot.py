@@ -59,35 +59,37 @@ import numpy as np
 # ======
 # 3 plots
 # ======
-# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20251126/ecram_pulse_drain.csv")
-# # data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20251124/ecram.csv")
+# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20251212/ecram_pulse_drain.csv")
+# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20251124/ecram.csv")
+data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260116/sourceAB_measureAB.csv")
+stdp_post_pre_tg = data['time_g']
 
-# stdp_post_pre_t = data['time']
-# stdp_post_pre_i = data['i_channel']
-# stdp_post_pre_ig = data['i_gate']
-# stdp_post_pre_v = data['v_gate']
-
-
-# fig, (ax1, ax2, ax3) = plt.subplots(3, 1, sharex=True)
-
-# ax1.set_xlabel('time [s]')
-# ax1.set_ylabel('v gate [V]')
-# ax1.grid()
-
-# ax2.set_xlabel('time [s]')
-# ax2.set_ylabel('i channel [A]')
-# ax2.grid()
-
-# ax3.set_xlabel('time [s]')
-# ax3.set_ylabel('i gate [A]')
-# ax3.grid()
-
-# ax1.plot(stdp_post_pre_t, stdp_post_pre_v)
-# ax2.plot(stdp_post_pre_t, stdp_post_pre_i)
-# ax3.plot(stdp_post_pre_t, stdp_post_pre_ig)
+stdp_post_pre_t = data['time']
+stdp_post_pre_i = data['i_channel']
+stdp_post_pre_ig = data['i_gate']
+stdp_post_pre_v = data['v_gate']
 
 
-# plt.show()
+fig, (ax1, ax2, ax3) = plt.subplots(3, 1, sharex=True)
+
+ax1.set_xlabel('time [s]')
+ax1.set_ylabel('v gate [V]')
+ax1.grid()
+
+ax2.set_xlabel('time [s]')
+ax2.set_ylabel('i channel [A]')
+ax2.grid()
+
+ax3.set_xlabel('time [s]')
+ax3.set_ylabel('i gate [A]')
+ax3.grid()
+
+ax1.plot(stdp_post_pre_tg, stdp_post_pre_v)
+ax2.plot(stdp_post_pre_t, stdp_post_pre_i)
+ax3.plot(stdp_post_pre_tg, stdp_post_pre_ig)
+
+
+plt.show()
 
 # ======
 # 2 plots
@@ -144,33 +146,33 @@ import numpy as np
 # ======
 # 2 plots, continuous source- measure 
 # ======
-data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments\\exp_data\\20251209\\source_measure.csv")
+# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments\\exp_data\\20251212\\source_measure.csv")
 
-stdp_post_pre_t = data['time']
-stdp_post_pre_i = data['i_channel']
-stdp_post_pre_v = data['volt']
-
-
-fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
-
-ax1.set_xlabel('time [s]')
-ax1.set_ylabel('v gate [V]')
-ax1.grid()
-
-ax2.set_xlabel('time [s]')
-ax2.set_ylabel('i channel [V], filtered')
-ax2.grid()
-
-ax1.plot(stdp_post_pre_t, stdp_post_pre_v)
-ax2.plot(stdp_post_pre_t, stdp_post_pre_i)
+# stdp_post_pre_t = data['time']
+# stdp_post_pre_i = data['i_channel']
+# stdp_post_pre_v = data['volt']
 
 
-plt.show()
+# fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
+
+# ax1.set_xlabel('time [s]')
+# ax1.set_ylabel('v gate [V]')
+# ax1.grid()
+
+# ax2.set_xlabel('time [s]')
+# ax2.set_ylabel('i channel [V], filtered')
+# ax2.grid()
+
+# ax1.plot(stdp_post_pre_t, stdp_post_pre_v)
+# ax2.plot(stdp_post_pre_t, stdp_post_pre_i)
+
+
+# plt.show()
 
 # ======
 # 1 plots, stdp
 # ======
-# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data\\20251113\\stdp_processed.csv")
+# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data\\20251015\\stdp_processed_stdp_2_4D_3v1..csv")
 
 # delta_t = data['delta']
 # w_changge = data['change_percentage'] #np.arange(0, len(stdp_post_pre_i))#data['v_gate']
@@ -182,7 +184,7 @@ plt.show()
 # ======
 # synpase-neuron osc data plot
 # ======
-# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20251126\\neuron_mem.csv")
+# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260106\\neuron_mem.csv")
 
 # t = data['time']
 # v = data['volts']
