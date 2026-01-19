@@ -41,13 +41,13 @@ logging.basicConfig(format=format, level=logging.INFO,
 
 logging.info("Prepare list of voltages")
 buffer_wait_time = 3 # [s]
-Vd_bias = 0.5 # [V]
-Vd_pulse = 1 # [V]
-t_off = 4e-1 # [s]
-t_on = 10e-3 # [s]
+Vd_bias = 0.05 # [V]
+Vd_pulse = 0.7 # [V]
+t_off = 0.5 # [s]
+t_on = 0.1 # [s]
 # the reliable range of sampling speed <= 1kHz
 # and the nplc must be set to 0.01 
-sampling_speed = 1e+3 # 10e+3 # [Hz] (max 50kHz, depends on keithley)
+sampling_speed = 1e+2 # 10e+3 # [Hz] (max 50kHz, depends on keithley)
 time_step = 1/sampling_speed
 nplc_set = 0.01 # 0.01/2 # (1 = 1/50Hz = )
 print(f"{nplc_set * (1/50)=} and {time_step=}")
@@ -72,6 +72,7 @@ if n_records > max_number_samples_stored_in_keithley_internal_buffer:
 logging.info("update the //source_measure.tsp// ")
 print(f"{'='*5}\nupdate the //source_measure.tsp//\n{'='*5}")
 filename = 'C:/Users/20245580/LabCode/Codes_For_Experiments/codes\\source_measure.tsp'
+# filename = 'C:/Users/20245580/LabCode/Codes_For_Experiments/codes\\sourceAB_measureA.tsp'
 with open(filename, 'r') as file:
     lines = file.readlines()
 
@@ -88,12 +89,12 @@ lines[9]= 'stopv = ' + str(Vd_pulse)\
 lines[11]= 'stime = ' + str(time_step)\
             + '\n' 
     # points =
-lines[13]= 'points = ' + str(n_records)\
-            + '\n' 
+# lines[13]= 'points = ' + str(n_records)\
+#             + '\n' 
 
     # smu.trigger.source.listv({3, 1, 4, 5, 2})
     # reference: strip of bracket of python list converted to string https://www.geeksforgeeks.org/python/python-remove-square-brackets-from-list/
-lines[65]= 'smu.trigger.source.listv({ ' + str(list_voltages.tolist()).replace("[","").replace("]","") + "})"\
+lines[65]= 'smu.trigger.source.listv({' + str(list_voltages.tolist()).replace("[","").replace("]","") + "})"\
             + '\n' 
     # smu.measure.nplc = 0.1--1
 lines[77]= 'smu.measure.nplc = ' + str(nplc_set)\
@@ -117,9 +118,9 @@ keithley_instrument.timeout = 10000
         # Upload the keithley scripts to keithley for the program
         # ======
 # script for writing phase
-file_tsp_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/codes\\source_measure.tsp" 
 logging.info("KEITHLEY: upload codes")
-# file_tsp_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/codes\\trial_source_measure.tsp" 
+file_tsp_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/codes\\source_measure.tsp" 
+# file_tsp_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/codes\\sourceAB_measureA.tsp" 
 keithley_instrument.write(f"loadscript SourceRecord")
 with open(file_tsp_path) as fp:
     for line in fp: keithley_instrument.write(line)
@@ -128,7 +129,7 @@ keithley_instrument.write("endscript")
         # # ======
         # # record to file
         # # ======
-file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20251209\\source_measure.csv"
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260119\\source_measure.csv"
                 # ======
                 # Prepare record file
                 # ======
@@ -141,48 +142,62 @@ else:
         with open(file_path, 'a') as file:
                 file_writer = csv.DictWriter(file, fieldnames=field_names)
                 file_writer.writeheader()
+#####
+# MAIN
+#####
+number_exps = 1
+try:
+    for i_exp in range(0,number_exps):
+          # run keithley program
+        logging.info("SourceRecord")
+        print("SourceRecord phase")
+        keithley_instrument.write("SourceRecord.run()") 
 
-# run keithley program
-logging.info("SourceRecord")
-print("SourceRecord phase")
-keithley_instrument.write("SourceRecord.run()") 
+        print("start waiting...")
+        keithley_instrument.close()
+        # time.sleep(buffer_wait_time)
+        # # time.sleep(t_off + t_on + t_off + t_on + t_off)
+        # time.sleep(30) # [s]
+        # time.sleep(buffer_wait_time)
+        comment_exp = input("ENTER to end: ")
+        print("end of waiting...")
+        keithley_instrument = rm.open_resource('USB0::0x05E6::0x2636::4480001::INSTR')
 
-print("start waiting...")
-time.sleep(buffer_wait_time)
-time.sleep(t_off + t_on + t_off + t_on + t_off)
-time.sleep(buffer_wait_time)
-print("end of waiting...")
+        # record to file
+        logging.info(f"Save data to file")
+                    # save to file
+        cur_time = 0 #time.time()
+        cur_datetime = datetime.now()
+        n_samples = int(float(keithley_instrument.query(f"print(smua.nvbuffer1.n)")))
+        # n_samples = 1000
+        print(f"{n_samples=}")
+        comment_exp = ""
+        for i in range(0, n_samples):
+                        measured_i = float(keithley_instrument.query(f"print(smua.nvbuffer1.readings[{i}+1])"))
+                        keithely_time_stamp = float(keithley_instrument.query(f"print(smua.nvbuffer1.timestamps[{i}+1])"))
+                        measured_vd = float(keithley_instrument.query(f"print(smua.nvbuffer1.sourcevalues[{i}+1])"))
+                        with open(file_path, 'a') as file: 
+                                            # NOTICE: THE WHILE LOOP/ FOR LOOP INSIDE -> NO CONSTANT UPDATE TO FILE AT ALL -> NO ANIMATION
+                            file_writer = csv.DictWriter(file, fieldnames=field_names)
+                            info = {
+                                    'time':cur_time + keithely_time_stamp,
+                                    'i_channel': measured_i,
+                                    'volt': measured_vd,
+                                    'date_time': cur_datetime,
+                                    'comment': comment_exp + '; voff: [V]' + str(Vd_bias) 
+                                                + '; von: [V]'+ str(Vd_pulse) 
+                                                + '; pulse_width [s]: ' + str()
+                                                + '; pulse_off [s]: ' + str(t_off),
 
-# record to file
-logging.info(f"Save data to file")
-            # save to file
-cur_time = 0 #time.time()
-cur_datetime = datetime.now()
-n_samples = int(float(keithley_instrument.query(f"print(smua.nvbuffer1.n)")))
-# n_samples = 1000
-print(f"{n_samples=}")
-comment_exp = ""
-for i in range(0, n_samples):
-                measured_i = float(keithley_instrument.query(f"print(smua.nvbuffer1.readings[{i}+1])"))
-                keithely_time_stamp = float(keithley_instrument.query(f"print(smua.nvbuffer1.timestamps[{i}+1])"))
-                measured_vd = float(keithley_instrument.query(f"print(smua.nvbuffer1.sourcevalues[{i}+1])"))
-                with open(file_path, 'a') as file: 
-                                    # NOTICE: THE WHILE LOOP/ FOR LOOP INSIDE -> NO CONSTANT UPDATE TO FILE AT ALL -> NO ANIMATION
-                    file_writer = csv.DictWriter(file, fieldnames=field_names)
-                    info = {
-                            'time':cur_time + keithely_time_stamp,
-                            'i_channel': measured_i,
-                            'volt': measured_vd,
-                            'date_time': cur_datetime,
-                            'comment': comment_exp + '; voff: [V]' + str(Vd_bias) 
-                                        + '; von: [V]'+ str(Vd_pulse) 
-                                        + '; pulse_width [s]: ' + str()
-                                        + '; pulse_off [s]: ' + str(t_off),
+                                    }
+                            file_writer.writerow(info)
 
-                            }
-                    file_writer.writerow(info)
+        logging.info(f"Program end successfully")
 
-logging.info(f"Program end successfully")
+except Exception as e:
+      
+    sys.exit(-1)
+    logging.info(f"EXIT WITH ERROR")
 
 
 

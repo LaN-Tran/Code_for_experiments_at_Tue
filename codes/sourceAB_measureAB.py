@@ -42,12 +42,12 @@ logging.basicConfig(format=format, level=logging.INFO,
 logging.info("Prepare list of voltages")
 buffer_wait_time = 3 # [s]
 Vd_bias = 0.0 # [V]
-Vd_pulse = 1 # [V]
-t_off = 0.1 # [s]
-t_on = 0.05 # [s]
+Vd_pulse = 0.7 # [V]
+t_off = 0.5 # [s]
+t_on = 0.1 # [s]
 # the reliable range of sampling speed <= 1kHz
 # and the nplc must be set to 0.01 
-sampling_speed = 1e+3 # 10e+3 # [Hz] (max 50kHz, depends on keithley)
+sampling_speed = 1e+2 # 10e+3 # [Hz] (max 50kHz, depends on keithley)
 time_step = 1/sampling_speed
 nplc_set = 0.01 # 0.01/2 # (1 = 1/50Hz = )
 print(f"{nplc_set * (1/50)=} and {time_step=}")
@@ -86,7 +86,7 @@ n_records = len(list_voltages)
 print(f"{n_records} and {max_number_samples_stored_in_keithley_internal_buffer=}")
 if n_records > max_number_samples_stored_in_keithley_internal_buffer:
     print("TOO MANY RECORDED SAMPLES!")
-    sys.exit(-1)
+    # sys.exit(-1)
 
 logging.info("COPY data of voltage list to SMUB listv in file `./sourceAB_measureAB.tsp`")
 comment_exp = input("ENTER to start: ")
