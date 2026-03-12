@@ -59,36 +59,36 @@ import numpy as np
 # ======
 # 3 plots
 # ======
-# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260119/ecram_pulse_drain.csv")
-# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20251124/ecram.csv")
+# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260311/ecram_pulse_drain.csv")
+data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260311/ecram.csv")
 # data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260116/sourceAB_measureAB.csv")
 # stdp_post_pre_tg = data['time_g']
 
-# stdp_post_pre_t = data['time']
-# stdp_post_pre_i = data['i_channel']
-# stdp_post_pre_ig = data['i_gate']
-# stdp_post_pre_v = data['v_gate']
+stdp_post_pre_t = data['time']
+stdp_post_pre_i = data['i_channel']
+stdp_post_pre_ig = data['i_gate']
+stdp_post_pre_v = data['v_gate']
 
 
-# fig, (ax1, ax2, ax3) = plt.subplots(3, 1, sharex=True)
+fig, (ax1, ax2, ax3) = plt.subplots(3, 1, sharex=True)
 
-# ax1.set_xlabel('time [s]')
-# ax1.set_ylabel('v gate [V]')
-# ax1.grid()
+ax1.set_xlabel('time [s]')
+ax1.set_ylabel('v gate [V]')
+ax1.grid()
 
-# ax2.set_xlabel('time [s]')
-# ax2.set_ylabel('i channel [A]')
-# ax2.grid()
+ax2.set_xlabel('time [s]')
+ax2.set_ylabel('i channel [A]')
+ax2.grid()
 
-# ax3.set_xlabel('time [s]')
-# ax3.set_ylabel('i gate [A]')
-# ax3.grid()
+ax3.set_xlabel('time [s]')
+ax3.set_ylabel('i gate [A]')
+ax3.grid()
 
-# ax1.plot(stdp_post_pre_t, stdp_post_pre_v)
-# ax2.plot(stdp_post_pre_t, stdp_post_pre_i)
-# ax3.plot(stdp_post_pre_t, stdp_post_pre_ig)
+ax1.plot(stdp_post_pre_t, stdp_post_pre_v)
+ax2.plot(stdp_post_pre_t, stdp_post_pre_i)
+ax3.plot(stdp_post_pre_t, stdp_post_pre_ig)
 
-# plt.show()
+plt.show()
 
 # ======
 # 2 plots
@@ -207,34 +207,34 @@ import numpy as np
 # stdp_post_pre_tg = data['time_g']
 # stdp_post_pre_v = data['v_gate']
 
-data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260122/ppecram.csv")
+# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260126/ppecram.csv")
 
-stdp_post_pre_tg = data['time_g']
-stdp_post_pre_t = data['time']
-stdp_post_pre_i = data['i_channel']
-stdp_post_pre_vg = data['v_gate']
-stdp_post_pre_vd = data['v_drain']
+# stdp_post_pre_tg = data['time_g']
+# stdp_post_pre_t = data['time']
+# stdp_post_pre_i = data['i_channel']
+# stdp_post_pre_vg = data['v_gate']
+# stdp_post_pre_vd = data['v_drain']
 
-fig, (ax1, ax2, ax3) = plt.subplots(3, 1, sharex=True)
+# fig, (ax1, ax2, ax3) = plt.subplots(3, 1, sharex=True)
 
-ax1.set_xlabel('time [s]')
+# ax1.set_xlabel('time [s]')
+# # ax1.set_ylabel('v gate [V]')
 # ax1.set_ylabel('v gate [V]')
-ax1.set_ylabel('v gate [V]')
-ax1.grid()
+# ax1.grid()
 
-ax2.set_xlabel('time [s]')
-ax2.set_ylabel('i channel [V]')
-ax2.grid()
+# ax2.set_xlabel('time [s]')
+# ax2.set_ylabel('i channel [V]')
+# ax2.grid()
 
-ax3.set_xlabel('time [s]')
-ax3.set_ylabel('vd [V]')
-ax3.grid()
+# ax3.set_xlabel('time [s]')
+# ax3.set_ylabel('vd [V]')
+# ax3.grid()
 
-ax1.plot(stdp_post_pre_tg, stdp_post_pre_vg)
-ax3.plot(stdp_post_pre_t, stdp_post_pre_vd)
-ax2.plot(stdp_post_pre_t, stdp_post_pre_i)
+# ax1.plot(stdp_post_pre_tg, stdp_post_pre_vg)
+# ax3.plot(stdp_post_pre_t, stdp_post_pre_vd)
+# ax2.plot(stdp_post_pre_t, stdp_post_pre_i)
 
-plt.show()
+# plt.show()
 
 #===========
 # from `plot_exp_data`

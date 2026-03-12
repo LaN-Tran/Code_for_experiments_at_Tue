@@ -42,7 +42,7 @@ logging.basicConfig(format=format, level=logging.INFO,
     # k = Keithley2600('USB0::0x05E6::0x2636::4480001::INSTR', visa_library = 'C:/windows/System32/visa64.dll')
 # keithley_instrument = Keithley2600('USB0::0x05E6::0x2636::4480001::INSTR', visa_library = 'C:/windows/System32/visa64.dll')
 rm = pyvisa.ResourceManager('C:/windows/System32/visa64.dll')
-keithley_instrument = rm.open_resource('TCPIP0::169.254.0.1::inst0::INSTR')
+keithley_instrument = rm.open_resource('USB0::0x05E6::0x2636::4480001::INSTR')
 keithley_instrument.timeout = 10000
         # Turn everything OFF
 keithley_instrument.write('smua.source.output = smua.OUTPUT_OFF')   # turn off SMUA
@@ -51,29 +51,29 @@ time.sleep(1)
 
 
         # path to the measurement record
-file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250901/ecram.csv"
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260311/ecram.csv"
 
 logging.info("Main    : Prepare measurement")
 
 sw_settle_time = 0.1 # [s]
 gate_bias_voltage = 0 # [s]
-drain_bias_voltage = 0.05 # [s]
+drain_bias_voltage = 0.1 # [s]
 keithley_settle_time = 0.1 # [s]
 wait_before_exp = 5 # [s]
 nexp = 20
 n_pulse_type_1 = 5
 # there is an outer loop for this, to change the amplitude after each exp
-step_voltage = -0.2
-amp_pulse_type_1 = -0.1 # (Vgs > 0, decrease gm. bcz source is always 0, and drain - source are symmertrical)
-pulse_width_type_1 = 0.5
-pulse_period_type_1 = 1
+step_voltage = 0
+amp_pulse_type_1 = -0.8 # (Vgs > 0, decrease gm. bcz source is always 0, and drain - source are symmertrical)
+pulse_width_type_1 = 2
+pulse_period_type_1 = 5
 no_pulse_time_type_1 = pulse_period_type_1 - pulse_width_type_1
 wait_between_pulse_type_1 = 5
 wait_between_pulse_type_1_and_pulse_type_2 = 1
 n_pulse_type_2 = 5
-amp_pulse_type_2 = 1 # (Vgs < 0, increase gm.  bcz source is always 0, and drain - source are symmertrical)
-pulse_width_type_2 = 0.5
-pulse_period_type_2 = 1
+amp_pulse_type_2 = 0.8 # (Vgs < 0, increase gm.  bcz source is always 0, and drain - source are symmertrical)
+pulse_width_type_2 = 2
+pulse_period_type_2 = 5
 no_pulse_time_type_2 = pulse_period_type_2 - pulse_width_type_2
 wait_between_pulse_type_2 = 5
 wait_between_exp = 1

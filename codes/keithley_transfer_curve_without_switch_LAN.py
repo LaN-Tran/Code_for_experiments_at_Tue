@@ -45,7 +45,7 @@ logging.basicConfig(format=format, level=logging.INFO,
     # k = Keithley2600('USB0::0x05E6::0x2636::4480001::INSTR', visa_library = 'C:/windows/System32/visa64.dll')
 rm = pyvisa.ResourceManager('C:/windows/System32/visa64.dll')
 # keithley_instrument = rm.open_resource('TCPIP0::169.254.0.1::inst0::INSTR')
-keithley_instrument = rm.open_resource('TCPIP0::169.254.0.1::inst0::INSTR')
+keithley_instrument = rm.open_resource('USB0::0x05E6::0x2636::4480001::INSTR')
 keithley_instrument.timeout = 10000
         # Turn everything OFF
 keithley_instrument.write('smua.source.output = smua.OUTPUT_OFF')
@@ -54,7 +54,7 @@ time.sleep(1)
 
 
         # path to the measurement record
-file_path = "C:\\Users\\20245580\\work\\Code_for_experiments_at_Tue\\exp_data\\20251003\\transfer_curve.csv"
+file_path = "C:\\Users\\20245580\\LabCode\\Codes_For_Experiments\\exp_data\\20260311\\transfer_curve.csv"
 
 logging.info("Main    : Prepare measurement")
 
@@ -65,10 +65,10 @@ settle_time = 1 # s # after the smu configuration
 sw_settle_time = 10e-3 # s
 rest_duration = 0.2 # s
 
-gate_voltage_smallest = 0 # V (for liquid electrolite)
-gate_voltage_largest = 0.3 # V (for liquid electrolite)
+gate_voltage_smallest = -0.5 # V (for liquid electrolite)
+gate_voltage_largest = 0.5 # V (for liquid electrolite)
 gate_voltage_step = 0.1 # V
-drain_voltage = 0.05 # V
+drain_voltage = 0.1 # V
 try:
                 # ======
                 # Prepare record file
@@ -154,8 +154,10 @@ try:
     time.sleep(settle_time)
 
                     # prepare the sweep voltage
-    voltage_list_forward = np.arange(gate_voltage_smallest, gate_voltage_largest, gate_voltage_step).tolist()
-    voltage_list_backward = np.arange(gate_voltage_largest, gate_voltage_smallest, -gate_voltage_step).tolist()
+    voltage_list_forward = np.arange(0, gate_voltage_largest + gate_voltage_step, gate_voltage_step).tolist()
+    voltage_list_backward = np.arange(gate_voltage_largest, gate_voltage_smallest - gate_voltage_step, -gate_voltage_step).tolist()
+    voltage_list_end = np.arange(gate_voltage_smallest, 0 + gate_voltage_step, gate_voltage_step).tolist()
+
     logging.info(f"starting the measurement process")
                     # start the measurement reference time
     start_time = time.time()
@@ -211,15 +213,15 @@ try:
                     # # ======
 
                         # Turn on the gate source.
-        keithley_instrument.write(f"smub.source.output = smub.OUTPUT_ON")
+        # keithley_instrument.write(f"smub.source.output = smub.OUTPUT_ON")
 
 
                         # Turn on the drain source.
-        keithley_instrument.write(f"smua.source.output = smua.OUTPUT_ON")
+        # keithley_instrument.write(f"smua.source.output = smua.OUTPUT_ON")
 
 
                         # Settling time
-        time.sleep(settle_time)
+        # time.sleep(settle_time)
 
             # backward
         for idx, v in enumerate(voltage_list_backward):     
@@ -259,6 +261,47 @@ try:
 
                                 # Rest between measurement
         time.sleep(rest_duration)
+        time.sleep(0.5)
+
+            # end sweep
+        for idx, v in enumerate(voltage_list_end):     
+            with open(file_path, 'a') as file: 
+                        # NOTICE: THE WHILE LOOP/ FOR LOOP INSIDE -> NO CONSTANT UPDATE TO FILE AT ALL -> NO ANIMATION
+                file_writer = csv.DictWriter(file, fieldnames=field_names)
+                            
+                                # set the voltage (gate)
+                logging.info(f"set gate voltage {v=}")
+                keithley_instrument.write(f"smub.source.levelv = {v}")
+                time.sleep(settle_time)
+                try:
+                    measured_i_channel = float(keithley_instrument.query('print(smua.measure.i())'))
+                    measured_v_drain = float(keithley_instrument.query('print(smua.measure.v())'))
+                    measured_i_gate =  float(keithley_instrument.query('print(smub.measure.i())'))
+                    measured_v_gate = float(keithley_instrument.query('print(smub.measure.v())'))
+
+                                # measured_i_gate = keithley_instrument.smub.measure.i()
+
+                                    # record to file
+                    info = {
+                        'time': time.time() - start_time,
+                        'i_channel': measured_i_channel,
+                        'v_drain': measured_v_drain,
+                        'i_gate': measured_i_gate,
+                        'v_gate': measured_v_gate,
+                                                    }
+                    logging.info(f"save {info=} to .csv")
+                    file_writer.writerow(info)
+
+                except Exception as e:
+                                # # ======
+                                # # Open all switches
+                                # # ======
+                                # For the relay board: HIGH = OFF = OPEN // LOW = ON = CLOSE
+                    logging.info(f"ERROR: keithley measurement {e=}")
+
+                                # Rest between measurement
+        time.sleep(rest_duration)
+        time.sleep(0.5)
         
         # # ======
         # # Open all switches
