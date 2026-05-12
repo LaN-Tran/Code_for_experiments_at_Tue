@@ -313,31 +313,34 @@ def k_pulse_read (_, file_path):
 # ======
 # Ram, 4 plot
 # ======
-# file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260311/ecram_pulse_drain.csv"
-file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260311/ecram.csv"
-
-# define the figure
-# create a figure with two subplots
-fig, (ax1, ax2, ax3, ax4) = plt.subplots(4, 1)
-
-
-# the same axes initalizations as before (just now we do it for both of them)
-
-ani = animation.FuncAnimation(fig, plot_ecram_4plots, interval= 500, fargs= (file_path, ))
-plt.show()
-# ======
-# Transfer curve
-# ======
-# file_path = "C:\\Users\\20245580\\LabCode\\Codes_For_Experiments\\exp_data\\20260311\\transfer_curve.csv"
-# # the same axes initalizations as before (just now we do it for both of them)
+# file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260408/ecram_pulse_drain.csv"
+# # file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260408/ecram.csv"
 
 # # define the figure
 # # create a figure with two subplots
-# fig, (ax1, ax2) = plt.subplots(1, 2)
+# fig, (ax1, ax2, ax3, ax4) = plt.subplots(4, 1)
 
-# # ani = animation.FuncAnimation(plt.gcf(), plot_transfer_curve, interval= 500, fargs= (file_path, ))
-# ani = animation.FuncAnimation(plt.gcf(), plot_transfer_curve_2plot, interval= 500, fargs= (file_path, ))
+
+# # the same axes initalizations as before (just now we do it for both of them)
+
+# ani = animation.FuncAnimation(fig, plot_ecram_4plots, interval= 500, fargs= (file_path, ))
 # plt.show()
+# ======
+# Transfer curve
+# ======
+    # NORMAL
+file_path = "C:\\Users\\20245580\\LabCode\\Codes_For_Experiments\\exp_data\\20260408\\transfer_curve.csv"
+# # # the same axes initalizations as before (just now we do it for both of them)
+#     # DIODE
+# file_path = "C:\\Users\\20245580\\LabCode\\Codes_For_Experiments\\exp_data\\20260408\\transfer_curve_diode.csv"
+# # the same axes initalizations as before (just now we do it for both of them)
+# # define the figure
+# # create a figure with two subplots
+fig, (ax1, ax2) = plt.subplots(1, 2)
+
+# ani = animation.FuncAnimation(plt.gcf(), plot_transfer_curve, interval= 500, fargs= (file_path, ))
+ani = animation.FuncAnimation(plt.gcf(), plot_transfer_curve_2plot, interval= 500, fargs= (file_path, ))
+plt.show()
 
 # ======
 # Transfer curve, diode

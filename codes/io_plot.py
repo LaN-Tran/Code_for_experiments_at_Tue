@@ -59,8 +59,8 @@ import numpy as np
 # ======
 # 3 plots
 # ======
-# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260311/ecram_pulse_drain.csv")
-data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260311/ecram.csv")
+data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260408/ecram_pulse_drain.csv")
+# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260408/ecram.csv")
 # data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260116/sourceAB_measureAB.csv")
 # stdp_post_pre_tg = data['time_g']
 
@@ -91,17 +91,54 @@ ax3.plot(stdp_post_pre_t, stdp_post_pre_ig)
 plt.show()
 
 # ======
+# 4 plots
+# ======
+# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260511/ecram_pulse_drain_20260511_1Vd_Gel_pedotpss_pv1_22.csv")
+# # data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260408/ecram.csv")
+# # data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260116/sourceAB_measureAB.csv")
+# # stdp_post_pre_tg = data['time_g']
+
+# stdp_post_pre_t = data['time']
+# stdp_post_pre_i = data['i_channel']
+# stdp_post_pre_ig = data['i_gate']
+# stdp_post_pre_v = data['v_gate']
+# stdp_post_pre_vd = data['v_drain']
+
+# fig, (ax1, ax2, ax3, ax4) = plt.subplots(4, 1, sharex=True)
+
+# ax1.set_xlabel('time [s]')
+# ax1.set_ylabel('v gate [V]')
+# ax1.grid()
+
+# ax2.set_xlabel('time [s]')
+# ax2.set_ylabel('i channel [A]')
+# ax2.grid()
+
+# ax3.set_xlabel('time [s]')
+# ax3.set_ylabel('i gate [A]')
+# ax3.grid()
+
+# ax4.set_xlabel('time [s]')
+# ax4.set_ylabel('v drain [V]')
+# ax4.grid()
+
+# ax1.plot(stdp_post_pre_t, stdp_post_pre_v)
+# ax2.plot(stdp_post_pre_t, stdp_post_pre_i)
+# ax3.plot(stdp_post_pre_t, stdp_post_pre_ig)
+# ax4.plot(stdp_post_pre_t, stdp_post_pre_vd)
+# plt.show()
+
+# ======
 # 2 plots
 # ======
-# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250827/ecram_pulse_drain.csv")
-# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20251111/ecram.csv")
-# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260116/sourceAB_measureAB.csv")
-# stdp_post_pre_tg = data['time_g']
-# stdp_post_pre_v = data['v_gate']
+# # data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250827/ecram_pulse_drain.csv")
+# # data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20251111/ecram.csv")
+# # data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260116/sourceAB_measureAB.csv")
+# # stdp_post_pre_tg = data['time_g']
+# # stdp_post_pre_v = data['v_gate']
 
-# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260121/source_measure.csv")
+# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260121/source_measure_80_Diode_Gate.csv")
 
-# stdp_post_pre_tg = data['time_g']
 # stdp_post_pre_t = data['time']
 # stdp_post_pre_i = data['i_channel']
 # stdp_post_pre_v = data['volt']
@@ -110,14 +147,16 @@ plt.show()
 
 # ax1.set_xlabel('time [s]')
 # # ax1.set_ylabel('v gate [V]')
-# ax1.set_ylabel('v gate [V]')
+# ax1.set_ylabel('v drain [V]')
 # ax1.grid()
 
 # ax2.set_xlabel('time [s]')
 # ax2.set_ylabel('i channel [V]')
 # ax2.grid()
 
-# ax1.plot(stdp_post_pre_tg, stdp_post_pre_v)
+# # ax1.plot(stdp_post_pre_tg, stdp_post_pre_v)
+# # ax1.plot(stdp_post_pre_t, stdp_post_pre_v)
+
 # ax1.plot(stdp_post_pre_t, stdp_post_pre_v)
 # ax2.plot(stdp_post_pre_t, stdp_post_pre_i)
 
@@ -190,12 +229,12 @@ plt.show()
 # ======
 # synpase-neuron osc data plot
 # ======
-# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260106\\neuron_mem.csv")
+data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260327\\neuron_mem.csv")
 
-# t = data['time']
-# v = data['volts']
-# plt.plot(t,v)
-# plt.show()
+t = data['time']
+v = data['volts']
+plt.plot(t,v)
+plt.show()
 
 
 # ======
