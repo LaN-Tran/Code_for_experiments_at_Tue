@@ -48,8 +48,8 @@ sampling_speed = 100 # 10e+3 # [Hz] (max 50kHz, depends on keithley)
 time_step = 1/sampling_speed
 volt_step = time_step * scan_rate
 # `Vd_str` MUST < `Vd_stop`, otherwise cause error in list generation `list_fvotl`, `list_bvotl` below
-vg_str = -0.5 # [V] 
-vg_stop = 0.5 # [V]
+vg_str = -0.6 # [V] 
+vg_stop = 0.6 # [V]
     # time step limit check
 nplc_set = 0.1 # 0.01/2 # (1 = 1/50Hz = )
 print(f"{nplc_set * (1/50)=} and {time_step=}")
@@ -70,8 +70,8 @@ if n_listv > max_number_samples_for_listv_keithley_source:
     sys.exit(-1)
 
     # DRAIN - SMUA
-vd_str = -0.6 # [V]
-vd_stop = 0.6 # [V]
+vd_str = -0.3 # [V]
+vd_stop = 0.1 # [V]
 volt_step = 0.1 # [V]
 vd_sweep= np.arange(vd_str, vd_stop + volt_step, volt_step)
 
@@ -150,11 +150,11 @@ with open(file_plot_path, 'r') as file:
     lines = file.readlines()
 
 ln_idx = 22
-lines[ln_idx-1]= 'number_of_sweeps = ' + str(number_of_sweeps)\
+lines[ln_idx-1]= 'number_of_sweeps_vds = ' + str(len(vd_sweep))\
             + '\n'
 
 ln_idx = 24
-lines[ln_idx-1]= 'len_data_per_sweep = ' + str(len(list_fvotl)+len(list_bvotl))\
+lines[ln_idx-1]= 'len_data_per_sweep_vds = ' + str((len(list_fvotl)+len(list_bvotl))*number_of_sweeps)\
             + '\n'
 
 # Write the modified lines back to the file
@@ -175,12 +175,12 @@ keithley_instrument.timeout = 10000
 # ======
 # Prepare the record file
 # ======
-file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260119\\oect_profiling_transfer_curve.csv"
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260518\\oect_profiling_transfer_curve.csv"
                 # ======
                 # Prepare record file
                 # ======
 logging.info("Prepare record file")
-field_names =  ['time', 'i_channel', 'v_drain','i_gate', 'v_gate']
+field_names =  ['time_g', 'time', 'i_channel', 'v_drain', 'i_gate',  'v_gate', 'date_time', 'comment']
 if os.path.exists(file_path):
         print("File exists.")
 else:
@@ -228,11 +228,13 @@ try:
                     # save to file
         cur_time = 0 #time.time()
         cur_datetime = datetime.now()
-        n_samples = int(float(keithley_instrument.query(f"print(smua.nvbuffer1.n)")))
+        na_samples = int(float(keithley_instrument.query(f"print(smua.nvbuffer1.n)")))
+        nb_samples = int(float(keithley_instrument.query(f"print(smub.nvbuffer1.n)")))
         # n_samples = 1000
-        print(f"{n_samples=}")
+        print(f"{na_samples=}")
+        print(f"{nb_samples=}")
         comment_exp = ""
-        for i in range(0, n_samples):
+        for i in range(0, na_samples):
                         measured_id = float(keithley_instrument.query(f"print(smua.nvbuffer1.readings[{i}+1])"))
                         faked_ig = 0
                         keithely_time_stamp = float(keithley_instrument.query(f"print(smua.nvbuffer1.timestamps[{i}+1])"))
@@ -243,14 +245,16 @@ try:
                                             # NOTICE: THE WHILE LOOP/ FOR LOOP INSIDE -> NO CONSTANT UPDATE TO FILE AT ALL -> NO ANIMATION
                             file_writer = csv.DictWriter(file, fieldnames=field_names)
                             info = {
-                                    'time_g':cur_time + keithely_time_stamp_g,
+                                    'time_g': cur_time + keithely_time_stamp_g,
                                     'time':cur_time + keithely_time_stamp,
                                     'i_channel': measured_id,
                                     'v_drain': measured_vd,
                                     'i_gate': faked_ig,
                                     'v_gate': measured_vg,
                                     'date_time': cur_datetime,
-                                    'comment': comment_exp + + 'unit [V], [s]' 
+                                    'comment': comment_exp + 'unit [V], [s]'
+                                                + '- scan rate ' + str(scan_rate) + ' [V/s]'
+                                                + 'time step ' + str(time_step) + ' [s]'
                                                 + '- no measurement of gate current, gate voltage is the set value',
 
                                     }
