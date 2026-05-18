@@ -48,8 +48,8 @@ sampling_speed = 100 # 10e+3 # [Hz] (max 50kHz, depends on keithley)
 time_step = 1/sampling_speed
 volt_step = time_step * scan_rate
 # `Vd_str` MUST < `Vd_stop`, otherwise cause error in list generation `list_fvotl`, `list_bvotl` below
-Vd_str = 0 # [V] 
-Vd_stop = 0.7 # [V]
+Vd_str = -0.6 # [V] 
+Vd_stop = 0 # [V]
     # time step limit check
 nplc_set = 0.1 # 0.01/2 # (1 = 1/50Hz = )
 print(f"{nplc_set * (1/50)=} and {time_step=}")
@@ -138,11 +138,11 @@ with open(file_plot_path, 'r') as file:
     lines = file.readlines()
 
 ln_idx = 22
-lines[ln_idx-1]= 'number_of_sweeps = ' + str(number_of_sweeps)\
+lines[ln_idx-1]= 'number_of_sweeps_vgs = ' + str(len(vg_sweep))\
             + '\n'
 
 ln_idx = 24
-lines[ln_idx-1]= 'len_data_per_sweep = ' + str(len(list_fvotl)+len(list_bvotl))\
+lines[ln_idx-1]= 'len_data_per_sweep_vgs = ' + str((len(list_fvotl)+len(list_bvotl))*number_of_sweeps)\
             + '\n'
 
 # Write the modified lines back to the file
@@ -163,12 +163,12 @@ keithley_instrument.timeout = 10000
 # ======
 # Prepare the record file
 # ======
-file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260119\\oect_profiling_output_curve.csv"
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260518\\oect_profiling_output_curve.csv"
                 # ======
                 # Prepare record file
                 # ======
 logging.info("Prepare record file")
-field_names =  ['time', 'i_channel', 'v_drain','i_gate', 'v_gate']
+field_names =  ['time', 'i_channel', 'i_gate', 'v_drain', 'v_gate', 'date_time', 'comment']
 if os.path.exists(file_path):
         print("File exists.")
 else:
@@ -236,7 +236,9 @@ try:
                                     'v_drain': measured_vd,
                                     'v_gate': faked_vgs,
                                     'date_time': cur_datetime,
-                                    'comment': comment_exp + 'unit [V], [s]' 
+                                    'comment': comment_exp + 'unit [V], [s]'
+                                                + '- scan rate: ' + str(scan_rate) + ' [V/s]'
+                                                + '- time step: ' + str(time_step) + ' [s]'
                                                 + '- no measurement of gate current, gate voltage is the set value',
 
                                     }

@@ -19,12 +19,12 @@ import pandas as pd
 # from scipy import signal
 import numpy as np
 
-number_of_sweeps = 3
+number_of_sweeps_vgs = 13
     # = `len(vg_sweep)`, file `./fixed_vgs_sweep_vds_measure_ids.py` 
-len_data_per_sweep = 142
+len_data_per_sweep_vgs = 366
     # = `llen(list_fvotl) + len(list_bvotl)`, file `./fixed_vgs_sweep_vds_measure_ids.tsp`
 
-data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260119\\oect_profiling_output_curve.csv")
+data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260518\\oect_profiling_output_curve.csv")
 
 t = data['time'].to_numpy()
 id = data['i_channel'].to_numpy()
@@ -32,11 +32,11 @@ vd= data['v_drain'].to_numpy()
 ig = data['i_gate'].to_numpy()
 vg = data['v_gate'].to_numpy()
 
-for iter_sweep in range(0,number_of_sweeps):
-    vds = vd[iter_sweep*len_data_per_sweep : (iter_sweep+1)*len_data_per_sweep]
+for iter_sweep in range(0,number_of_sweeps_vgs):
+    vds = vd[iter_sweep*len_data_per_sweep_vgs : (iter_sweep+1)*len_data_per_sweep_vgs]
         # the array excludes the last index `(iter_sweep+1)*len_data_per_sweep`
-    ids = id[iter_sweep*len_data_per_sweep : (iter_sweep+1)*len_data_per_sweep]
-    vgs = vg[iter_sweep*len_data_per_sweep]
+    ids = id[iter_sweep*len_data_per_sweep_vgs : (iter_sweep+1)*len_data_per_sweep_vgs]
+    vgs = vg[iter_sweep*len_data_per_sweep_vgs]
     plt.plot(vds, ids, label=f'$V_{{gs}} = {vgs}V$')
 
 # 3. Formatting
