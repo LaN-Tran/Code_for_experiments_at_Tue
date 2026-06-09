@@ -168,7 +168,8 @@ logging.info("FINISH MODIFY //plotting file//")
 # ======
 logging.info("KEITHLEY: initiate")
 rm = pyvisa.ResourceManager('C:/windows/System32/visa64.dll')
-keithley_instrument = rm.open_resource('USB0::0x05E6::0x2636::4480001::INSTR')
+keithley_ID = 'USB0::0x05E6::0x2602::4522205::INSTR'
+keithley_instrument = rm.open_resource(keithley_ID)
 keithley_instrument.timeout = 10000
 
 
@@ -221,7 +222,7 @@ try:
 
         comment_exp = input("ENTER to end (ONLY AFTER KEITHLEY PROGRAM FINISH): ")
         print("end of waiting...")
-        keithley_instrument = rm.open_resource('USB0::0x05E6::0x2636::4480001::INSTR')
+        keithley_instrument = rm.open_resource(keithley_ID)
 
         # record to file
         logging.info(f"Save data to file")

@@ -48,7 +48,7 @@ sampling_speed = 100 # 10e+3 # [Hz] (max 50kHz, depends on keithley)
 time_step = 1/sampling_speed
 volt_step = time_step * scan_rate
 # `Vd_str` MUST < `Vd_stop`, otherwise cause error in list generation `list_fvotl`, `list_bvotl` below
-Vd_str = -0.6 # [V] 
+Vd_str = -0.5 # [V] 
 Vd_stop = 0 # [V]
     # time step limit check
 nplc_set = 0.1 # 0.01/2 # (1 = 1/50Hz = )
@@ -70,8 +70,8 @@ if n_listv > max_number_samples_for_listv_keithley_source:
     sys.exit(-1)
 
     # GATE - SMUB
-vg_str = -0.6 # [V]
-vg_stop = 0.6 # [V]
+vg_str = -0.1 # [V]
+vg_stop = 0 # [V]
 volt_step = 0.1 # [V]
 vg_sweep= np.arange(vg_str, vg_stop + volt_step, volt_step)
 
@@ -156,7 +156,8 @@ logging.info("FINISH MODIFY //plotting file//")
 # ======
 logging.info("KEITHLEY: initiate")
 rm = pyvisa.ResourceManager('C:/windows/System32/visa64.dll')
-keithley_instrument = rm.open_resource('USB0::0x05E6::0x2636::4480001::INSTR')
+keithley_ID = 'USB0::0x05E6::0x2602::4522205::INSTR'
+keithley_instrument = rm.open_resource(keithley_ID)
 keithley_instrument.timeout = 10000
 
 
@@ -209,7 +210,7 @@ try:
 
         comment_exp = input("ENTER to end (ONLY AFTER KEITHLEY PROGRAM FINISH): ")
         print("end of waiting...")
-        keithley_instrument = rm.open_resource('USB0::0x05E6::0x2636::4480001::INSTR')
+        keithley_instrument = rm.open_resource(keithley_ID)
 
         # record to file
         logging.info(f"Save data to file")
