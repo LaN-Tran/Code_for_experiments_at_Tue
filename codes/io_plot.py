@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 # from scipy import signal
 import numpy as np
-
+import matplotlib.animation as animation
 # ======
 # Applying filter
 # ======
@@ -59,44 +59,44 @@ import numpy as np
 # ======
 # 3 plots
 # ======
-data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260408/ecram_pulse_drain.csv")
+# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260408/ecram_pulse_drain.csv")
 # data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260408/ecram.csv")
-# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260116/sourceAB_measureAB.csv")
-# stdp_post_pre_tg = data['time_g']
+# # # # data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260116/sourceAB_measureAB.csv")
+# # # # stdp_post_pre_tg = data['time_g']
 
-stdp_post_pre_t = data['time']
-stdp_post_pre_i = data['i_channel']
-stdp_post_pre_ig = data['i_gate']
-stdp_post_pre_v = data['v_gate']
+# stdp_post_pre_t = data['time']
+# stdp_post_pre_i = data['i_channel']
+# stdp_post_pre_ig = data['i_gate']
+# stdp_post_pre_v = data['v_gate']
 
 
-fig, (ax1, ax2, ax3) = plt.subplots(3, 1, sharex=True)
+# fig, (ax1, ax2, ax3) = plt.subplots(3, 1, sharex=True)
 
-ax1.set_xlabel('time [s]')
-ax1.set_ylabel('v gate [V]')
-ax1.grid()
+# ax1.set_xlabel('time [s]')
+# ax1.set_ylabel('v gate [V]')
+# ax1.grid()
 
-ax2.set_xlabel('time [s]')
-ax2.set_ylabel('i channel [A]')
-ax2.grid()
+# ax2.set_xlabel('time [s]')
+# ax2.set_ylabel('i channel [A]')
+# ax2.grid()
 
-ax3.set_xlabel('time [s]')
-ax3.set_ylabel('i gate [A]')
-ax3.grid()
+# ax3.set_xlabel('time [s]')
+# ax3.set_ylabel('i gate [A]')
+# ax3.grid()
 
-ax1.plot(stdp_post_pre_t, stdp_post_pre_v)
-ax2.plot(stdp_post_pre_t, stdp_post_pre_i)
-ax3.plot(stdp_post_pre_t, stdp_post_pre_ig)
+# ax1.plot(stdp_post_pre_t, stdp_post_pre_v)
+# ax2.plot(stdp_post_pre_t, stdp_post_pre_i)
+# ax3.plot(stdp_post_pre_t, stdp_post_pre_ig)
 
-plt.show()
+# plt.show()
 
 # ======
 # 4 plots
 # ======
-# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260511/ecram_pulse_drain_20260511_1Vd_Gel_pedotpss_pv1_22.csv")
+# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260629/ecram_3Tmem_pg2ttt_gel_s1_fineGateShortS_91.csv")
 # # data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260408/ecram.csv")
-# # data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260116/sourceAB_measureAB.csv")
-# # stdp_post_pre_tg = data['time_g']
+# # # # data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260116/sourceAB_measureAB.csv")
+# # # # stdp_post_pre_tg = data['time_g']
 
 # stdp_post_pre_t = data['time']
 # stdp_post_pre_i = data['i_channel']
@@ -131,7 +131,35 @@ plt.show()
 # ======
 # 2 plots
 # ======
-# # data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250827/ecram_pulse_drain.csv")
+# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260701/ecram_20260701_2T_pv2-2_nacl_BigGateShortS_13.csv")
+# # # data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260408/ecram.csv")
+# # # data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260116/sourceAB_measureAB.csv")
+# # # stdp_post_pre_tg = data['time_g']
+
+# stdp_post_pre_t = data['time']
+# stdp_post_pre_i = data['i_channel']
+# stdp_post_pre_ig = data['i_gate']
+# stdp_post_pre_v = data['v_gate']
+# stdp_post_pre_vd = data['v_drain']
+
+# fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
+
+# ax1.set_xlabel('time [s]')
+# ax1.set_ylabel('v [V]')
+# ax1.grid()
+
+# ax2.set_xlabel('time [s]')
+# ax2.set_ylabel('i [A]')
+# ax2.grid()
+
+# ax1.plot(stdp_post_pre_t, stdp_post_pre_v)
+# ax2.plot(stdp_post_pre_t, stdp_post_pre_ig)
+# plt.show()
+
+# ======
+# 2 plots
+# ======
+# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20250827/ecram_pulse_drain.csv")
 # # data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20251111/ecram.csv")
 # # data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260116/sourceAB_measureAB.csv")
 # # stdp_post_pre_tg = data['time_g']
@@ -160,6 +188,76 @@ plt.show()
 # ax1.plot(stdp_post_pre_t, stdp_post_pre_v)
 # ax2.plot(stdp_post_pre_t, stdp_post_pre_i)
 
+
+# plt.show()
+
+# ======
+# 2 plots, transfer curve i-v
+# ======
+# device = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260701/transfer_curve_20260701_2T_pv2-2_nacl_BigGateShortS_11.csv")
+
+# device_ich = device['i_channel']
+# device_ig = device['i_gate']
+# device_vg = device['v_gate']
+
+# fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
+
+# ax1.set_xlabel('V [V]')
+# # ax1.set_ylabel('v gate [V]')
+# ax1.set_ylabel('I [A]')
+# ax1.grid()
+
+# ax2.set_xlabel('V [V]')
+# ax2.set_ylabel('I [A]')
+# ax2.grid()
+
+# # device_ich=abs(device_ich)  # <-- Take the absolute value of the current
+# # ax1.set_yscale('log')  # <-- Converts y-axis to log scale
+# ax1.plot(device_vg, device_ig)
+
+# device_ig=abs(device_ig)  # <-- Take the absolute value of the current
+# ax2.set_yscale('log')  # <-- Converts y-axis to log scale
+# ax2.plot(device_vg, device_ig)
+
+
+# plt.show()
+
+# ======
+# 2 plots, transfer curve i_vs_t & v_vs_t in the same plot
+# ======
+
+# using twinx() for plotting two y-axes on the same plot
+# reference: https://matplotlib.org/stable/gallery/subplots_axes_and_figures/multiple_yaxis_with_spines.html
+# device = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260604/transfer_curve_20260604_2terminalGate_T1gateShortS-GND_T2gateSMUB_drSMUA_pdpss_gatech_nacl_s1_22.csv")
+
+# device_t = device['time']
+# device_ich = device['i_channel']
+# device_ig = device['i_gate']
+# device_vg = device['v_gate']
+
+# fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
+
+# twin1_ax1 = ax1.twinx()
+# ax1.set_xlabel('t [s]')
+# # ax1.set_ylabel('v gate [V]')
+# ax1.set_ylabel('Id [A], Vgs [V] ')
+# ax1.grid()
+
+# twin1_ax2 = ax2.twinx()
+# ax2.set_xlabel('t [s]')
+# ax2.set_ylabel('Ig [A], Vgs [V]')
+# ax2.grid()
+
+# # device_ich=abs(device_ich)  # <-- Take the absolute value of the current
+# # ax1.set_yscale('log')  # <-- Converts y-axis to log scale
+# ax1.plot(device_t, device_ich)
+# twin1_ax1.plot(device_t, device_vg, color='orange')
+# # ax1.plot(device_t, device_vg)
+
+# # device_ig=abs(device_ig)  # <-- Take the absolute value of the current
+# # ax2.set_yscale('log')  # <-- Converts y-axis to log scale
+# ax2.plot(device_t, device_ig)
+# twin1_ax2.plot(device_t, device_vg, color='orange')
 
 # plt.show()
 
@@ -229,12 +327,12 @@ plt.show()
 # ======
 # synpase-neuron osc data plot
 # ======
-data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260327\\neuron_mem.csv")
+# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260327\\neuron_mem.csv")
 
-t = data['time']
-v = data['volts']
-plt.plot(t,v)
-plt.show()
+# t = data['time']
+# v = data['volts']
+# plt.plot(t,v)
+# plt.show()
 
 
 # ======
@@ -276,5 +374,94 @@ plt.show()
 # plt.show()
 
 #===========
-# from `plot_exp_data`
+# animate the transfer curve plot 
 #===========
+
+# # Sample data
+# device = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260701/transfer_curve_20260701_2T_pv2-2_nacl_BigGateShortS_11.csv")
+
+# device_t = device['time']
+# device_ig = device['i_gate']
+# device_vg = device['v_gate']
+
+# print(device_ig.min(), device_ig.max())
+# print(device_vg.min(), device_vg.max())
+
+# # Set up figure
+# fig, ax = plt.subplots()
+# ax.set_xlim(-1, 1)
+# ax.set_ylim(-0.0015, 0.0021)
+# ax.set_xlabel("Time (s)")
+# ax.set_ylabel("Value")
+
+# line, = ax.plot([], [], lw=1)
+
+# def init():
+#     line.set_data([], [])
+#     return line,
+
+# def update(frame):
+#     # Show data up to current frame
+#     line.set_data(device_vg[:frame], device_ig[:frame])
+#     return line,
+
+# ani = animation.FuncAnimation(
+#     fig, update, frames=len(device_vg),
+#     init_func=init, blit=False, interval=100
+# )
+
+# ani.save("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260701/transfer_curve_20260701_2T_pv2-2_nacl_BigGateShortS_11.gif", writer="pillow", fps=60)
+
+# plt.show()
+
+#===========
+# animate the transfer curve plot produced by the Tu/e yoeri neuro group- matlab transfer curve code 
+# with 2 subplots
+#===========
+
+# Sample data
+data = np.loadtxt(r"C:\Users\20245580\LabCode\Codes_For_Experiments\exp_data\Charles_ionic_diode.txt", delimiter="\t")
+# print(data.shape)
+device_ig = data[:, 4]
+device_ig_abs = np.abs(device_ig)
+device_vg = data[:, 2]
+
+print(device_ig.min(), device_ig.max())
+print(device_vg.min(), device_vg.max())
+print(device_ig_abs.min(), device_ig_abs.max())
+# t = np.linspace(0, 10, 200)
+# y = np.sin(t)
+
+# Set up figure
+fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
+
+ax1.set_ylim(-1.5e-06, 1.5e-05)
+ax1.set_xlim(-1, 1.1)
+ax1.set_xlabel("V (V)")
+ax1.set_ylabel("I (A)")
+
+ax2.set_ylim(1e-9, 1.5e-05)
+ax2.set_yscale('log')
+
+line, = ax1.plot([], [], lw=1)
+line2, = ax2.plot([], [], lw=1)
+
+def init():
+    line.set_data([], [])
+    line2.set_data([], [])
+    return line, line2
+
+def update(frame):
+    # Show data up to current frame
+    line.set_data(device_vg[:frame], device_ig[:frame])
+    line2.set_data(device_vg[:frame], device_ig_abs[:frame])
+    return line,
+
+ani = animation.FuncAnimation(
+    fig, update, frames=len(device_vg),
+    init_func=init, blit=False, interval=100
+)
+
+ani.save("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/Charles_ionic_diode.gif", writer="pillow", fps=60)
+
+plt.show()
