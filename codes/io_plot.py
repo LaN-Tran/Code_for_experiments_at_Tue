@@ -59,36 +59,36 @@ import matplotlib.animation as animation
 # ======
 # 3 plots
 # ======
-# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260408/ecram_pulse_drain.csv")
+data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260629/ecram_3Tmem_pg2ttt_gel_s1_fineGateShortS_91.csv")
 # data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260408/ecram.csv")
-# # # # data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260116/sourceAB_measureAB.csv")
-# # # # stdp_post_pre_tg = data['time_g']
+# # # data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260116/sourceAB_measureAB.csv")
+# # # stdp_post_pre_tg = data['time_g']
 
-# stdp_post_pre_t = data['time']
-# stdp_post_pre_i = data['i_channel']
-# stdp_post_pre_ig = data['i_gate']
-# stdp_post_pre_v = data['v_gate']
+stdp_post_pre_t = data['time']
+stdp_post_pre_i = data['i_channel']
+stdp_post_pre_ig = data['i_gate']
+stdp_post_pre_v = data['v_gate']
 
 
-# fig, (ax1, ax2, ax3) = plt.subplots(3, 1, sharex=True)
+fig, (ax1, ax2, ax3) = plt.subplots(3, 1, sharex=True)
 
-# ax1.set_xlabel('time [s]')
-# ax1.set_ylabel('v gate [V]')
-# ax1.grid()
+ax1.set_xlabel('time [s]')
+ax1.set_ylabel('v gate [V]')
+ax1.grid()
 
-# ax2.set_xlabel('time [s]')
-# ax2.set_ylabel('i channel [A]')
-# ax2.grid()
+ax2.set_xlabel('time [s]')
+ax2.set_ylabel('i channel [A]')
+ax2.grid()
 
-# ax3.set_xlabel('time [s]')
-# ax3.set_ylabel('i gate [A]')
-# ax3.grid()
+ax3.set_xlabel('time [s]')
+ax3.set_ylabel('i gate [A]')
+ax3.grid()
 
-# ax1.plot(stdp_post_pre_t, stdp_post_pre_v)
-# ax2.plot(stdp_post_pre_t, stdp_post_pre_i)
-# ax3.plot(stdp_post_pre_t, stdp_post_pre_ig)
+ax1.plot(stdp_post_pre_t, stdp_post_pre_v)
+ax2.plot(stdp_post_pre_t, stdp_post_pre_i)
+ax3.plot(stdp_post_pre_t, stdp_post_pre_ig)
 
-# plt.show()
+plt.show()
 
 # ======
 # 4 plots
@@ -131,7 +131,7 @@ import matplotlib.animation as animation
 # ======
 # 2 plots
 # ======
-# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260701/ecram_20260701_2T_pv2-2_nacl_BigGateShortS_13.csv")
+# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260611/ecram_20250611_SExtWithFineGate_Dr-SMUApulse_pg2ttt_gatech_nacl_s1_62.csv")
 # # # data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260408/ecram.csv")
 # # # data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260116/sourceAB_measureAB.csv")
 # # # stdp_post_pre_tg = data['time_g']
@@ -415,53 +415,128 @@ import matplotlib.animation as animation
 # plt.show()
 
 #===========
-# animate the transfer curve plot produced by the Tu/e yoeri neuro group- matlab transfer curve code 
+# animate the transfer curve (2T memristor) plot produced by the Tu/e yoeri neuro group- matlab transfer curve code 
 # with 2 subplots
 #===========
 
-# Sample data
-data = np.loadtxt(r"C:\Users\20245580\LabCode\Codes_For_Experiments\exp_data\Charles_ionic_diode.txt", delimiter="\t")
-# print(data.shape)
-device_ig = data[:, 4]
-device_ig_abs = np.abs(device_ig)
-device_vg = data[:, 2]
+# # # =======
+# # # Charles ionic diode data
+# # data = np.loadtxt(r"C:\Users\20245580\LabCode\Codes_For_Experiments\exp_data\Charles_ionic_diode.txt", delimiter="\t")
+# # # print(data.shape)
+# # device_ig = data[:, 4]
+# # device_ig_abs = np.abs(device_ig)
+# # device_vg = data[:, 2]
 
-print(device_ig.min(), device_ig.max())
-print(device_vg.min(), device_vg.max())
-print(device_ig_abs.min(), device_ig_abs.max())
-# t = np.linspace(0, 10, 200)
-# y = np.sin(t)
+# # =======
+# # normal transfer curve data
+# device = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260629/transfer_curve_20260629_2Tmem_pg2ttt_gel_s1_fineGateShortS_51.csv")
 
-# Set up figure
-fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
+# device_t = device['time']
+# device_ig = device['i_gate']
+# device_ig_abs = np.abs(device_ig)
+# device_vg = device['v_gate']
 
-ax1.set_ylim(-1.5e-06, 1.5e-05)
-ax1.set_xlim(-1, 1.1)
-ax1.set_xlabel("V (V)")
-ax1.set_ylabel("I (A)")
+# print(device_ig.min(), device_ig.max())
+# print(device_vg.min(), device_vg.max())
+# print(device_ig_abs.min(), device_ig_abs.max())
+# # t = np.linspace(0, 10, 200)
+# # y = np.sin(t)
 
-ax2.set_ylim(1e-9, 1.5e-05)
-ax2.set_yscale('log')
+# # Set up figure
+# fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
 
-line, = ax1.plot([], [], lw=1)
-line2, = ax2.plot([], [], lw=1)
+# ax1.set_ylim(-0.00031, 0.0005)
+# ax1.set_xlim(-1, 1.1)
+# ax1.set_xlabel("V (V)")
+# ax1.set_ylabel("I (A)")
 
-def init():
-    line.set_data([], [])
-    line2.set_data([], [])
-    return line, line2
+# ax2.set_ylim(1e-7, 0.0005)
+# ax2.set_yscale('log')
 
-def update(frame):
-    # Show data up to current frame
-    line.set_data(device_vg[:frame], device_ig[:frame])
-    line2.set_data(device_vg[:frame], device_ig_abs[:frame])
-    return line,
+# line, = ax1.plot([], [], lw=1)
+# line2, = ax2.plot([], [], lw=1)
 
-ani = animation.FuncAnimation(
-    fig, update, frames=len(device_vg),
-    init_func=init, blit=False, interval=100
-)
+# def init():
+#     line.set_data([], [])
+#     line2.set_data([], [])
+#     return line, line2
 
-ani.save("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/Charles_ionic_diode.gif", writer="pillow", fps=60)
+# def update(frame):
+#     # Show data up to current frame
+#     line.set_data(device_vg[:frame], device_ig[:frame])
+#     line2.set_data(device_vg[:frame], device_ig_abs[:frame])
+#     return line,
 
-plt.show()
+# ani = animation.FuncAnimation(
+#     fig, update, frames=len(device_vg),
+#     init_func=init, blit=False, interval=100
+# )
+
+# # # =======
+# # # Charles ionic diode data
+# # ani.save("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/Charles_ionic_diode.gif", writer="pillow", fps=60)
+
+# ani.save("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260629/transfer_curve_20260629_2Tmem_pg2ttt_gel_s1_fineGateShortS_51.gif", writer="pillow", fps=60)
+# plt.show()
+
+#===========
+# animate the transfer curve (3T memristor) plot produced by the Tu/e yoeri neuro group- matlab transfer curve code 
+# with 3 subplots
+#===========
+
+# device = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260629/transfer_curve_20260629_3Tmem_pg2ttt_nacl_s1_fineGateShortS_11.csv")
+
+# device_t = device['time']
+# device_ig = device['i_gate']
+# device_id = device['i_channel']
+# device_ig_abs = np.abs(device_ig)
+# device_vg = device['v_gate']
+
+# print(f"Gate current: {device_ig.min()=}, {device_ig.max()=}")
+# print(f"Channel current: {device_id.min()=}, {device_id.max()=}")
+# print(f"Gate voltage: {device_vg.min()=}, {device_vg.max()=}")
+# print(f"Absolute gate current: {device_ig_abs.min()=}, {device_ig_abs.max()=}")
+# # t = np.linspace(0, 10, 200)
+# # y = np.sin(t)
+
+# # Set up figure
+# fig, axs = plt.subplots(2, 2, sharex=True)
+
+# axs[0, 0].set_ylim(-8.7e-05, 0.0012)
+# axs[0, 0].set_xlim(-1, 1.1)
+# axs[0, 0].set_xlabel("Vg (V)")
+# axs[0, 0].set_ylabel("Ig (A)")
+
+# axs[1, 0].set_ylim(1e-7, 0.0012)
+# axs[1, 0].set_yscale('log')
+# axs[1, 0].set_ylabel("log(Ig) (A)")
+
+# axs[0, 1].set_ylim(3.2e-05, 0.00021)
+# axs[0, 1].set_xlim(-1, 1.1)
+# axs[0, 1].set_xlabel("Vg (V)")
+# axs[0, 1].set_ylabel("Id @Vd=0.2V (A)")
+
+# line, = axs[0, 0].plot([], [], lw=1)
+# line3, = axs[1, 0].plot([], [], lw=1)
+# line4, = axs[0, 1].plot([], [], lw=1)
+
+# def init():
+#     line.set_data([], [])
+#     line3.set_data([], [])
+#     line4.set_data([], [])
+#     return line, line3, line4
+
+# def update(frame):
+#     # Show data up to current frame
+#     line.set_data(device_vg[:frame], device_ig[:frame])
+#     line3.set_data(device_vg[:frame], device_ig_abs[:frame])
+#     line4.set_data(device_vg[:frame], device_id[:frame])
+#     return line, line3, line4
+
+# ani = animation.FuncAnimation(
+#     fig, update, frames=len(device_vg),
+#     init_func=init, blit=False, interval=100
+# )
+
+# ani.save("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260629/transfer_curve_20260629_3Tmem_pg2ttt_nacl_s1_fineGateShortS_11.gif", writer="pillow", fps=60)
+# plt.show()
