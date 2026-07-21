@@ -18,6 +18,7 @@ import pandas as pd
 # from scipy import signal
 import numpy as np
 import matplotlib.animation as animation
+import math
 # ======
 # Applying filter
 # ======
@@ -59,8 +60,8 @@ import matplotlib.animation as animation
 # ======
 # 3 plots
 # ======
-data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260629/ecram_3Tmem_pg2ttt_gel_s1_fineGateShortS_91.csv")
-# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260408/ecram.csv")
+# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260629/ecram_3Tmem_pg2ttt_gel_s1_fineGateShortS_91.csv")
+data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260408/ecram.csv")
 # # # data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260116/sourceAB_measureAB.csv")
 # # # stdp_post_pre_tg = data['time_g']
 
@@ -418,7 +419,6 @@ plt.show()
 # animate the transfer curve (2T memristor) plot produced by the Tu/e yoeri neuro group- matlab transfer curve code 
 # with 2 subplots
 #===========
-
 # # # =======
 # # # Charles ionic diode data
 # # data = np.loadtxt(r"C:\Users\20245580\LabCode\Codes_For_Experiments\exp_data\Charles_ionic_diode.txt", delimiter="\t")
@@ -427,30 +427,47 @@ plt.show()
 # # device_ig_abs = np.abs(device_ig)
 # # device_vg = data[:, 2]
 
+# # # =======
+# # # normal transfer curve data
+# # device = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260629/transfer_curve_20260629_2Tmem_pg2ttt_gel_s1_fineGateShortS_51.csv")
+
+# # device_t = device['time']
+# # device_ig = device['i_gate']
+# # device_ig_abs = np.abs(device_ig)
+# # device_vg = device['v_gate']
+
 # # =======
-# # normal transfer curve data
-# device = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260629/transfer_curve_20260629_2Tmem_pg2ttt_gel_s1_fineGateShortS_51.csv")
+# # normal transfer curve data - oect profiling code
+# file_name = "transfer_curve_20260721_vi_2T_pg2ttt_s3_nacl_13.csv"
+# file_path = f"C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260518/{file_name}"
+# save_path = f"C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260518/{file_name.replace('.csv', '.gif')}"
+# device = pd.read_csv(file_path)
 
 # device_t = device['time']
-# device_ig = device['i_gate']
+# device_ig = device['i_channel']
 # device_ig_abs = np.abs(device_ig)
-# device_vg = device['v_gate']
+# device_vg = device['v_drain']
 
-# print(device_ig.min(), device_ig.max())
-# print(device_vg.min(), device_vg.max())
-# print(device_ig_abs.min(), device_ig_abs.max())
+# print(f"Y axis: {device_ig.min()=}, {device_ig.max()=}")
+# print(f"X axis: {device_vg.min()=}, {device_vg.max()=}")
+# print(f"Absolute Y axis: {device_ig_abs.min()=}, {device_ig_abs.max()=}")
 # # t = np.linspace(0, 10, 200)
 # # y = np.sin(t)
 
 # # Set up figure
 # fig, (ax1, ax2) = plt.subplots(2, 1, sharex=True)
 
-# ax1.set_ylim(-0.00031, 0.0005)
-# ax1.set_xlim(-1, 1.1)
+# x_decimal_places = 1e+1
+# y_decimal_places = 1e+3
+# ax1.set_ylim(device_ig.min()-(1/y_decimal_places), 
+#              device_ig.max()+(1/y_decimal_places))
+# ax1.set_xlim(device_vg.min()-(1/x_decimal_places), 
+#              device_vg.max()+(1/x_decimal_places))
 # ax1.set_xlabel("V (V)")
 # ax1.set_ylabel("I (A)")
 
-# ax2.set_ylim(1e-7, 0.0005)
+# ax2.set_ylim(device_ig_abs.min()/10, 
+#              device_ig_abs.max()*10)
 # ax2.set_yscale('log')
 
 # line, = ax1.plot([], [], lw=1)
@@ -472,11 +489,14 @@ plt.show()
 #     init_func=init, blit=False, interval=100
 # )
 
-# # # =======
-# # # Charles ionic diode data
-# # ani.save("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/Charles_ionic_diode.gif", writer="pillow", fps=60)
+# # # # =======
+# # # # Charles ionic diode data
+# # # ani.save("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/Charles_ionic_diode.gif", writer="pillow", fps=60)
 
-# ani.save("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260629/transfer_curve_20260629_2Tmem_pg2ttt_gel_s1_fineGateShortS_51.gif", writer="pillow", fps=60)
+# # ani.save("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260629/transfer_curve_20260629_2Tmem_pg2ttt_gel_s1_fineGateShortS_51.gif", writer="pillow", fps=60)
+# # plt.show()
+
+# ani.save(save_path, writer="pillow", fps=60)
 # plt.show()
 
 #===========
