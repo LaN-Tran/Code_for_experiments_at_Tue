@@ -41,15 +41,16 @@ logging.basicConfig(format=format, level=logging.INFO,
 # ======
 logging.info("Prepare list of voltages")
     # DRAIN - SMUA
-number_of_sweeps = 2
-scan_rate = 0.2 # [V/s] # 0.1 = the min scan rate
+number_of_sweeps = 5
+scan_rate = 0.05 # [V/s] # 0.1 = the min scan rate
 sampling_speed = 100 # 10e+3 # [Hz] (max 50kHz, depends on keithley)
 time_step = 1/sampling_speed
-volt_step = time_step * scan_rate
+volt_step = (time_step * scan_rate)
+Vd_step_offset = volt_step / 10
+volt_step = (time_step * scan_rate) + Vd_step_offset
 # `Vd_neg` MUST < `Vd_stop`, otherwise cause error in list generation `list_fvotl_neg`, `list_bvotl_neg` below
 Vd_neg = -0.8 # [V]
 Vd_pos = 0.8 # [V] 
-Vd_stop_offset = 1e-6
 Vd_stop = 0 # [V]
 Vd_abs_max = max(abs(Vd_neg), abs(Vd_pos))
     # time step limit check
@@ -61,19 +62,28 @@ if nplc_set * (1/50) > time_step:
     # listv length limit check
 max_number_samples_for_listv_keithley_source = 900
     # list of voltages
-list_fvotl_neg = np.arange(Vd_stop - Vd_stop_offset, Vd_neg, -volt_step)
-list_bvotl_neg = np.arange(Vd_neg, Vd_stop - Vd_stop_offset, volt_step)
-list_fvotl_pos = np.arange(Vd_stop + Vd_stop_offset, Vd_pos, volt_step)
-list_bvotl_pos = np.arange(Vd_pos, Vd_stop + Vd_stop_offset, -volt_step)
-n_listv = max(len(list_fvotl_neg), len(list_bvotl_neg), len(list_fvotl_pos), len(list_bvotl_pos))
-print(f"{len(list_fvotl_neg)=}")
-print(f"{len(list_bvotl_neg)=}")
-print(f"{len(list_fvotl_pos)=}")
-print(f"{len(list_bvotl_pos)=}")
+list_start = np.arange(0, Vd_pos, volt_step)
+list_bvotl = np.arange(Vd_pos, Vd_neg, -volt_step)
+list_bvotl_1 = list_bvotl[0:int(len(list_bvotl)/2)]
+list_bvotl_2 = list_bvotl[int(len(list_bvotl)/2):] 
+list_fvotl = np.arange(Vd_neg, Vd_pos, volt_step)
+list_fvotl_1 = list_fvotl[0:int(len(list_fvotl)/2)]
+list_fvotl_2 = list_fvotl[int(len(list_fvotl)/2):]
+list_end = np.arange(Vd_pos, 0-volt_step, -volt_step)
+n_listv = max(len(list_fvotl_1), len(list_fvotl_2),
+              len(list_bvotl_1), len(list_bvotl_2),
+              len(list_start), 
+              len(list_end))
+print(f"{len(list_fvotl_1)=}")
+print(f"{len(list_fvotl_2)=}")
+print(f"{len(list_bvotl_1)=}")
+print(f"{len(list_bvotl_2)=}")
+print(f"{len(list_start)=}")
+print(f"{len(list_end)=}")
 print(f"{n_listv} and {max_number_samples_for_listv_keithley_source=}")
-if n_listv > max_number_samples_for_listv_keithley_source:
-    print("TOO MANY SAMPLES for listv!")
-    sys.exit(-1)
+# if n_listv > max_number_samples_for_listv_keithley_source:
+#     print("TOO MANY SAMPLES for listv!")
+#     sys.exit(-1)
 
     # GATE - SMUB (DOES NOT MATTER IN THIS MEASUREMENT, BUT MUST BE SET TO A FIXED VALUE)
 vg_str = -0.1 # [V]
@@ -103,7 +113,7 @@ lines[ln_idx-1]= 'stime = ' + str(time_step)\
             + '\n'
 
 ln_idx = 18
-lines[ln_idx-1]= 'points = ' + str(len(list_fvotl_neg))\
+lines[ln_idx-1]= 'points_str = ' + str(len(list_start))\
             + '\n'
 
 ln_idx = 22
@@ -116,21 +126,47 @@ lines[ln_idx-1]= 'smu_drain.measure.nplc = ' + str(nplc_set)\
 
     # smu.trigger.source.listv({3, 1, 4, 5, 2})
     # reference: strip of bracket of python list converted to string https://www.geeksforgeeks.org/python/python-remove-square-brackets-from-list/
-ln_idx = 90
-lines[ln_idx-1]= '\t'+'smu_drain.trigger.source.listv({' + str(list_fvotl_neg.tolist()).replace("[","").replace("]","") + "})"\
-            + '\n' 
-
-ln_idx = 102
-lines[ln_idx-1]= '\t'+'smu_drain.trigger.source.listv({' + str(list_bvotl_neg.tolist()).replace("[","").replace("]","") + "})"\
+ln_idx = 87
+lines[ln_idx-1]= 'volt_offset = ' + str(Vd_step_offset)\
             + '\n'
+# ln_idx = 89
+# lines[ln_idx-1]= 'smu_drain.trigger.source.listv({' + str(list_start.tolist()).replace("[","").replace("]","") + "})"\
+#             + '\n' 
 
-ln_idx = 115
-lines[ln_idx-1]= '\t'+'smu_drain.trigger.source.listv({' + str(list_fvotl_pos.tolist()).replace("[","").replace("]","") + "})"\
-            + '\n' 
+ln_idx = 98
+lines[ln_idx-1]= 'points_bw_1 = ' + str(len(list_bvotl_1))\
+            + '\n'
+# ln_idx = 104
+# lines[ln_idx-1]= '\t'+'smu_drain.trigger.source.listv({' + str(list_bvotl_1.tolist()).replace("[","").replace("]","") + "})"\
+#             + '\n'
 
-ln_idx = 127
-lines[ln_idx-1]= '\t'+'smu_drain.trigger.source.listv({' + str(list_bvotl_pos.tolist()).replace("[","").replace("]","") + "})"\
-            + '\n' 
+ln_idx = 106
+lines[ln_idx-1]= 'points_bw_2 = ' + str(len(list_bvotl_2))\
+            + '\n'
+# ln_idx = 110
+# lines[ln_idx-1]= '\t'+'smu_drain.trigger.source.listv({' + str(list_bvotl_2.tolist()).replace("[","").replace("]","") + "})"\
+#             + '\n'
+
+ln_idx = 114
+lines[ln_idx-1]= 'points_fw_1 = ' + str(len(list_fvotl_1))\
+            + '\n'
+# ln_idx = 124
+# lines[ln_idx-1]= '\t'+'smu_drain.trigger.source.listv({' + str(list_fvotl_1.tolist()).replace("[","").replace("]","") + "})"\
+#             + '\n'
+
+ln_idx = 122
+lines[ln_idx-1]= 'points_fw_2 = ' + str(len(list_fvotl_2))\
+            + '\n'
+# ln_idx = 131
+# lines[ln_idx-1]= '\t'+'smu_drain.trigger.source.listv({' + str(list_fvotl_2.tolist()).replace("[","").replace("]","") + "})"\
+#             + '\n' 
+
+ln_idx = 130
+lines[ln_idx-1]= 'points_end = ' + str(len(list_end))\
+            + '\n'
+# ln_idx = 148
+# lines[ln_idx-1]= 'smu_drain.trigger.source.listv({' + str(list_end.tolist()).replace("[","").replace("]","") + "})"\
+#             + '\n' 
 
     # DEBUG PURPOSE ONLY
 # ln_idx = 20
@@ -156,7 +192,9 @@ lines[ln_idx-1]= 'number_of_sweeps_vgs = ' + str(len(vg_sweep))\
             + '\n'
 
 ln_idx = 24
-lines[ln_idx-1]= 'len_data_per_sweep_vgs = ' + str((len(list_fvotl_neg)+len(list_bvotl_neg))*number_of_sweeps)\
+lines[ln_idx-1]= 'len_data_per_sweep_vgs = ' + str((len(list_fvotl_1)+len(list_fvotl_2)+len(list_bvotl_1)+len(list_bvotl_2))*number_of_sweeps 
+                                                   + len(list_end) 
+                                                   + len(list_start))\
             + '\n'
 
 # Write the modified lines back to the file
