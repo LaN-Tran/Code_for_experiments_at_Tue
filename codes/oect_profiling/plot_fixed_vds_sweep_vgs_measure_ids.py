@@ -21,7 +21,7 @@ import numpy as np
 
 number_of_sweeps_vds = 5
     # = `len(vd_sweep)`, file `./fixed_vds_sweep_vgs_measure_ids_v2.py` 
-len_data_per_sweep_vds = 726
+len_data_per_sweep_vds = 366
     # = `(len(list_fvotl) + len(list_bvotl))*number_of_sweeps`, file `./fixed_vds_sweep_vgs_measure_ids_v2.py`
 
 data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260518\\oect_profiling_transfer_curve.csv")

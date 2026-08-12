@@ -16,8 +16,8 @@ display.settext("InterchannelPulseVTrain")
 smu1 = smua
 smu2 = smub
 
-pulse_vd = 0
-pulse_vg = 0.8
+pulse_vd = 2.5
+pulse_vg = 0
 
 pulse_v1 = pulse_vd
 pulse_v2 = pulse_vg
@@ -37,12 +37,12 @@ end
 limit_i = 0.1
 
 -- [s]
-pulse_period = 0.05--0.5
+pulse_period = 0.1--0.5
 pulse_width = 0.02--0.1
 deta_t = 0.05
 
 --- passthrough = true -> desired number of pulses -1 
-number_pulses= 9
+number_pulses= 3
 
 -- configure output offmode 
 smu1.source.offmode = smu1.OUTPUT_ZERO

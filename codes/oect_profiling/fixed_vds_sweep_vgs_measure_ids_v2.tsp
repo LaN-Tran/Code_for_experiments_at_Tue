@@ -9,8 +9,8 @@ display.clear()
 
         -- smua = drain
 startv_a = -0.3
-stopv_a = 0.1
-vd = 0.10000000000000003
+stopv_a = 0.2
+vd = -0.3
 
         -- smub = gate
 startv_b = -0.6

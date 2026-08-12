@@ -60,8 +60,8 @@ if nplc_set * (1/50) > time_step:
 max_number_samples_for_listv_keithley_source = 900
     # list of voltages
 list_fvolt_POS = np.arange(0, vg_stop + volt_step, volt_step)
-list_bvolt_POS = np.arange(vg_stop, 0 - volt_step, -volt_step)
-list_fvolt_NEG = np.arange(0, vg_str - volt_step, -volt_step)
+list_bvolt_POS = np.arange(vg_stop, 0, - volt_step)
+list_fvolt_NEG = np.arange(0 + volt_step, vg_str, -volt_step)
 list_bvolt_NEG = np.arange(vg_str, 0 + volt_step, volt_step)
 n_listv = max(len(list_fvolt_POS), len(list_bvolt_POS), len(list_fvolt_NEG), len(list_bvolt_NEG))
 print(f"{len(list_fvolt_POS)=}")

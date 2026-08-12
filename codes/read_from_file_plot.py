@@ -221,12 +221,14 @@ def plot_transfer_curve_2plot (_, file_path):
 
         # configure the plot
 
-    # ax1.set_ylim(-2, 2)
+    
     # ax1.set_xlim(0, 5)
     ax1.set_xlabel('Vg [V]')
     ax1.set_ylabel('i_channel [A]')
     ax1.grid()
 
+    # ax2.set_ylim(-0.00025, 0.00025)
+    # ax2.set_xlim(-0.1, 0.1)
     ax2.set_xlabel('Vg [V]')
     ax2.set_ylabel('i_gate [A]')
     ax2.grid()
@@ -313,34 +315,35 @@ def k_pulse_read (_, file_path):
 # ======
 # Ram, 4 plot
 # ======
-# file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260408/ecram_pulse_drain.csv"
-# # file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260408/ecram.csv"
+# # file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260408/ecram_pulse_drain.csv"
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260408/ecram.csv"
 
-# # define the figure
-# # create a figure with two subplots
-# fig, (ax1, ax2, ax3, ax4) = plt.subplots(4, 1)
+# # # define the figure
+# # # create a figure with two subplots
+fig, (ax1, ax2, ax3, ax4) = plt.subplots(4, 1)
 
 
-# # the same axes initalizations as before (just now we do it for both of them)
+# the same axes initalizations as before (just now we do it for both of them)
 
-# ani = animation.FuncAnimation(fig, plot_ecram_4plots, interval= 500, fargs= (file_path, ))
-# plt.show()
+ani = animation.FuncAnimation(fig, plot_ecram_4plots, interval= 500, fargs= (file_path, ))
+plt.show()
 # ======
 # Transfer curve
 # ======
     # NORMAL
-file_path = "C:\\Users\\20245580\\LabCode\\Codes_For_Experiments\\exp_data\\20260408\\transfer_curve.csv"
-# # # the same axes initalizations as before (just now we do it for both of them)
-#     # DIODE
+# file_path = "C:\\Users\\20245580\\LabCode\\Codes_For_Experiments\\exp_data\\20260408\\transfer_curve.csv"
+# # # file_path = "C:\\Users\\20245580\\LabCode\\Codes_For_Experiments\\exp_data\\20260519\\transfer_curve_pg2tttt-nacl_vani_endOFF_44.csv"
+# # # # # the same axes initalizations as before (just now we do it for both of them)
+# # #     # DIODE
 # file_path = "C:\\Users\\20245580\\LabCode\\Codes_For_Experiments\\exp_data\\20260408\\transfer_curve_diode.csv"
-# # the same axes initalizations as before (just now we do it for both of them)
-# # define the figure
-# # create a figure with two subplots
-fig, (ax1, ax2) = plt.subplots(1, 2)
+# # # # the same axes initalizations as before (just now we do it for both of them)
+# # # # define the figure
+# # # create a figure with two subplots
+# fig, (ax1, ax2) = plt.subplots(1, 2)
 
-# ani = animation.FuncAnimation(plt.gcf(), plot_transfer_curve, interval= 500, fargs= (file_path, ))
-ani = animation.FuncAnimation(plt.gcf(), plot_transfer_curve_2plot, interval= 500, fargs= (file_path, ))
-plt.show()
+# # ani = animation.FuncAnimation(plt.gcf(), plot_transfer_curve, interval= 500, fargs= (file_path, ))
+# ani = animation.FuncAnimation(plt.gcf(), plot_transfer_curve_2plot, interval= 500, fargs= (file_path, ))
+# plt.show()
 
 # ======
 # Transfer curve, diode

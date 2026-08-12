@@ -60,52 +60,19 @@ import math
 # ======
 # 3 plots
 # ======
-# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260629/ecram_3Tmem_pg2ttt_gel_s1_fineGateShortS_91.csv")
-data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260408/ecram.csv")
-# # # data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260116/sourceAB_measureAB.csv")
-# # # stdp_post_pre_tg = data['time_g']
-
-stdp_post_pre_t = data['time']
-stdp_post_pre_i = data['i_channel']
-stdp_post_pre_ig = data['i_gate']
-stdp_post_pre_v = data['v_gate']
-
-
-fig, (ax1, ax2, ax3) = plt.subplots(3, 1, sharex=True)
-
-ax1.set_xlabel('time [s]')
-ax1.set_ylabel('v gate [V]')
-ax1.grid()
-
-ax2.set_xlabel('time [s]')
-ax2.set_ylabel('i channel [A]')
-ax2.grid()
-
-ax3.set_xlabel('time [s]')
-ax3.set_ylabel('i gate [A]')
-ax3.grid()
-
-ax1.plot(stdp_post_pre_t, stdp_post_pre_v)
-ax2.plot(stdp_post_pre_t, stdp_post_pre_i)
-ax3.plot(stdp_post_pre_t, stdp_post_pre_ig)
-
-plt.show()
-
-# ======
-# 4 plots
-# ======
-# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260629/ecram_3Tmem_pg2ttt_gel_s1_fineGateShortS_91.csv")
+# file_name = r"exp_data\20260408\ecram_20260723_pg2ttt_s3_nacl_24.csv"
+# data = pd.read_csv(f"C:/Users/20245580/LabCode/Codes_For_Experiments/{file_name}")
 # # data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260408/ecram.csv")
-# # # # data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260116/sourceAB_measureAB.csv")
-# # # # stdp_post_pre_tg = data['time_g']
+# # # # # data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260116/sourceAB_measureAB.csv")
+# # # # # stdp_post_pre_tg = data['time_g']
 
 # stdp_post_pre_t = data['time']
 # stdp_post_pre_i = data['i_channel']
 # stdp_post_pre_ig = data['i_gate']
 # stdp_post_pre_v = data['v_gate']
-# stdp_post_pre_vd = data['v_drain']
 
-# fig, (ax1, ax2, ax3, ax4) = plt.subplots(4, 1, sharex=True)
+
+# fig, (ax1, ax2, ax3) = plt.subplots(3, 1, sharex=True)
 
 # ax1.set_xlabel('time [s]')
 # ax1.set_ylabel('v gate [V]')
@@ -119,15 +86,49 @@ plt.show()
 # ax3.set_ylabel('i gate [A]')
 # ax3.grid()
 
-# ax4.set_xlabel('time [s]')
-# ax4.set_ylabel('v drain [V]')
-# ax4.grid()
-
 # ax1.plot(stdp_post_pre_t, stdp_post_pre_v)
 # ax2.plot(stdp_post_pre_t, stdp_post_pre_i)
 # ax3.plot(stdp_post_pre_t, stdp_post_pre_ig)
-# ax4.plot(stdp_post_pre_t, stdp_post_pre_vd)
+
 # plt.show()
+
+# ======
+# 4 plots
+# ======
+# data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260629/ecram_3Tmem_pg2ttt_gel_s1_fineGateShortS_91.csv")
+data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260408/ecram.csv")
+# # # data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260116/sourceAB_measureAB.csv")
+# # # stdp_post_pre_tg = data['time_g']
+
+stdp_post_pre_t = data['time']
+stdp_post_pre_i = data['i_channel']
+stdp_post_pre_ig = data['i_gate']
+stdp_post_pre_v = data['v_gate']
+stdp_post_pre_vd = data['v_drain']
+
+fig, (ax1, ax2, ax3, ax4) = plt.subplots(4, 1, sharex=True)
+
+ax1.set_xlabel('time [s]')
+ax1.set_ylabel('v gate [V]')
+ax1.grid()
+
+ax2.set_xlabel('time [s]')
+ax2.set_ylabel('i channel [A]')
+ax2.grid()
+
+ax3.set_xlabel('time [s]')
+ax3.set_ylabel('i gate [A]')
+ax3.grid()
+
+ax4.set_xlabel('time [s]')
+ax4.set_ylabel('v drain [V]')
+ax4.grid()
+
+ax1.plot(stdp_post_pre_t, stdp_post_pre_v)
+ax2.plot(stdp_post_pre_t, stdp_post_pre_i)
+ax3.plot(stdp_post_pre_t, stdp_post_pre_ig)
+ax4.plot(stdp_post_pre_t, stdp_post_pre_vd)
+plt.show()
 
 # ======
 # 2 plots
@@ -421,32 +422,38 @@ plt.show()
 #===========
 # # # =======
 # # # Charles ionic diode data
-# # data = np.loadtxt(r"C:\Users\20245580\LabCode\Codes_For_Experiments\exp_data\Charles_ionic_diode.txt", delimiter="\t")
+# # file_name = r"exp_data/Charles_ionic_diode.txt"
+# # file_path = f"C:/Users/20245580/LabCode/Codes_For_Experiments/{file_name}"
+# # save_path = f"C:/Users/20245580/LabCode/Codes_For_Experiments/{file_name.replace('.txt', '.gif')}"
+# # data = np.loadtxt(file_path, delimiter="\t")
 # # # print(data.shape)
 # # device_ig = data[:, 4]
 # # device_ig_abs = np.abs(device_ig)
 # # device_vg = data[:, 2]
 
 # # # =======
-# # # normal transfer curve data
-# # device = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260629/transfer_curve_20260629_2Tmem_pg2ttt_gel_s1_fineGateShortS_51.csv")
-
-# # device_t = device['time']
-# # device_ig = device['i_gate']
-# # device_ig_abs = np.abs(device_ig)
-# # device_vg = device['v_gate']
-
-# # =======
-# # normal transfer curve data - oect profiling code
-# file_name = "transfer_curve_20260721_vi_2T_pg2ttt_s3_nacl_13.csv"
-# file_path = f"C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260518/{file_name}"
-# save_path = f"C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260518/{file_name.replace('.csv', '.gif')}"
+# # normal transfer curve data
+# file_name = r"exp_data\20260701\transfer_curve_20260701_2T_pv2-2_nacl_BigGateShortS_11.csv"
+# file_path = f"C:/Users/20245580/LabCode/Codes_For_Experiments/{file_name}"
+# save_path = f"C:/Users/20245580/LabCode/Codes_For_Experiments/{file_name.replace('.csv', '.gif')}"
 # device = pd.read_csv(file_path)
 
 # device_t = device['time']
-# device_ig = device['i_channel']
+# device_ig = device['i_gate']
 # device_ig_abs = np.abs(device_ig)
-# device_vg = device['v_drain']
+# device_vg = device['v_gate']
+
+# # =======
+# # normal transfer curve data - oect profiling code
+# # file_name = "transfer_curve_diode_20260723_pg2ttt_s3_nacl_21.csv"
+# # file_path = f"C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260408/{file_name}"
+# # save_path = f"C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260408/{file_name.replace('.csv', '.gif')}"
+# # device = pd.read_csv(file_path)
+
+# # device_t = device['time']
+# # device_ig = device['i_channel']
+# # device_ig_abs = np.abs(device_ig)
+# # device_vg = device['v_drain']
 
 # print(f"Y axis: {device_ig.min()=}, {device_ig.max()=}")
 # print(f"X axis: {device_vg.min()=}, {device_vg.max()=}")

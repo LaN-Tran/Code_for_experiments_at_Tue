@@ -42,7 +42,7 @@ logging.basicConfig(format=format, level=logging.INFO,
 logging.info("Prepare list of voltages")
 buffer_wait_time = 3 # [s]
 Vd_bias = 0.05 # [V]
-Vd_pulse = 0.7 # [V]
+Vd_pulse = 0.4 # [V]
 t_off = 0.5 # [s]
 t_on = 0.1 # [s]
 # the reliable range of sampling speed <= 1kHz

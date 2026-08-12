@@ -19,9 +19,9 @@ import pandas as pd
 # from scipy import signal
 import numpy as np
 
-number_of_sweeps_vgs = 13
+number_of_sweeps_vgs = 1
     # = `len(vg_sweep)`, file `./fixed_vgs_sweep_vds_measure_ids.py` 
-len_data_per_sweep_vgs = 366
+len_data_per_sweep_vgs = 32011
     # = `llen(list_fvotl) + len(list_bvotl)`, file `./fixed_vgs_sweep_vds_measure_ids.tsp`
 
 data = pd.read_csv("C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260518\\oect_profiling_output_curve.csv")

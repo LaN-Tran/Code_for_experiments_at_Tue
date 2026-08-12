@@ -49,7 +49,7 @@ logging.basicConfig(format=format, level=logging.INFO,
     # k = Keithley2600('USB0::0x05E6::0x2636::4480001::INSTR', visa_library = 'C:/windows/System32/visa64.dll')
 rm = pyvisa.ResourceManager('C:/windows/System32/visa64.dll')
 # keithley_instrument = rm.open_resource('TCPIP0::169.254.0.1::inst0::INSTR')
-keithley_instrument = rm.open_resource('USB0::0x05E6::0x2636::4480001::INSTR')
+keithley_instrument = rm.open_resource('USB0::0x05E6::0x2602::4522205::INSTR')
 keithley_instrument.timeout = 10000
 
         # Turn everything OFF
@@ -59,27 +59,27 @@ time.sleep(1)
 
 
         # path to the measurement record
-file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260311/ecram_pulse_drain.csv"
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260408/ecram_pulse_drain.csv"
 
 logging.info("Main    : Prepare measurement")
 
 sw_settle_time = 0.1 # [s]
 gate_bias_voltage = 0 # [s]
-drain_bias_voltage = 0.1 # [s]
+drain_bias_voltage = 0 # [s]
 keithley_settle_time = 0.1 # [s]
 wait_before_exp = 5 # [s]
 nexp = 20
-n_pulse_type_1 = 5
+n_pulse_type_1 = 10
 amp_pulse_type_1 = 0.8 # (Vgs > 0, decrease gm. bcz source is always 0, and drain - source are symmertrical)
 pulse_width_type_1 = 2
-pulse_period_type_1 = 5 # (gate pulse)
+pulse_period_type_1 = 10 # (gate pulse)
 no_pulse_time_type_1 = pulse_period_type_1 - pulse_width_type_1
 wait_between_pulse_type_1 = 10
 wait_between_pulse_type_1_and_pulse_type_2 = 5
-n_pulse_type_2 = 5
-amp_pulse_type_2 = 0.8 # (drain pulse)
+n_pulse_type_2 = 10
+amp_pulse_type_2 = 0.2 # (drain pulse)
 pulse_width_type_2 = 2
-pulse_period_type_2 = 5
+pulse_period_type_2 = 10
 no_pulse_time_type_2 = pulse_period_type_2 - pulse_width_type_2
 wait_between_pulse_type_2 = 10
 wait_between_exp = 5

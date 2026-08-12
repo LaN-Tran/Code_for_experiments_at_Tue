@@ -62,8 +62,8 @@ settle_time = 1 # s # after the smu configuration
 sw_settle_time = 10e-3 # s
 rest_duration = 0.2 # s
 
-gate_voltage_smallest = -0.6 # V (for liquid electrolite)
-gate_voltage_largest = 0.6 # V (for liquid electrolite)
+gate_voltage_smallest = -0.8 # V (for liquid electrolite)
+gate_voltage_largest = 0.8 # V (for liquid electrolite)
 gate_voltage_step = 0.1 # V
 
 try:
@@ -141,72 +141,65 @@ try:
     time.sleep(settle_time)
 
                     # prepare the sweep voltage
-    voltage_list_forward = np.arange(0, gate_voltage_largest + gate_voltage_step, gate_voltage_step).tolist()
+    voltage_list_start = np.arange(0, gate_voltage_largest + gate_voltage_step, gate_voltage_step).tolist()
+
     voltage_list_backward = np.arange(gate_voltage_largest, gate_voltage_smallest - gate_voltage_step, -gate_voltage_step).tolist()
-    voltage_list_end = np.arange(gate_voltage_smallest, 0 + gate_voltage_step, gate_voltage_step).tolist()
+    voltage_list_forward = np.arange(gate_voltage_smallest, gate_voltage_largest + gate_voltage_step, gate_voltage_step).tolist()
+
+    voltage_list_end = np.arange(gate_voltage_largest, 0 - gate_voltage_step, -gate_voltage_step).tolist()
 
     logging.info(f"starting the measurement process")
                     # start the measurement reference time
     start_time = time.time()
                     # start measurement
+    for idx, v in enumerate(voltage_list_start):     
+                with open(file_path, 'a') as file: 
+                            # NOTICE: THE WHILE LOOP/ FOR LOOP INSIDE -> NO CONSTANT UPDATE TO FILE AT ALL -> NO ANIMATION
+                    file_writer = csv.DictWriter(file, fieldnames=field_names)
+                                
+                                    # set the voltage (gate)
+                    logging.info(f"set gate voltage {v=}")
+                    keithley_instrument.write(f"smub.source.levelv = {v}")
+                    time.sleep(settle_time)
+                    try:
+                        measured_i_channel = 0
+                        measured_v_drain = 0
+                        measured_i_gate =  float(keithley_instrument.query('print(smub.measure.i())'))
+                        measured_v_gate = float(keithley_instrument.query('print(smub.measure.v())'))
+
+                                    # measured_i_gate = keithley_instrument.smub.measure.i()
+
+                                        # record to file
+                        info = {
+                            'time': time.time() - start_time,
+                            'i_channel': measured_i_channel,
+                            'v_drain': measured_v_drain,
+                            'i_gate': measured_i_gate,
+                            'v_gate': measured_v_gate,
+                                                        }
+                        logging.info(f"save {info=} to .csv")
+                        file_writer.writerow(info)
+
+                    except Exception as e:
+                                    # # ======
+                                    # # Open all switches
+                                    # # ======
+                                    # For the relay board: HIGH = OFF = OPEN // LOW = ON = CLOSE
+                        logging.info(f"ERROR: keithley measurement: {e=}")
+                        
+
+                                        
+                                    # Rest between measurement
+            # time.sleep(rest_duration)
+                
+            
+            #     # wait for the open transition to tbe stable
+            # time.sleep(0.5)
     for i in range(0, number_of_measurements):
         # forward 
-        for idx, v in enumerate(voltage_list_forward):     
-            with open(file_path, 'a') as file: 
-                        # NOTICE: THE WHILE LOOP/ FOR LOOP INSIDE -> NO CONSTANT UPDATE TO FILE AT ALL -> NO ANIMATION
-                file_writer = csv.DictWriter(file, fieldnames=field_names)
-                            
-                                # set the voltage (gate)
-                logging.info(f"set gate voltage {v=}")
-                keithley_instrument.write(f"smub.source.levelv = {v}")
-                time.sleep(settle_time)
-                try:
-                    measured_i_channel = 0
-                    measured_v_drain = 0
-                    measured_i_gate =  float(keithley_instrument.query('print(smub.measure.i())'))
-                    measured_v_gate = float(keithley_instrument.query('print(smub.measure.v())'))
-
-                                # measured_i_gate = keithley_instrument.smub.measure.i()
-
-                                    # record to file
-                    info = {
-                        'time': time.time() - start_time,
-                        'i_channel': measured_i_channel,
-                        'v_drain': measured_v_drain,
-                        'i_gate': measured_i_gate,
-                        'v_gate': measured_v_gate,
-                                                    }
-                    logging.info(f"save {info=} to .csv")
-                    file_writer.writerow(info)
-
-                except Exception as e:
-                                # # ======
-                                # # Open all switches
-                                # # ======
-                                # For the relay board: HIGH = OFF = OPEN // LOW = ON = CLOSE
-                    logging.info(f"ERROR: keithley measurement: {e=}")
-                    
-
-                                    
-                                # Rest between measurement
-        time.sleep(rest_duration)
-            
-        
-            # wait for the open transition to tbe stable
-        time.sleep(0.5)
-
                     # # ======
                     # # Measuring
                     # # ======
-
-                        # Turn on the gate source.
-        # keithley_instrument.write(f"smub.source.output = smub.OUTPUT_ON")
-
-
-                        # Turn on the drain source.
-        # keithley_instrument.write(f"smua.source.output = smua.OUTPUT_ON")
-
-
                         # Settling time
         # time.sleep(settle_time)
 
@@ -247,11 +240,11 @@ try:
                     logging.info(f"ERROR: keithley measurement {e=}")
 
                                 # Rest between measurement
-        time.sleep(rest_duration)
-        time.sleep(0.5)
+        # time.sleep(rest_duration)
+        # time.sleep(0.5)
 
             # end sweep
-        for idx, v in enumerate(voltage_list_end):     
+        for idx, v in enumerate(voltage_list_forward):     
             with open(file_path, 'a') as file: 
                         # NOTICE: THE WHILE LOOP/ FOR LOOP INSIDE -> NO CONSTANT UPDATE TO FILE AT ALL -> NO ANIMATION
                 file_writer = csv.DictWriter(file, fieldnames=field_names)
@@ -287,8 +280,48 @@ try:
                     logging.info(f"ERROR: keithley measurement {e=}")
 
                                 # Rest between measurement
-        time.sleep(rest_duration)
-        time.sleep(0.5)
+        # time.sleep(rest_duration)
+        # time.sleep(0.5)
+
+        # end sweep
+    for idx, v in enumerate(voltage_list_end):     
+        with open(file_path, 'a') as file: 
+                    # NOTICE: THE WHILE LOOP/ FOR LOOP INSIDE -> NO CONSTANT UPDATE TO FILE AT ALL -> NO ANIMATION
+            file_writer = csv.DictWriter(file, fieldnames=field_names)
+                        
+                            # set the voltage (gate)
+            logging.info(f"set gate voltage {v=}")
+            keithley_instrument.write(f"smub.source.levelv = {v}")
+            time.sleep(settle_time)
+            try:
+                measured_i_channel = 0
+                measured_v_drain = 0
+                measured_i_gate =  float(keithley_instrument.query('print(smub.measure.i())'))
+                measured_v_gate = float(keithley_instrument.query('print(smub.measure.v())'))
+
+                            # measured_i_gate = keithley_instrument.smub.measure.i()
+
+                                # record to file
+                info = {
+                    'time': time.time() - start_time,
+                    'i_channel': measured_i_channel,
+                    'v_drain': measured_v_drain,
+                    'i_gate': measured_i_gate,
+                    'v_gate': measured_v_gate,
+                                                }
+                logging.info(f"save {info=} to .csv")
+                file_writer.writerow(info)
+
+            except Exception as e:
+                            # # ======
+                            # # Open all switches
+                            # # ======
+                            # For the relay board: HIGH = OFF = OPEN // LOW = ON = CLOSE
+                logging.info(f"ERROR: keithley measurement {e=}")
+
+                            # Rest between measurement
+    # time.sleep(rest_duration)
+    # time.sleep(0.5)
         
         # # ======
         # # Open all switches

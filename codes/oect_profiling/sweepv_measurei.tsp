@@ -19,7 +19,7 @@ points_str = 1455
         -- parameters for vgs
 vgs = -0.1
         -- number of sweeps
-number_of_sweeps = 2
+number_of_sweeps = 5
 
 -- Update display with test info. 
 -- display.settext("SweepVLinMeasureI")  -- Line 1 (20 characters max) 

@@ -44,7 +44,7 @@ logging.info(f"KEITHLEY: connect successfully")
         # Upload the keithley scripts to keithley for the program
         # ======
     # script for writing phase
-file_tsp_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/codes\\pulse_train_2ch_dg.tsp" 
+file_tsp_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/codes\\pulse_train_smua_fixed_smub.tsp" 
 keithley_instrument.write(f"loadscript Write")
 with open(file_tsp_path) as fp:
     for line in fp: keithley_instrument.write(line)
@@ -53,8 +53,8 @@ logging.info(f"KEITHLEY: upload keithley pulse code successfully")
 
     # parameter
 vd_amplitude = 2.5 # pulse_volt # [V]
-pulse_period = 0.01  # [s]
-pulse_width = 0.001 # [s]
+pulse_period = 0.1  # [s]
+pulse_width = 0.02 # [s]
 delta_tpre_tpost = 0.05 # [s]
 n_write_cycle = 10
 write_func_complete = delta_tpre_tpost + n_write_cycle*pulse_period
@@ -107,7 +107,7 @@ logging.info(f"OSC: {mem_depth=}")
         # # ======
         # # record to file
         # # ======
-file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20251126\\neuron_mem.csv"
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260327\\neuron_mem.csv"
 logging.info("Prepare record file")
 field_names = ['time', 'volts']
 with open(file_path, 'w') as file:

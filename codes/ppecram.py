@@ -156,7 +156,7 @@ else:
     lines[line_number-1]= 'smu_drain.trigger.source.listv({' + str(list_VDvoltages.tolist()).replace("[","").replace("]","") + '})'\
             + '\n'
     line_number = 107
-    lines[line_number-1]= 'smu_drain.trigger.source.listv({' + str(Vd_bias) + '})'\
+    lines[line_number-1]= 'smu_drain.trigger.source.listv({' + str(list_VDvoltages.tolist()).replace("[","").replace("]","") + '})'\
             + '\n'
 
 print(f"{'='*5}\n smu_gate.trigger.source.listv() (Phase I)\n{'='*5}")
@@ -221,7 +221,7 @@ keithley_instrument.write("endscript")
         # # ======
         # # record to file
         # # ======
-file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260122\\ppecram.csv"
+file_path = "C:/Users/20245580/LabCode/Codes_For_Experiments/exp_data/20260126\\ppecram.csv"
                 # ======
                 # Prepare record file
                 # ======

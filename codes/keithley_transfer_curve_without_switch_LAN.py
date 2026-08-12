@@ -44,7 +44,6 @@ logging.basicConfig(format=format, level=logging.INFO,
         # init the instrument handle
     # k = Keithley2600('USB0::0x05E6::0x2636::4480001::INSTR', visa_library = 'C:/windows/System32/visa64.dll')
 rm = pyvisa.ResourceManager('C:/windows/System32/visa64.dll')
-# keithley_instrument = rm.open_resource('TCPIP0::169.254.0.1::inst0::INSTR')
 keithley_instrument = rm.open_resource('USB0::0x05E6::0x2636::4480001::INSTR')
 keithley_instrument.timeout = 10000
         # Turn everything OFF
@@ -54,21 +53,21 @@ time.sleep(1)
 
 
         # path to the measurement record
-file_path = "C:\\Users\\20245580\\LabCode\\Codes_For_Experiments\\exp_data\\20260311\\transfer_curve.csv"
+file_path = "C:\\Users\\20245580\\LabCode\\Codes_For_Experiments\\exp_data\\20260408\\transfer_curve.csv"
 
 logging.info("Main    : Prepare measurement")
 
-number_of_measurements = 3
+number_of_measurements = 1
 
 settle_time = 1 # s # after the smu configuration
     
 sw_settle_time = 10e-3 # s
 rest_duration = 0.2 # s
 
-gate_voltage_smallest = -0.5 # V (for liquid electrolite)
-gate_voltage_largest = 0.5 # V (for liquid electrolite)
+gate_voltage_smallest = -1 # V (for liquid electrolite)
+gate_voltage_largest = 1 # V (for liquid electrolite)
 gate_voltage_step = 0.1 # V
-drain_voltage = 0.1 # V
+drain_voltage = 0.2 # V
 try:
                 # ======
                 # Prepare record file
@@ -308,8 +307,11 @@ try:
         # # ======
     logging.info("Keithley measurement    : EXIT")
             # turn off the keithley 
-    # keithley_instrument.write(f"smua.source.output = smua.OUTPUT_OFF")
-    # keithley_instrument.write(f"smub.source.output = smub.OUTPUT_OFF")
+    keithley_instrument.write(f"smua.source.levelv =  0")
+    keithley_instrument.write(f"smub.source.levelv =  0")
+
+    keithley_instrument.write(f"smua.source.output = smua.OUTPUT_OFF")
+    keithley_instrument.write(f"smub.source.output = smub.OUTPUT_OFF")
 
 except KeyboardInterrupt:
      # # ======
@@ -317,8 +319,8 @@ except KeyboardInterrupt:
         # # ======
     logging.info("Keithley measurement    : EXIT")
             # turn off the keithley
-    # keithley_instrument.write(f"smua.source.output = smua.OUTPUT_OFF")
-    # keithley_instrument.write(f"smub.source.output = smub.OUTPUT_OFF")
+    keithley_instrument.write(f"smua.source.output = smua.OUTPUT_OFF")
+    keithley_instrument.write(f"smub.source.output = smub.OUTPUT_OFF")
 
 
 

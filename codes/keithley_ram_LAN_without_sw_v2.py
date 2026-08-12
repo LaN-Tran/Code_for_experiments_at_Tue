@@ -64,21 +64,21 @@ drain_bias_voltage = 0.2 # [V]
 keithley_settle_time = 0.1 # [s]
 wait_before_exp = 60 # [s]
 nexp = 20
-n_pulse_type_1 = 2
+n_pulse_type_1 = 5
 # there is an outer loop for this, to change the amplitude after each exp
 step_voltage = 0
-amp_pulse_type_1 = 2 # (Vgs > 0, decrease gm. bcz source is always 0, and drain - source are symmertrical)
+amp_pulse_type_1 = -0.8 # (Vgs > 0, decrease gm. bcz source is always 0, and drain - source are symmertrical)
 pulse_width_type_1 = 2
-pulse_period_type_1 = 6
+pulse_period_type_1 = 20
 no_pulse_time_type_1 = pulse_period_type_1 - pulse_width_type_1
-wait_between_pulse_type_1 = 600 # In this case, we reuse as measurement period for 2 terminal memristor
+wait_between_pulse_type_1 = 60 # In this case, we reuse as measurement period for 2 terminal memristor
 wait_between_pulse_type_1_and_pulse_type_2 = 1 
-n_pulse_type_2 = 2
-amp_pulse_type_2 = -2 # (Vgs < 0, increase gm.  bcz source is always 0, and drain - source are symmertrical)
+n_pulse_type_2 = 5
+amp_pulse_type_2 = 0.8 # (Vgs < 0, increase gm.  bcz source is always 0, and drain - source are symmertrical)
 pulse_width_type_2 = 2
-pulse_period_type_2 = 6
+pulse_period_type_2 = 20
 no_pulse_time_type_2 = pulse_period_type_2 - pulse_width_type_2
-wait_between_pulse_type_2 = 600 # In this case, we reuse as measurement period for 2 terminal memristor
+wait_between_pulse_type_2 = 60 # In this case, we reuse as measurement period for 2 terminal memristor
 wait_between_exp = 1
 
 try:
