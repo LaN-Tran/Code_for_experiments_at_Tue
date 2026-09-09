@@ -42,7 +42,7 @@ logging.basicConfig(format=format, level=logging.INFO,
     # k = Keithley2600('USB0::0x05E6::0x2636::4480001::INSTR', visa_library = 'C:/windows/System32/visa64.dll')
 # keithley_instrument = Keithley2600('USB0::0x05E6::0x2636::4480001::INSTR', visa_library = 'C:/windows/System32/visa64.dll')
 rm = pyvisa.ResourceManager('C:/windows/System32/visa64.dll')
-keithley_instrument = rm.open_resource('USB0::0x05E6::0x2636::4480001::INSTR')
+keithley_instrument = rm.open_resource('TCPIP0::192.109.209.11::inst0::INSTR')
 keithley_instrument.timeout = 10000
         # Turn everything OFF
 keithley_instrument.write('smua.source.output = smua.OUTPUT_OFF')   # turn off SMUA
@@ -59,27 +59,27 @@ sw_settle_time = 0.1 # [s]
 # gate_bias_voltage = 0.2 #[s]
 gate_bias_voltage_p1 = 0 #[V]
 gate_bias_voltage_p2 = 0 #[V]
-gate_bias_voltage_measure = 0.2 #[V]
-drain_bias_voltage = 0.2 # [V]
+gate_bias_voltage_measure = 0.1 #[V]
+drain_bias_voltage = 0.05 # [V]
 keithley_settle_time = 0.1 # [s]
 wait_before_exp = 60 # [s]
 nexp = 20
-series_pulses = 5 # 2 pulses for each n_pulse_type_1 or n_pulse_type_2 cycle
-n_pulse_type_1 = 5
+series_pulses = 2 # 2 pulses for each n_pulse_type_1 or n_pulse_type_2 cycle
+n_pulse_type_1 = 4
 # there is an outer loop for this, to change the amplitude after each exp
 step_voltage = 0
-amp_pulse_type_1 = -0.8 # (Vgs > 0, decrease gm. bcz source is always 0, and drain - source are symmertrical)
+amp_pulse_type_1 = 1 # (Vgs > 0, decrease gm. bcz source is always 0, and drain - source are symmertrical)
 pulse_width_type_1 = 2
 pulse_period_type_1 = 6
 no_pulse_time_type_1 = pulse_period_type_1 - pulse_width_type_1
-wait_between_pulse_type_1 = 180 # In this case, we reuse as measurement period for 2 terminal memristor
+wait_between_pulse_type_1 = 300 # In this case, we reuse as measurement period for 2 terminal memristor
 wait_between_pulse_type_1_and_pulse_type_2 = 1 
-n_pulse_type_2 = 5
-amp_pulse_type_2 = 0.8 # (Vgs < 0, increase gm.  bcz source is always 0, and drain - source are symmertrical)
+n_pulse_type_2 = 4
+amp_pulse_type_2 = -1 # (Vgs < 0, increase gm.  bcz source is always 0, and drain - source are symmertrical)
 pulse_width_type_2 = 2
 pulse_period_type_2 = 6
 no_pulse_time_type_2 = pulse_period_type_2 - pulse_width_type_2
-wait_between_pulse_type_2 = 180 # In this case, we reuse as measurement period for 2 terminal memristor
+wait_between_pulse_type_2 = 300 # In this case, we reuse as measurement period for 2 terminal memristor
 wait_between_exp = 1
 
 try:
@@ -143,7 +143,7 @@ try:
                 # # Turn on Keithley
                 # # ======
     logging.info("Turn on Keithley")
-    keithley_instrument.write('smua.source.output = smua.OUTPUT_ON')  
+    # keithley_instrument.write('smua.source.output = smua.OUTPUT_ON')  
     keithley_instrument.write('smub.source.output = smub.OUTPUT_ON')  
     time.sleep(keithley_settle_time)
 
@@ -158,8 +158,8 @@ try:
     current_time = time.time()
     while (current_time - start_time) < wait_before_exp:
         try:
-            measured_i_channel = float(keithley_instrument.query('print(smua.measure.i())'))
-            measured_v_drain = float(keithley_instrument.query('print(smua.measure.v())'))
+            measured_i_channel = 0
+            measured_v_drain = 0
             measured_i_gate =  float(keithley_instrument.query('print(smub.measure.i())'))
             measured_v_gate = float(keithley_instrument.query('print(smub.measure.v())'))
             # record to file
@@ -189,8 +189,8 @@ try:
     current_time = time.time()
     while (current_time - start_time) < no_pulse_time_type_1:
         try:
-            measured_i_channel = float(keithley_instrument.query('print(smua.measure.i())'))
-            measured_v_drain = float(keithley_instrument.query('print(smua.measure.v())'))
+            measured_i_channel = 0
+            measured_v_drain = 0
             measured_i_gate =  float(keithley_instrument.query('print(smub.measure.i())'))
             measured_v_gate = float(keithley_instrument.query('print(smub.measure.v())'))
             # record to file
@@ -228,8 +228,8 @@ try:
                     current_time = time.time()
                     while (current_time - start_time) < pulse_width_type_1:
                         try:
-                            measured_i_channel = float(keithley_instrument.query('print(smua.measure.i())'))
-                            measured_v_drain = float(keithley_instrument.query('print(smua.measure.v())'))
+                            measured_i_channel = 0
+                            measured_v_drain = 0
                             measured_i_gate =  float(keithley_instrument.query('print(smub.measure.i())'))
                             measured_v_gate = float(keithley_instrument.query('print(smub.measure.v())'))
                             # record to file
@@ -259,8 +259,8 @@ try:
                     current_time = time.time()
                     while (current_time - start_time) < no_pulse_time_type_1:
                         try:
-                            measured_i_channel = float(keithley_instrument.query('print(smua.measure.i())'))
-                            measured_v_drain = float(keithley_instrument.query('print(smua.measure.v())'))
+                            measured_i_channel = 0
+                            measured_v_drain = 0
                             measured_i_gate =  float(keithley_instrument.query('print(smub.measure.i())'))
                             measured_v_gate = float(keithley_instrument.query('print(smub.measure.v())'))
                             # record to file
@@ -288,8 +288,8 @@ try:
                 current_time = time.time()
                 while (current_time - start_time) < wait_between_pulse_type_1:
                     try:
-                        measured_i_channel = float(keithley_instrument.query('print(smua.measure.i())'))
-                        measured_v_drain = float(keithley_instrument.query('print(smua.measure.v())'))
+                        measured_i_channel = 0
+                        measured_v_drain = 0
                         measured_i_gate =  float(keithley_instrument.query('print(smub.measure.i())'))
                         measured_v_gate = float(keithley_instrument.query('print(smub.measure.v())'))
                         # record to file
@@ -318,8 +318,8 @@ try:
                 current_time = time.time()
                 while (current_time - start_time) < no_pulse_time_type_1:
                     try:
-                        measured_i_channel = float(keithley_instrument.query('print(smua.measure.i())'))
-                        measured_v_drain = float(keithley_instrument.query('print(smua.measure.v())'))
+                        measured_i_channel = 0
+                        measured_v_drain = 0
                         measured_i_gate =  float(keithley_instrument.query('print(smub.measure.i())'))
                         measured_v_gate = float(keithley_instrument.query('print(smub.measure.v())'))
                         # record to file
@@ -347,8 +347,8 @@ try:
             current_time = time.time()
             while (current_time - start_time) < wait_between_pulse_type_1_and_pulse_type_2:
                 try:
-                    measured_i_channel = float(keithley_instrument.query('print(smua.measure.i())'))
-                    measured_v_drain = float(keithley_instrument.query('print(smua.measure.v())'))
+                    measured_i_channel = 0
+                    measured_v_drain = 0
                     measured_i_gate =  float(keithley_instrument.query('print(smub.measure.i())'))
                     measured_v_gate = float(keithley_instrument.query('print(smub.measure.v())'))
                         # record to file
@@ -379,8 +379,8 @@ try:
                     current_time = time.time()
                     while (current_time - start_time) < pulse_width_type_2:
                         try:
-                            measured_i_channel = float(keithley_instrument.query('print(smua.measure.i())'))
-                            measured_v_drain = float(keithley_instrument.query('print(smua.measure.v())'))
+                            measured_i_channel = 0
+                            measured_v_drain = 0
                             measured_i_gate =  float(keithley_instrument.query('print(smub.measure.i())'))
                             measured_v_gate = float(keithley_instrument.query('print(smub.measure.v())'))
                             # record to file
@@ -409,8 +409,8 @@ try:
                     current_time = time.time()
                     while (current_time - start_time) < no_pulse_time_type_2:
                         try:
-                            measured_i_channel = float(keithley_instrument.query('print(smua.measure.i())'))
-                            measured_v_drain = float(keithley_instrument.query('print(smua.measure.v())'))
+                            measured_i_channel = 0
+                            measured_v_drain = 0
                             measured_i_gate =  float(keithley_instrument.query('print(smub.measure.i())'))
                             measured_v_gate = float(keithley_instrument.query('print(smub.measure.v())'))
                             # record to file
@@ -439,8 +439,8 @@ try:
                 current_time = time.time()
                 while (current_time - start_time) < wait_between_pulse_type_2:
                     try:
-                        measured_i_channel = float(keithley_instrument.query('print(smua.measure.i())'))
-                        measured_v_drain = float(keithley_instrument.query('print(smua.measure.v())'))
+                        measured_i_channel = 0
+                        measured_v_drain = 0
                         measured_i_gate =  float(keithley_instrument.query('print(smub.measure.i())'))
                         measured_v_gate = float(keithley_instrument.query('print(smub.measure.v())'))
                         # record to file
@@ -469,8 +469,8 @@ try:
                 current_time = time.time()
                 while (current_time - start_time) < no_pulse_time_type_2:
                     try:
-                        measured_i_channel = float(keithley_instrument.query('print(smua.measure.i())'))
-                        measured_v_drain = float(keithley_instrument.query('print(smua.measure.v())'))
+                        measured_i_channel = 0
+                        measured_v_drain = 0
                         measured_i_gate =  float(keithley_instrument.query('print(smub.measure.i())'))
                         measured_v_gate = float(keithley_instrument.query('print(smub.measure.v())'))
                         # record to file
@@ -497,8 +497,8 @@ try:
             current_time = time.time()
             while (current_time - start_time) < wait_between_exp:
                 try:
-                    measured_i_channel = float(keithley_instrument.query('print(smua.measure.i())'))
-                    measured_v_drain = float(keithley_instrument.query('print(smua.measure.v())'))
+                    measured_i_channel = 0
+                    measured_v_drain = 0
                     measured_i_gate =  float(keithley_instrument.query('print(smub.measure.i())'))
                     measured_v_gate = float(keithley_instrument.query('print(smub.measure.v())'))
                         # record to file
